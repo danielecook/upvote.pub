@@ -3,9 +3,9 @@
 All code for scraping images and videos from posted
 links go in this file.
 """
-import BeautifulSoup
+#import BeautifulSoup
 import requests
-from urlparse import urlparse, urlunparse, urljoin
+from urllib.parse import urlparse, urlunparse, urljoin
 
 img_extensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp']
 
@@ -37,24 +37,25 @@ def get_top_img(url, timeout=4):
     if url.split('.')[-1].lower() in img_extensions:
         return url
     try:
-        html = requests.get(url, timeout=timeout).text
-        soup = BeautifulSoup.BeautifulSoup(html)
+        pass
+        #html = requests.get(url, timeout=timeout).text
+        #soup = BeautifulSoup.BeautifulSoup(html)
+#
+        #og_image = (soup.find('meta', property='og:image') or
+        #            soup.find('meta', attrs={'name': 'og:image'}))
+#
+        #if og_image and og_image['content']:
+        #    src_url = og_image['content']
+        #    return make_abs(url, src_url)
+#
+        ## <link rel="image_src" href="http://...">
+        #thumbnail_spec = soup.find('link', rel='image_src')
+        #if thumbnail_spec and thumbnail_spec['href']:
+        #    src_url = thumbnail_spec['href']
+        #    return make_abs(url, src_url)
 
-        og_image = (soup.find('meta', property='og:image') or
-                    soup.find('meta', attrs={'name': 'og:image'}))
-
-        if og_image and og_image['content']:
-            src_url = og_image['content']
-            return make_abs(url, src_url)
-
-        # <link rel="image_src" href="http://...">
-        thumbnail_spec = soup.find('link', rel='image_src')
-        if thumbnail_spec and thumbnail_spec['href']:
-            src_url = thumbnail_spec['href']
-            return make_abs(url, src_url)
-
-    except Exception, e:
-        print 'FAILED WHILE EXTRACTING THREAD IMG', str(e)
+    except Exception as e:
+        print('FAILED WHILE EXTRACTING THREAD IMG', str(e))
         return None
 
     return None

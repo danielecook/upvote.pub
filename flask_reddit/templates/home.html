@@ -37,7 +37,7 @@
               </a>
 
               <div class="post-listing-meta">
-                  <a href="{{ config.ROOT_URL }}/threads/{{ thread.subreddit.name }}/{{ thread.id }}/{{ thread.title|truncate(100)|replace(' ', '_') }}">
+                  <a href="{{ url_for('threads.thread_permalink', subreddit_name = thread.subreddit.name, thread_id = thread.id, title = thread.title|truncate(100)|replace(' ', '_')) }}">
                   {{ thread.comments.all()|length() }} comments</a>,
                   {{ thread.pretty_date() }}, by 
                   <a href="{{ url_for('users.home_page', 

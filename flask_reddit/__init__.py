@@ -52,5 +52,5 @@ def custom_render(template, *args, **kwargs):
 app.debug = app.config['DEBUG']
 
 if __name__ == '__main__':
-    print 'We are running flask via main()'
+    print('We are running flask via main()')
     app.run()

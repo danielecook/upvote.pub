@@ -12,15 +12,17 @@ from flask_reddit import db
 
 mod = Blueprint('threads', __name__, url_prefix='/threads')
 
-#######################
-#### Threads Views ####
-#######################
+#################
+# Threads Views #
+#################
+
 
 @mod.before_request
 def before_request():
     g.user = None
     if 'user_id' in session:
         g.user = User.query.get(session['user_id'])
+
 
 def meets_thread_criterea(thread):
     """
@@ -38,6 +40,7 @@ def meets_thread_criterea(thread):
         return False
 
     return True
+
 
 @mod.route('/<subreddit_name>/submit/', methods=['GET', 'POST'])
 def submit(subreddit_name=None):
@@ -58,7 +61,7 @@ def submit(subreddit_name=None):
         link = form.link.data.strip()
         text = form.text.data.strip()
         thread = Thread(title=title, link=link, text=text,
-                user_id=user_id, subreddit_id=subreddit.id)
+                        user_id=user_id, subreddit_id=subreddit.id)
 
         if not meets_thread_criterea(thread):
             return render_template('threads/submit.html', form=form, user=g.user,
@@ -85,7 +88,7 @@ def edit():
     """
     pass
 
-@mod.route('/<subreddit_name>/<thread_id>/<path:title>/', methods=['GET', 'POST'])
+@mod.route('/<string:subreddit_name>/<int:thread_id>/<path:title>/', methods=['GET', 'POST'])
 def thread_permalink(subreddit_name=None, thread_id=None, title=None):
     """
     """
@@ -93,12 +96,15 @@ def thread_permalink(subreddit_name=None, thread_id=None, title=None):
     thread = Thread.query.get_or_404(int(thread_id))
     subreddit = Subreddit.query.filter_by(name=subreddit_name).first()
     subreddits = get_subreddits()
-    return render_template('threads/permalink.html', user=g.user, thread=thread,
-            cur_subreddit=subreddit, subreddits=subreddits)
+    return render_template('threads/permalink.html',
+                           user=g.user,
+                           thread=thread,
+                           cur_subreddit=subreddit,
+                           subreddits=subreddits)
 
-##########################
-##### Comments Views #####
-##########################
+##################
+# Comments Views #
+##################
 
 @mod.route('/comments/submit/', methods=['GET', 'POST'])
 def submit_comment():
