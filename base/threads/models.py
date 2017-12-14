@@ -50,6 +50,15 @@ class Thread(db.Model):
     link = db.Column(db.String(THREAD.MAX_LINK), default=None)
     thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
 
+    # Publication information
+    pub_title = db.Column(db.String(THREAD.MAX_PUB_TITLE))
+    pub_authors = db.Column(db.String(THREAD.MAX_AUTHORS))
+    pub_doi = db.Column(db.String(THREAD.MAX_DOI))
+    pub_journal = db.Column(db.String(THREAD.MAX_JOURNAL))
+    pub_abstract = db.Column(db.Text())
+    pub_date = db.Column(db.DateTime)
+
+
     user_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
     subreddit_id = db.Column(db.Integer, db.ForeignKey('subreddits_subreddit.id'))
 

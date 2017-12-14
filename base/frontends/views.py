@@ -15,14 +15,17 @@ from base.users.decorators import requires_login
 
 mod = Blueprint('frontends', __name__, url_prefix='')
 
+
 @mod.before_request
 def before_request():
     g.user = None
     if 'user_id' in session:
         g.user = User.query.get(session['user_id'])
 
+
 def home_subreddit():
     return Subreddit.query.get_or_404(1)
+
 
 def get_subreddits():
     """
@@ -31,6 +34,7 @@ def get_subreddits():
     """
     subreddits = Subreddit.query.filter(Subreddit.id != 1)[:25]
     return subreddits
+
 
 def process_thread_paginator(trending=False, rs=None, subreddit=None):
     """
@@ -60,6 +64,7 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
                 paginate(cur_page, per_page=threads_per_page, error_out=True)
     return thread_paginator
 
+
 #@mod.route('/<regex("trending"):trending>/')
 @mod.route('/')
 def home(trending=False):
@@ -73,6 +78,7 @@ def home(trending=False):
     return render_template('home.html', user=g.user,
             subreddits=subreddits, cur_subreddit=home_subreddit(),
             thread_paginator=thread_paginator)
+
 
 @mod.route('/search/', methods=['GET'])
 def search():
@@ -91,6 +97,7 @@ def search():
     return render_template('home.html', user=g.user,
             subreddits=subreddits, cur_subreddit=home_subreddit(),
             thread_paginator=thread_paginator, num_searches=num_searches)
+
 
 @mod.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -124,11 +131,13 @@ def login():
         flash('Wrong email or password', 'danger')
     return render_template("login.html", form=form, next=next)
 
+
 @mod.route('/logout/', methods=['GET', 'POST'])
 @requires_login
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('frontends.home'))
+
 
 @mod.route('/register/', methods=['GET', 'POST'])
 def register():

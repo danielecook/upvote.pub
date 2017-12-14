@@ -1,7 +1,7 @@
 flask\_reddit
 =============
 
-**flask_reddit** is an extendable + minimalist [Reddit](http://reddit.com) clone.
+**base** is an extendable + minimalist [Reddit](http://reddit.com) clone.
 
 This was built so beginners who want a standard CRUD + reddit-like application
 can quickly get to work.
@@ -48,7 +48,7 @@ servers in the `/server` directory.*
 
 `sudo apt-get install nginx`
 
-- Configure your nginx settings located in `flask_reddit/server/nginx.conf`.
+- Configure your nginx settings located in `base/server/nginx.conf`.
 
 - Add your settings into your global conf file located in `/etc/nginx/nginx.conf`
 
@@ -79,8 +79,8 @@ source bin/activate; # viola, you are now in an enclosed python workspace.
 which this server uses.
 
 ```bash
-git clone https://github.com/codelucas/flask_reddit.git;
-cd flask_reddit;
+git clone https://github.com/codelucas/base.git;
+cd base;
 pip install -r requirements.txt
 ```
 
@@ -88,7 +88,7 @@ pip install -r requirements.txt
 `config.py` file in the gitignore. But, I have provided a clean and easy
 to use config template in this repo named `app_config.py`. 
 
-- **Fill out the `flask_reddit/app_config.py` file with your own information and then rename it to
+- **Fill out the `base/app_config.py` file with your own information and then rename it to
 `config.py` so flask recognizes it by using `mv app_config.py config.py`.**
 Please be sure to fill out the mysql db settings similarly to how you set it up!, 
 username, pass, etc
@@ -97,11 +97,11 @@ username, pass, etc
 
 `python2.7 kickstart.py`
 
-- flask_reddit has tasks which must **occur on regular time intervals**. To make this
+- base has tasks which must **occur on regular time intervals**. To make this
 happen, we use the `crontab`, which is present on UNIX systems.
 
 A crontab is a dash which allows you to specify what programs to run and how often.
-I've provided flask_reddit's example crontab in the root directory as `jobs.cron`.
+I've provided base's example crontab in the root directory as `jobs.cron`.
 
 To view your current crontab, run `crontab -l`. To edit your crontab, run `crontab -e`.
 

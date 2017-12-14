@@ -12,9 +12,9 @@ from base import db
 
 mod = Blueprint('subreddits', __name__, url_prefix='/r')
 
-#######################
-### Subreddit Views ###
-#######################
+###################
+# Subreddit Views #
+###################
 
 
 @mod.before_request
@@ -70,12 +70,14 @@ def delete():
     """
     pass
 
+
 @mod.route('/subreddits/view_all/', methods=['GET'])
 def view_all():
     """
     """
     return render_template('subreddits/all.html', user=g.user,
             subreddits=Subreddit.query.all())
+
 
 @mod.route('/<subreddit_name>/', methods=['GET'])
 def permalink(subreddit_name=""):
