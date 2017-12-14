@@ -21,10 +21,10 @@ CREATE TABLE `comment_upvotes` (
   CONSTRAINT `comment_upvotes_ibfk_2` FOREIGN KEY (`comment_id`) REFERENCES `threads_comment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
 """
-from flask_reddit import db
-from flask_reddit.threads import constants as THREAD
-from flask_reddit import utils
-from flask_reddit import media
+from base import db
+from base.threads import constants as THREAD
+from base import utils
+from base import media
 from math import log
 import datetime
 

@@ -7,8 +7,8 @@ from flask import (Blueprint,
                    session,
                    abort)
 
-from flask_reddit.users.models import User
-from flask_reddit.frontends.views import get_subreddits
+from base.users.models import User
+from base.frontends.views import get_subreddits
 
 
 mod = Blueprint('users', __name__, url_prefix='/users')

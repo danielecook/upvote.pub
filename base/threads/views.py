@@ -3,12 +3,12 @@
 """
 from flask import (Blueprint, request, render_template, flash, g, session,
     redirect, url_for, abort)
-from flask_reddit.threads.forms import SubmitForm
-from flask_reddit.threads.models import Thread
-from flask_reddit.users.models import User
-from flask_reddit.subreddits.models import Subreddit
-from flask_reddit.frontends.views import get_subreddits
-from flask_reddit import db
+from base.threads.forms import SubmitForm
+from base.threads.models import Thread
+from base.users.models import User
+from base.subreddits.models import Subreddit
+from base.frontends.views import get_subreddits
+from base import db
 
 mod = Blueprint('threads', __name__, url_prefix='/threads')
 
@@ -58,13 +58,14 @@ def submit(subreddit_name=None):
     form = SubmitForm(request.form)
     if form.validate_on_submit():
         title = form.title.data.strip()
+        pubid = form.pubid.data.strip()
         link = form.link.data.strip()
         text = form.text.data.strip()
         thread = Thread(title=title, link=link, text=text,
                         user_id=user_id, subreddit_id=subreddit.id)
 
         if not meets_thread_criterea(thread):
-            return render_template('threads/submit.html', form=form, user=g.user,
+            return render_template('threads/submit_post.html', form=form, user=g.user,
                 cur_subreddit=subreddit.name)
 
         db.session.add(thread)
@@ -73,7 +74,7 @@ def submit(subreddit_name=None):
 
         flash('thanks for submitting!', 'success')
         return redirect(url_for('subreddits.permalink', subreddit_name=subreddit.name))
-    return render_template('threads/submit.html', form=form, user=g.user,
+    return render_template('threads/submit_post.html', form=form, user=g.user,
             cur_subreddit=subreddit, subreddits=get_subreddits())
 
 @mod.route('/delete/', methods=['GET', 'POST'])

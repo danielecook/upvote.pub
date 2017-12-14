@@ -28,24 +28,26 @@ def not_found(error):
 def not_found(error):
     return render_template('500.html'), 500
 
-from flask_reddit.users.views import mod as users_module
+from base.users.views import mod as users_module
 app.register_blueprint(users_module)
 
-from flask_reddit.threads.views import mod as threads_module
+from base.threads.views import mod as threads_module
 app.register_blueprint(threads_module)
 
-from flask_reddit.frontends.views import mod as frontends_module
+from base.frontends.views import mod as frontends_module
 app.register_blueprint(frontends_module)
 
-from flask_reddit.apis.views import mod as apis_module
+from base.apis.views import mod as apis_module
 app.register_blueprint(apis_module)
 
-from flask_reddit.subreddits.views import mod as subreddits_module
+from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
+
+from base.manage import (generate_id_db)
 
 def custom_render(template, *args, **kwargs):
     """
-    custom template rendering including some flask_reddit vars
+    custom template rendering including some base vars
     """
     return render_template(template, *args, **kwargs)
 

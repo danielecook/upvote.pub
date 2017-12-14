@@ -12,11 +12,11 @@ from pprint import pprint
 from flask import *
 from werkzeug import check_password_hash, generate_password_hash
 
-#sys.path.insert(0, '/home/lucas/www/reddit.lucasou.com/reddit-env/flask_reddit')
-from flask_reddit import *
-from flask_reddit.users.models import *
-from flask_reddit.threads.models import *
-from flask_reddit.subreddits.models import *
+#sys.path.insert(0, '/home/lucas/www/reddit.lucasou.com/reddit-env/base')
+from base import *
+from base.users.models import *
+from base.threads.models import *
+from base.subreddits.models import *
 
 db.drop_all()
 db.create_all()

@@ -3,8 +3,8 @@
 Simple module for searching the sql-alchemy database based
 on user queries.
 """
-from flask_reddit.threads.models import Thread, Comment
-from flask_reddit import db
+from base.threads.models import Thread, Comment
+from base import db
 
 def search(query, orderby='creation', filter_user=None, search_title=True,
             search_text=True, subreddit=None, limit=100):

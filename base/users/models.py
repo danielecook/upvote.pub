@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 """
-from flask_reddit import db
-from flask_reddit.users import constants as USER
-from flask_reddit.threads.models import thread_upvotes, comment_upvotes
+from base import db
+from base.users import constants as USER
+from base.threads.models import thread_upvotes, comment_upvotes
 
 class User(db.Model):
     """

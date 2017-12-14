@@ -3,17 +3,17 @@
 """
 import os
 import sys
-sys.path.insert(0, '/home/lucas/www/reddit.lucasou.com/reddit-env/flask_reddit')
+sys.path.insert(0, '/home/lucas/www/reddit.lucasou.com/reddit-env/base')
 import readline
 from pprint import pprint
 
 from flask import *
-from flask_reddit import *
+from base import *
 
-from flask_reddit.users.models import *
-from flask_reddit.threads.models import *
-from flask_reddit.subreddits.models import *
-from flask_reddit.threads.models import thread_upvotes, comment_upvotes
+from base.users.models import *
+from base.threads.models import *
+from base.subreddits.models import *
+from base.threads.models import thread_upvotes, comment_upvotes
 
 threads = Thread.query.all()
 for thread in threads:

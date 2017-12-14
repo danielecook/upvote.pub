@@ -7,10 +7,10 @@ from flask import (Blueprint, request, render_template, flash, g,
         session, redirect, url_for, jsonify, abort)
 from werkzeug import check_password_hash, generate_password_hash
 
-from flask_reddit import db
-from flask_reddit.users.models import User
-from flask_reddit.threads.models import Thread, Comment
-from flask_reddit.users.decorators import requires_login
+from base import db
+from base.users.models import User
+from base.threads.models import Thread, Comment
+from base.users.decorators import requires_login
 
 mod = Blueprint('apis', __name__, url_prefix='/apis')
 

@@ -28,10 +28,10 @@ insert into subreddits_subreddit (name, `desc`, admin_id) values('first_subreddi
 ALTER TABLE threads_thread ADD CONSTRAINT threads_thread_ibfk_2 FOREIGN KEY (subreddit_id)
     references subreddits_subreddit(id);
 """
-from flask_reddit import db
-from flask_reddit.subreddits import constants as SUBREDDIT
-from flask_reddit.threads.models import Thread
-from flask_reddit import utils
+from base import db
+from base.subreddits import constants as SUBREDDIT
+from base.threads.models import Thread
+from base import utils
 import datetime
 
 class Subreddit(db.Model):

@@ -5,13 +5,13 @@ from flask import (Blueprint, request, render_template, flash,
     g, session, redirect, url_for)
 from werkzeug import check_password_hash, generate_password_hash
 
-from flask_reddit import db
-from flask_reddit import search as search_module # don't override function name
-from flask_reddit.users.forms import RegisterForm, LoginForm
-from flask_reddit.users.models import User
-from flask_reddit.threads.models import Thread
-from flask_reddit.subreddits.models import Subreddit
-from flask_reddit.users.decorators import requires_login
+from base import db
+from base import search as search_module # don't override function name
+from base.users.forms import RegisterForm, LoginForm
+from base.users.models import User
+from base.threads.models import Thread
+from base.subreddits.models import Subreddit
+from base.users.decorators import requires_login
 
 mod = Blueprint('frontends', __name__, url_prefix='')
 
