@@ -2,8 +2,8 @@
 """
 """
 from flask import (Blueprint, request, render_template, flash, g, session,
-    redirect, url_for, abort)
-from base.threads.forms import SubmitForm
+                   redirect, url_for, abort)
+from base.threads.forms import submit_pub_form
 from base.threads.models import Thread
 from base.users.models import User
 from base.subreddits.models import Subreddit
@@ -55,8 +55,10 @@ def submit(subreddit_name=None):
     if not subreddit:
         abort(404)
 
-    form = SubmitForm(request.form)
+    form = submit_pub_form(request.form)
     if form.validate_on_submit():
+        # Fetch data from publication
+
         title = form.title.data.strip()
         pubid = form.pubid.data.strip()
         link = form.link.data.strip()

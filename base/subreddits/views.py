@@ -16,7 +16,6 @@ mod = Blueprint('subreddits', __name__, url_prefix='/r')
 # Subreddit Views #
 ###################
 
-
 @mod.before_request
 def before_request():
     g.user = None

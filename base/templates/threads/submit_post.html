@@ -2,15 +2,13 @@
 
 {% block left %}
   <div class="">
-  <h2 class="thread-submit-title">Posts are vital, thank you for submitting!</h2>
+  <h2 class="thread-submit-title">Submit</h2>
   <br>
   <div class="col-lg-10 thread-submit-box">
   {% from "macros.html" import render_field %}
   <form method="POST" action="." class="form bs-example form-horizontal">
     {{ form.csrf_token }}
-    {{ render_field(form.title, class="form-control", placeholder="title", autofocus="") }}
-    <br>
-    {{ render_field(form.link, class="form-control", placeholder="link") }}
+    {{ render_field(form.pub_id, class="form-control", placeholder="DOI, Pubmed ID, Arxiv or BioArxiv") }}
     <br>
     {{ render_field(form.text, class="form-control", placeholder="body text", style="height: 150px;") }}
     <br>

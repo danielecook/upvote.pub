@@ -15,8 +15,8 @@ class pub_id_db(db.Model):
     """
     __tablename__ = 'subreddits_subreddit'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(SUBREDDIT.MAX_NAME), unique=True)
-    desc = db.Column(db.String(SUBREDDIT.MAX_DESCRIPTION))
+    journal_title = db.Column(db.String(PUB), unique=True)
+    issn = db.Column(db.String(SUBREDDIT.MAX_DESCRIPTION))
 
     admin_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
 
