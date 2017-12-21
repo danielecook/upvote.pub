@@ -1,6 +1,7 @@
 {% extends "home.html" %}
 
 {% block left %}
+{% from "macros.html" import render_pub %}
 <div name="{{ thread.id }}" class="row listing-row thread-permalink">
     <div class="col-lg-1 listing-vote-box">
         <div class="">
@@ -16,19 +17,11 @@
             {{ thread.votes }}
         </div>
     </div>
-    <div class="col-lg-1 listing-thumbnail-box">
-        <img class="permalink-listing-image" src="{{ thread.thumbnail|replace("http://", "https://") }}"/>
-    </div>
-    <div class="col-lg-9 listing-text">
-        <a href="{{ thread.link }}"><h2 class="listing-title">{{ thread.title }}</h2></a>
-        created {{ thread.pretty_date('created') }},
-        by <a href="{{ url_for('users.home_page', username=thread.user.username) }}">
-            {{ thread.user.username }}.</a> in <a href="{{ url_for('subreddits.permalink', 
-                subreddit_name=thread.subreddit.name) }}">{{ thread.subreddit.name }}</a>
-        <br>
-        <br>
-        <p class="thread-text">{{ thread.text }}</p>
-    </div>
+
+       
+        {{ render_pub(thread) }}
+
+
 </div>
 
 <div>
@@ -53,7 +46,7 @@
 <div class="row"></div>
 <br>
 <div>
-    <h4>Comments section</h4>
+    <h4>Comments</h4>
     <hr>
 </div>
 

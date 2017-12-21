@@ -3,28 +3,22 @@
   <head>
     <meta charset="utf-8">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <meta name="description" content="An extendable Reddit clone built with flask by 
-         Lucas Ou-Yang.">
+    <meta name="description" content="The front page of science!">
     <meta name="author" content="Lucas Ou-Yang">
-    <title>{% block title %}Reddit clone built with flask, python, nginx, etc{% endblock %}</title>
-    <meta name="keywords" content="flask,reddit,python,reddit-clone,nginx,lucas ou-yang">
+    <title>{% block title %}upvote.pub | The Front Page of Science!{% endblock %}</title>
+    <meta name="keywords" content="science,reddit,publications,doi,pubmed,daniel cook">
 
     <!-- Bootstrap core CSS -->
     <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
-    <link rel="icon" href="https://reddit.codelucas.com/static/imgs/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='img/upvote.ico') }}" type="image/x-icon">
     {% block css %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% endblock %}
-
-    <!-- Add custom CSS here -->
-    <style>
-        body {margin-top: 60px;}
-    </style>
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default " role="navigation">
       <div class="container">
 
         <div class="navbar-header">
@@ -106,7 +100,8 @@
 
     <!-- Let's use a CDN -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     {% block scripts %}
 
     {% endblock %}

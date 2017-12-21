@@ -27,6 +27,7 @@ from base import utils
 from base import media
 from math import log
 import datetime
+import arrow
 
 thread_upvotes = db.Table('thread_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
@@ -45,19 +46,22 @@ class Thread(db.Model):
     """
     __tablename__ = 'threads_thread'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(THREAD.MAX_TITLE))
-    text = db.Column(db.String(THREAD.MAX_BODY), default=None)
-    link = db.Column(db.String(THREAD.MAX_LINK), default=None)
-    thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
 
     # Publication information
-    pub_title = db.Column(db.String(THREAD.MAX_PUB_TITLE))
-    pub_authors = db.Column(db.String(THREAD.MAX_AUTHORS))
-    pub_doi = db.Column(db.String(THREAD.MAX_DOI))
-    pub_journal = db.Column(db.String(THREAD.MAX_JOURNAL))
+    pub_title = db.Column(db.String(300))
+    pub_authors = db.Column(db.String(1000))
     pub_abstract = db.Column(db.Text())
+    pub_doi = db.Column(db.String(250))
+    pub_pmid = db.Column(db.String(15))
+    pub_pmcid = db.Column(db.String(18))
+    pub_url = db.Column(db.String(250))
+    pub_pdf_url = db.Column(db.String(250))
+    pub_journal = db.Column(db.String(100))
     pub_date = db.Column(db.DateTime)
 
+    text = db.Column(db.String(3000), default=None)
+
+    thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
     subreddit_id = db.Column(db.Integer, db.ForeignKey('subreddits_subreddit.id'))
@@ -71,16 +75,9 @@ class Thread(db.Model):
     votes = db.Column(db.Integer, default=1)
     hotness = db.Column(db.Float(15,6), default=0.00)
 
-    def __init__(self, title, text, link, user_id, subreddit_id):
-        self.title = title
-        self.text = text
-        self.link = link
-        self.user_id = user_id
-        self.subreddit_id = subreddit_id
-        self.extract_thumbnail()
 
     def __repr__(self):
-        return '<Thread %r>' % (self.title)
+        return '<Thread %r>' % (self.pub_title)
 
     def get_comments(self, order_by='timestamp'):
         """
@@ -126,10 +123,14 @@ class Thread(db.Model):
         returns a humanized version of the raw age of this thread,
         eg: 34 minutes ago versus 2040 seconds ago.
         """
-        if typeof == 'created':
-            return utils.pretty_date(self.created_on)
-        elif typeof == 'updated':
-            return utils.pretty_date(self.updated_on)
+
+        return arrow.get(self.created_on).humanize()
+
+        # Replace with humanize function
+        #if typeof == 'created':
+        #    return utils.pretty_date(self.created_on)
+        #elif typeof == 'updated':
+        #    return utils.pretty_date(self.updated_on)
 
     def add_comment(self, comment_text, comment_parent_id, user_id):
         """
@@ -204,21 +205,6 @@ class Thread(db.Model):
             vote_status = False
         db.session.commit() # for the vote count
         return vote_status
-
-    def extract_thumbnail(self):
-        """
-        ideally this type of heavy content fetching should be put on a
-        celery background task manager or at least a crontab.. instead of
-        setting it to run literally as someone posts a thread. but once again,
-        this repo is just a simple example of a reddit-like crud application!
-        """
-        DEFAULT_THUMBNAIL = 'https://reddit.codelucas.com/static/imgs/reddit-camera.png'
-        if self.link:
-            thumbnail = media.get_top_img(self.link)
-        if not thumbnail:
-            thumbnail = DEFAULT_THUMBNAIL
-        self.thumbnail = thumbnail
-        db.session.commit()
 
 
 class Comment(db.Model):
@@ -300,9 +286,9 @@ class Comment(db.Model):
         eg: 34 minutes ago versus 2040 seconds ago.
         """
         if typeof == 'created':
-            return utils.pretty_date(self.created_on)
+            return arrow.get(self.created_on).humanize()
         elif typeof == 'updated':
-            return utils.pretty_date(self.updated_on)
+            return arrow.get(self.updated_on).humanize()
 
     def vote(self, direction):
         """

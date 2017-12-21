@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 # Parse Pubs
+import re
 import hashlib
 import requests
 import arxiv
+from flask import g
+from gcloud import storage
 from bs4 import BeautifulSoup
 from metapub import CrossRef, PubMedFetcher
 from metapub.base import MetaPubError
@@ -11,7 +14,6 @@ from dateutil.parser import parse
 from subprocess import Popen
 from tempfile import NamedTemporaryFile
 
-THUMBNAIL_SIZE = 
 BUFFER_SIZE = 65336
 
 def sha1_file(input):
@@ -25,20 +27,52 @@ def sha1_file(input):
     return sha1.hexdigest()
 
 
+def download_pdf(url):
+    """
+        Downloads a pdf to a temporary location
+    """
+    try:
+        download_url = requests.head(url, allow_redirects=True)
+        response = requests.get(download_url.url, stream = True)
+    except:
+        return None
+    out = NamedTemporaryFile(suffix=".pdf", delete=False)
+    with open(out.name, 'wb') as handle:
+        for block in response.iter_content(1024):
+            handle.write(block)
+    return out.name
 
-def pdf_url_to_thumb(url, fname):
+
+def pdf_to_thumb(fname):
     """
         Generates a thumbnail
         for the URL provided for a PDF
     """
-    response = requests.get(url, stream = True)
-    out = NamedTemporaryFile(suffix=".pdf")
-    with open(out.name, 'wb') as handle:
-        for block in response.iter_content(1024):
-            handle.write(block)
-    comm = ['convert', '-thumbnail', '200', out.name + "[0]", fname]
+    comm = ['convert', '-thumbnail', '200', fname + "[0]", fname + ".thumb.png"]
+    print(comm)
     out, err = Popen(comm).communicate()
-    return fname
+    return fname + ".thumb.png"
+
+
+def google_storage():
+    if not hasattr(g, 'gs'):
+        g.gs = storage.Client.from_service_account_json("pdf_thumbnail_creator_credentials.json", project='upvote')
+    return g.gs
+
+
+def process_pdf(url):
+    # Download the PDF
+    fname = download_pdf(url)
+    thumbnail_fname = pdf_to_thumb(fname)
+    sha1_fname = sha1_file(fname)
+    print(thumbnail_fname)
+    print(sha1_fname)
+
+
+    #gs_client = g.gs
+    #bucket = gs_client.get_bucket('pdf_thumbnails')
+
+
 
 
 def fetch_pubmed(pub_id, id_type = "pmid"):
@@ -72,7 +106,7 @@ def fetch_pubmed(pub_id, id_type = "pmid"):
 
     # Provide PDF if possible
     if result.get('pmc'):
-        result['pdf_url'] = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{result['pmc']}/pdf/{result['pii']}.pdf"
+        result['pdf_url'] = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{result['pmc']}/pdf"
 
     out = {"pub_title": result.get('title'),
            "pub_authors": result.get('authors'),
@@ -152,6 +186,7 @@ def id_type(pub_id):
         return 'arxiv'
     elif re.match("[a-z]+(\.[a-z]+)/[0-9]+", pub_id, re.IGNORECASE):
         return 'arxiv'
+        
     elif re.match("PMC[0-9]+", pub_id):
         return 'pmc'
     elif re.match('(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'<>])\S)+)', pub_id):
@@ -160,6 +195,32 @@ def id_type(pub_id):
         return 'pmid'
 
 
+def fetch_pub(pub_id):
+    """
+        Fetch pub and process accordingly
+    """
+
+    pub_type = id_type(pub_id)
+
+    if pub_type == 'arxiv':
+        pub = fetch_arxiv(pub_id)
+    elif pub_type in ['pmc', 'pmid']:
+        pub = fetch_pubmed(pub_id, pub_type)
+    elif pub_type == 'doi':
+        pub = fetch_doi(pub_id)
+    else:
+        return None
+
+    if pub.get('pub_pdf_url'):
+        process_pdf(pub['pub_pdf_url'])
+
+    # Format authors
+    pub['pub_authors'] = ', '.join(pub['pub_authors'])
+
+    return pub
+
+
+"""
 id_type("28892780") # pubmed
 id_type("PMC5012401") # pmc
 id_type('10.1093/nar/gkw893') # doi
@@ -173,6 +234,7 @@ fetch_doi('10.1101/125567')
 fetch_doi('10.1101/233270')
 
 fetch_arxiv("1510.08002")
+"""
 
 def parse_pub(pub_id):
     pass
