@@ -105,14 +105,7 @@ div.spacer {
     margin-left: 5px;
 }
 
-.right-bar {
-    position: fixed;
-    top: 80px;
-    right: 100px;
-}
-
 .main-box {
-    margin-top: 20px;
     min-height: 700px;
 }
 
@@ -171,11 +164,14 @@ div.spacer {
 
 .thread-comment-section {
     padding-left: 0px;
+    width: 100%;
 }
 
 .thread-comment-box {
     height: 70px;
     margin-bottom: 10px;
+    width: 100%;
+    min-height: 150px;
 }
 
 .logout-button {
@@ -188,8 +184,8 @@ div.spacer {
     color: #fff;
 }
 
-.reddit-search {
-    width: 200px;
+.search {
+    width: 100%;
     margin-bottom: 21px;
 }
 

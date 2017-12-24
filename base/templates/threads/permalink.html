@@ -6,7 +6,7 @@
     <div class="col-lg-1 listing-vote-box">
         <div class="">
             {% if user is defined and user != None and thread.has_voted(user.id) %}
-                <a data-voted="true" style="color:#eb6864;" href="javascript:void(0)" 
+                <a data-voted="true" style="color:#0080ff;" href="javascript:void(0)" 
                     class="listing-vote-button">▲</a>
             {% else %}
                 <a data-voted="false" style="color:#000;" href="javascript:void(0)"

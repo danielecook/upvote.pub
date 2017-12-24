@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="col-lg-9 col-md-9 col-sm-7 col-xs-5 left-bar">
+<div class="col-md-9">
   {% block left %}
   {% from "macros.html" import render_pub %}
       {% if num_searches is defined %}
@@ -10,26 +10,7 @@
       {% endif %}
       <div class="spacer"></div>
       {% for thread in thread_paginator.items %}
-        <div name="{{ thread.id }}" class="row listing-row">
-          <div class="col-lg-1 listing-vote-box">  
-              <div class="">
-                  {% if user is defined and user != None and thread.has_voted(user.id) %}
-                      <a data-voted="true" style="color:#eb6864;" href="javascript:void(0)" 
-                          class="listing-vote-button">▲</a>
-                  {% else %}
-                      <a data-voted="false" style="color:#000;" href="javascript:void(0)" 
-                          class="listing-vote-button">▲</a>
-                  {% endif %}
-              </div>
-              <div class="listing-votes-number">
-                  {{ thread.votes }}
-              </div>
-          </div>
-
-              
             {{ render_pub(thread) }}
-
-        </div>
       {% endfor %}
 
       <ul class="pager pull-left">
@@ -47,7 +28,7 @@
   {% endblock %}
 </div>
 
-<div class="col-lg-3 right-bar">
+<div class="col-md-3 right-bar">
   {% block right %}
     {% if user is defined and user != None %}
         <!-- -->
@@ -58,16 +39,17 @@
     <div class="row">
         {% block user_dashboard %}
         {% endblock %}
+
+
         <form method="GET" action="/search/" class="" role="search">
             <div class="form-group">
-                <input type="text" name="query" class="reddit-search form-control" 
+                <input type="text" name="query" class="search form-control" 
                     placeholder="Search reddit!">
             </div>
-            <!--<button type="submit" class="btn btn-default">Submit</button>-->
-        </form> 
+        </form>  
         {% if cur_subreddit is defined %}
             <a href="{{ url_for('threads.submit', subreddit_name=cur_subreddit.name) }}">
-                <button class="btn btn-primary submit-post-button">
+                <button class="btn btn-primary btn-block submit-post-button">
                     submit to {{ cur_subreddit.name }}</button>
             </a>
         {% else %}
@@ -75,11 +57,7 @@
                 <button class="btn btn-primary submit-post-button">submit post</button></a>
         {% endif %} 
         </div>
-        <div class="row">
-            <a href="{{ url_for('subreddits.submit') }}">
-                <button type="button" class="btn btn-primary 
-            inverse-white-button add-subreddit-button">create community +</button></a>
-    </div>
+
 
     {% if cur_subreddit is defined %}
     <p class="subreddit-desc">
