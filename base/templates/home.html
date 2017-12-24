@@ -13,7 +13,7 @@
             {{ render_pub(thread) }}
       {% endfor %}
 
-      <ul class="pager pull-left">
+      <ul class="pager text-center">
         {% if thread_paginator.has_prev %}
             <li><a href="?page={{ thread_paginator.prev_num }}">prev</a></li>
         {% else %}
@@ -74,12 +74,6 @@
         {% endfor %}
     </ul>
     <a class="align-right-col" href="{{ url_for('subreddits.view_all') }}">view all</a>
-    <i>
-    <div class="align-right-col byline-lucas">Built by: <a href="https://codelucas.com">Lucas Ou-Yang</a>.
-        <br>
-        <a href="https://github.com/codelucas/base">
-            View code on Github</a>.</div>
-    </i>
   {% endblock %}
 </div>
 
