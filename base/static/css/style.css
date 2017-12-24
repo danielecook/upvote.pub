@@ -3,10 +3,6 @@
  *  fairly organized!
  */
 
-body {
-
-}
-
 .well {
     background-color: #fff;
 }
@@ -42,7 +38,7 @@ div.spacer {
 }
 
 .listing-vote-button:hover, .listing-vote-button:focus {
-    color: #eb6864 !important;
+    color: #0080ff !important;
     text-decoration: none !important;
 }
 
@@ -55,9 +51,9 @@ div.spacer {
 }
 
 .inverse-white-button {
-    color: #eb6864;
+    color: #0080ff;
     background-color: #fff;
-    border-color: #eb6864;
+    border-color: #0080ff;
 }
 
 .add-subreddit-button {
@@ -65,9 +61,9 @@ div.spacer {
 }
 
 .add-subreddit-button:hover, .add-subreddit-button:focus {
-    color: #eb6864;
+    color: #0080ff;
     background-color: #FFF5F5;
-    border-color: #eb6864;
+    border-color: #0080ff;
 }
 
 #subreddit-list {
@@ -81,7 +77,7 @@ div.spacer {
 }
 
 #subreddit-list a:hover, #subreddit-list a:focus {
-    color: #eb6864;
+    color: #0080ff;
     text-decoration: underline;
 }
 
@@ -164,12 +160,12 @@ div.spacer {
 }
 
 .navbar-default .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
-    color: #eb6864;
+    color: #0080ff;
     background-color: #fff;
 }
 
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
-    color: #eb6864;
+    color: #0080ff;
     background-color: #fff;
 }
 
@@ -188,7 +184,7 @@ div.spacer {
 
 .login-nav-text {
     font-size: 13px;
-    margin-top: 22px;
+    line-height: 20px;
     color: #fff;
 }
 
@@ -268,7 +264,7 @@ div.github-fork-text {
 }
 
 .login-nav-text a:hover {
-    color: #eb6864; 
+    color: #0080ff; 
     text-decoration: underline;
 }
 
@@ -295,7 +291,7 @@ div.github-fork-text {
 }
 
 .karma-star {
-    color: #eb6864;
+    color: #0080ff;
 }
 
 .profile-label {
@@ -308,7 +304,7 @@ div.github-fork-text {
 }
 
 .red {
-    color: #eb6864;
+    color: #0080ff;
 }
 
 /*
@@ -391,4 +387,17 @@ div.github-fork-text {
 {
     display: block;
     margin-top: 10px;
+}
+
+
+
+/* header */
+
+.brand-nav, .nav>li>a, .navbar-text {
+    padding: 2px 10px !important;
+    margin: 0px !important;
+}
+
+.navbar {
+    min-height: 25px;
 }

@@ -14,17 +14,19 @@
 
 {% macro render_pub(thread) %}
 <div class="col-lg-2 listing-thumbnail-box">
-    {% if thread.thumbnail %}
     <div class='pub-img'>
         <a href="{{ url_for('threads.thread_permalink',
                           subreddit_name = thread.subreddit.name,
                           title=thread.pub_title[:100].replace(" ", "_"),
                           thread_id = thread.id) 
              }}" class="thumbnail pub_thumb">
+    {% if thread.thumbnail %}
           <img src="{{ url_for('static', filename='thumbnail/' + thread.thumbnail) }}"/>
+    {% else %}
+          <img src="{{ url_for('static', filename='img/paper.png') }}"/>
+    {% endif %}
         </a>
     </div>
-    {% endif %}
 </div>
 <div class="col-lg-8 listing-text">
     <a href="{{ url_for('threads.thread_permalink',
