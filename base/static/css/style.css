@@ -8,7 +8,7 @@
 }
 
 .listing-row {
-    margin-bottom: 22px;
+    margin-bottom: 33px;
 }
 
 div.spacer {
@@ -19,13 +19,26 @@ div.spacer {
     margin-bottom: 5.5px;
 }
 
-.listing-row a {
-    color: #000;
-    /* text-decoration: underline; */
+
+.listing-title {
+    font-size: medium;
+    font-weight: 500;
+}
+
+a {
+    color: #1484e4;
+}
+
+a.listing-title:visited {
+    color: #551a8b;
+}
+
+a.thumbnail:hover {
+    border-color: #1484e4;
 }
 
 .listing-text {
-    margin-top: -12px;
+    color: #b3b3b3;
     margin-left: 18px;
 }
 
@@ -38,8 +51,21 @@ div.spacer {
 }
 
 .listing-vote-button:hover, .listing-vote-button:focus {
-    color: #0080ff !important;
     text-decoration: none !important;
+}
+
+/* pub */
+.pub_authors, .pub_line {
+    font-size: small;
+}
+
+
+.pub_links {
+    font-weight: 800;
+}
+
+.pub_links a {
+    color: #888;
 }
 
 .comment-body {
@@ -51,9 +77,9 @@ div.spacer {
 }
 
 .inverse-white-button {
-    color: #0080ff;
+    color: #1484e4;
     background-color: #fff;
-    border-color: #0080ff;
+    border-color: #1484e4;
 }
 
 .add-subreddit-button {
@@ -61,9 +87,9 @@ div.spacer {
 }
 
 .add-subreddit-button:hover, .add-subreddit-button:focus {
-    color: #0080ff;
+    color: #1484e4;
     background-color: #FFF5F5;
-    border-color: #0080ff;
+    border-color: #1484e4;
 }
 
 #subreddit-list {
@@ -72,12 +98,11 @@ div.spacer {
 }
 
 #subreddit-list, a {
-    color: #000;
     text-decoration: none;
 }
 
 #subreddit-list a:hover, #subreddit-list a:focus {
-    color: #0080ff;
+    color: #1484e4;
     text-decoration: underline;
 }
 
@@ -145,7 +170,6 @@ div.spacer {
 }
 
 .listing-title:hover {
-    color: #000;
     text-decoration: underline;
 }
 
@@ -154,12 +178,12 @@ div.spacer {
 }
 
 .navbar-default .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
-    color: #0080ff;
+    color: #1484e4;
     background-color: #fff;
 }
 
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
-    color: #0080ff;
+    color: #1484e4;
     background-color: #fff;
 }
 
@@ -177,12 +201,6 @@ div.spacer {
 
 .logout-button {
     font-size:13px;
-}
-
-.login-nav-text {
-    font-size: 13px;
-    line-height: 20px;
-    color: #fff;
 }
 
 .search {
@@ -235,6 +253,7 @@ img.listing-image {
     margin-top: 10px;
 }
 
+
 .thread-permalink .listing-vote-box {
     margin-top: 7px;
 }
@@ -256,12 +275,11 @@ div.github-fork-text {
 }
 
 .login-nav-text a {
-    color: #000; 
     text-decoration: underline;
 }
 
 .login-nav-text a:hover {
-    color: #0080ff; 
+    color: #1484e4; 
     text-decoration: underline;
 }
 
@@ -288,7 +306,7 @@ div.github-fork-text {
 }
 
 .karma-star {
-    color: #0080ff;
+    color: #1484e4;
 }
 
 .profile-label {
@@ -301,7 +319,7 @@ div.github-fork-text {
 }
 
 .red {
-    color: #0080ff;
+    color: red;
 }
 
 /*

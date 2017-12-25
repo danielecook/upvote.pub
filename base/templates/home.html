@@ -10,7 +10,7 @@
       {% endif %}
       <div class="spacer"></div>
       {% for thread in thread_paginator.items %}
-            {{ render_pub(thread) }}
+            {{ render_pub(thread, user) }}
       {% endfor %}
 
       <ul class="pager text-center">
@@ -84,13 +84,13 @@
 $(document).ready(function() {
     $(document).on('click', 'a.listing-vote-button', function() {
         var $vote_button = $(this); // cache this! can't access in callback!
-        var thread_id = $vote_button.parent().parent().parent().attr('name');
+        var thread_id = $vote_button.parent().parent().attr('name');
         var post_to = '/apis/threads/vote/'; 
         if ($vote_button.attr("data-voted") === "true") {
             $vote_button.css("color", "#000");
             $vote_button.attr("data-voted", "false");
         } else {
-            $vote_button.css("color", "rgb(235, 104, 100)");
+            $vote_button.css("color", "#1484e4");
             $vote_button.attr("data-voted", "true");
         }
         {% if user is defined and user != None %}
@@ -98,7 +98,7 @@ $(document).ready(function() {
                 function(response) {
                     var new_vote_count = response.new_votes.toString();
                     var vote_status = response.vote_status;
-                    $vote_button.parent().parent().
+                    $vote_button.parent().
                         children('div.listing-votes-number').html(new_vote_count);
                 }, 'json'
             );

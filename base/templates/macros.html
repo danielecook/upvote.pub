@@ -12,31 +12,26 @@
 {% endmacro %}
 
 
-{% macro render_pub(thread) %}
+{% macro render_pub(thread, user) %}
 
 
 <div name="{{ thread.id }}" class="row listing-row">
           <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 listing-vote-box">  
-              <div class="">
-                  {% if user is defined and user != None and thread.has_voted(user.id) %}
+
+                  {% if user and thread.has_voted(user.id) %}
                       <a data-voted="true" style="color:#0080ff;" href="javascript:void(0)" 
                           class="listing-vote-button">▲</a>
                   {% else %}
                       <a data-voted="false" style="color:#000;" href="javascript:void(0)" 
                           class="listing-vote-button">▲</a>
                   {% endif %}
-              </div>
               <div class="listing-votes-number">
                   {{ thread.votes }}
               </div>
           </div>
     <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs listing-thumbnail-box">
         <div class='pub-img'>
-            <a href="{{ url_for('threads.thread_permalink',
-                              subreddit_name = thread.subreddit.name,
-                              title=thread.pub_title[:100].replace(" ", "_"),
-                              thread_id = thread.id) 
-                 }}" class="thumbnail pub_thumb">
+            <a href="{{ thread.pub_url }}" class="thumbnail pub_thumb">
         {% if thread.thumbnail %}
               <img src="{{ url_for('static', filename='thumbnail/' + thread.thumbnail) }}"/>
         {% else %}
@@ -46,40 +41,39 @@
         </div>
     </div>
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-10 listing-text">
-        <a href="{{ url_for('threads.thread_permalink',
-                          subreddit_name = thread.subreddit.name,
-                          title=thread.pub_title[:100].replace(" ", "_"),
-                          thread_id = thread.id) 
-             }}" class="listing-title">
-        <h4 class="listing-title-text">{{ thread.pub_title }}</h4>
-        </a>
+        <a href="{{ thread.pub_url }}" class="listing-title">{{ thread.pub_title }}</a>
         <div class='pub_authors'>{{ thread.pub_authors }}</div>
         <div class='pub_line'>
-            ({{ thread.pub_date }}) <em>{{ thread.pub_journal }}</em> - doi:<a href='#'>{{ thread.pub_doi }}</a>
-        </div>
-        <div class='pub_links'>
-            [
-                <a href='#'>PDF</a>
-            ]
+            {{ thread.pub_date.strftime("%Y-%m-%d") }} — <em>{{ thread.pub_journal }}</em>
         </div>
 
 
         <div class="post-listing-meta">
-          <a href="{{ url_for('threads.thread_permalink',
-                          subreddit_name = thread.subreddit.name,
-                          title=thread.pub_title[:100].replace(" ", "_"),
-                          thread_id = thread.id) 
-             }}">
-          {{ thread.comments.all()|length() }} comments</a>,
-          {{ thread.pretty_date() }}, by 
+             Submitted {{ thread.pretty_date() }} by 
           <a href="{{ url_for('users.home_page', 
                 username=thread.user.username) }}">
                 {{ thread.user.username }}</a> 
-            in
+            to
             <a href="{{ url_for('subreddits.permalink', 
                 subreddit_name=thread.subreddit.name) }}">
                 {{ thread.subreddit.name }}
             </a>
+
+        <div class='pub_links'>
+                {% if thread.pub_pdf_url %}
+                <a href='{{ thread.pub_pdf_url }}' target="_blank">PDF</a>&nbsp;
+                {% endif %}
+                {% if thread.pub_doi %}
+                <a href='https://dx.doi.org/{{ thread.pub_doi }}'>DOI</a>&nbsp;
+                {% endif %}
+                <a href="{{ url_for('threads.thread_permalink',
+                          subreddit_name = thread.subreddit.name,
+                          title=thread.pub_title[:100].replace(" ", "_"),
+                          thread_id = thread.id) 
+             }}">          {{ thread.comments.all()|length() }} comments</a>
+            
+        </div>
+
         </div>
     </div>
 </div>

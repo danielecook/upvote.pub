@@ -6,7 +6,7 @@
     <meta name="description" content="The front page of science!">
     <meta name="author" content="Lucas Ou-Yang">
     <title>{% block title %}upvote.pub | The Front Page of Science!{% endblock %}</title>
-    <meta name="keywords" content="science,reddit,publications,doi,pubmed,daniel cook">
+    <meta name="keywords" content="science,publications,doi,pubmed,reddit,daniel e. cook">
 
     <!-- Bootstrap core CSS -->
     <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
@@ -44,6 +44,9 @@
                   </a>
               </li>
               <li>
+                  <a href='#'>Browse</a>
+              </li>
+              <li>
                   <a href="/?trending=true">trending</a>
               </li>
           </ul>
@@ -52,11 +55,10 @@
               <li><a href="{{ url_for('frontends.register', next=request.path) }}">Register</a></li>
               <li><a href="{{ url_for('frontends.login', next=request.path) }}">Login</a></li>
           {% else %}
-              <p class="navbar-text login-nav-text">logged in as 
-                  <a href="{{ url_for('users.home_page', username=user.username) }}">
-                      {{ user.username }}</a>, &nbsp;
-                  {{ user.get_thread_karma() }} <span class="karma-star">★</span> 
-              </p>
+              <li><a href="{{ url_for('users.home_page', username=user.username) }}">
+                      {{ user.username }}&nbsp;{{ user.get_thread_karma() }} <span class="karma-star">★</span> 
+              </a>
+              </li>
               <li class="logout-button"><a href="{{ config.ROOT_URL }}/logout">logout</a></li>
           {% endif %}
           </ul>

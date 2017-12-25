@@ -29,7 +29,6 @@ def home_page(username=None):
     if not user:
         abort(404)
     return render_template('users/profile.html',
-                           user=g.user,
                            current_user=user, 
                            subreddits = get_subreddits())
 

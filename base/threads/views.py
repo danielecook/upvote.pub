@@ -20,7 +20,8 @@ mod = Blueprint('threads', __name__, url_prefix='/threads')
 
 @mod.context_processor
 def inject():
-    return dict(subreddits=get_subreddits())
+    return dict(subreddits=get_subreddits(),
+                user=g.user)
 
 
 

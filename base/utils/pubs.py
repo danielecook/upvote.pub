@@ -214,6 +214,9 @@ def fetch_pub(pub_id):
     if pub.get('pub_pdf_url'):
         process_pdf(pub['pub_pdf_url'])
 
+    # Strip periods
+    pub['pub_title'] = pub['pub_title'].strip(".")
+
     # Format authors
     pub['pub_authors'] = ', '.join(pub['pub_authors'])
 
