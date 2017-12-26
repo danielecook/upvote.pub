@@ -274,11 +274,13 @@ class Comment(db.Model):
         margin_left = min(margin_left, 680)
         return str(margin_left) + "px"
 
+
     def get_age(self):
         """
         returns the raw age of this thread in seconds
         """
         return (self.created_on - datetime.datetime(1970,1,1)).total_seconds()
+
 
     def pretty_date(self, typeof='created'):
         """
@@ -289,6 +291,7 @@ class Comment(db.Model):
             return arrow.get(self.created_on).humanize()
         elif typeof == 'updated':
             return arrow.get(self.updated_on).humanize()
+
 
     def vote(self, direction):
         """

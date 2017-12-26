@@ -8,10 +8,10 @@
                 <div class="col-sm-6 col-md-8">
                     <h4>User: <u>{{ current_user.username }}</u></h4>
                     <p class="trophy-room">
-                    Threads: <span class="red">{{ current_user.threads.all()|length() }}</span>, 
-                    Comments: <span class="red">{{ current_user.comments.all()|length() }}</span><br> 
+                    <strong>Threads:</strong> {{ current_user.threads.all()|length() }}</span>, 
+                    <strong>Comments:</strong> {{ current_user.comments.all()|length() }}</span><br> 
                     </p>
-                    <i class="glyphicon glyphicon-envelope"></i>&emsp;{{ current_user.email }}
+                    {{ current_user.email }}
                     <br>
 
                     <u><h4 class="profile-label">Recent threads</h4></u>
@@ -26,7 +26,6 @@
                             </span>
                         </p>
                     {% endfor %}
-                        <!--<p>see more ...</p>-->
 
                     <u><h4 class="profile-label">Recent comments</h4></u>
                     {% for comment in current_user.comments.all()[-7:]|reverse %}
@@ -37,7 +36,6 @@
                         </p>
                         </span>
                     {% endfor %}
-                        <!--<p>see more ...</p>-->
                     <br>
                  </div>
             </div>
@@ -47,7 +45,7 @@
 {% endblock %}
 
 {% block user_dashboard %}
-    <h3 class="dash-text highlight">Thread Karma: <span class="red">{{ current_user.get_thread_karma() }}</span></h3>
-    <h3 class="dash-text highlight">Comment Karma: <span class="red">{{ current_user.get_comment_karma() }}</span></h3>
+    <h3 class="dash-text highlight">Thread Karma: {{ current_user.get_thread_karma() }}</h3>
+    <h3 class="dash-text highlight">Comment Karma: {{ current_user.get_comment_karma() }}</h3>
     <br>
 {% endblock %}
