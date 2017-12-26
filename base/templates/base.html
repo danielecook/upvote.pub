@@ -60,7 +60,7 @@
                       {{ user.username }}&nbsp;{{ user.get_thread_karma() }} <span class="karma-star">★</span> 
               </a>
               </li>
-              <li class="logout-button"><a href="{{ config.ROOT_URL }}/logout">logout</a></li>
+              <li class="logout-button"><a href="{{ url_for('frontends.logout') }}">logout</a></li>
           {% endif %}
           </ul>
         </div><!-- /.navbar-collapse -->
