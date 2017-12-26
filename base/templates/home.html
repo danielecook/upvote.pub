@@ -28,7 +28,7 @@
   {% endblock %}
 </div>
 
-<div class="col-md-3 right-bar">
+<div class="col-md-3">
   {% block right %}
     {% if user is defined and user != None %}
         <!-- -->
@@ -36,7 +36,7 @@
         <!-- <h4 class="pre-reg-info">Please register or login to post!</h4>-->
     {% endif %}
     {% block create_buttons %}
-    <div class="row">
+
         {% block user_dashboard %}
         {% endblock %}
 
@@ -56,18 +56,18 @@
             <a href="{{ url_for('threads.submit', subreddit_name='frontpage') }}">
                 <button class="btn btn-primary submit-post-button">submit post</button></a>
         {% endif %} 
-        </div>
+
 
 
     {% if cur_subreddit is defined %}
-    <p class="subreddit-desc">
+    <p>
         {{ cur_subreddit.desc }}
     </p>
     {% endif %}
 
     {% endblock %}
 
-    <h4 class="subreddit-desc">Subreddits</h4>
+    <h4 class="subreddit-desc">Sub pubs</h4>
     <ul id="subreddit-list">
         {% for subreddit in subreddits[:10] %}
         <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
@@ -87,7 +87,7 @@ $(document).ready(function() {
         var thread_id = $vote_button.parent().parent().attr('name');
         var post_to = '/apis/threads/vote/'; 
         if ($vote_button.attr("data-voted") === "true") {
-            $vote_button.css("color", "#000");
+            $vote_button.css("color", "#888");
             $vote_button.attr("data-voted", "false");
         } else {
             $vote_button.css("color", "#1484e4");

@@ -68,6 +68,17 @@ a.thumbnail:hover {
     color: #888;
 }
 
+.no_pdf {
+    font-size: 50px;
+    line-height: 40px;
+}
+
+.no_pdf_thumb {
+    padding: 20px 0px;
+    text-align: center;
+    color: #d6d6d6;
+}
+
 .comment-body {
     margin-bottom: 2px;
 }
@@ -118,7 +129,7 @@ a.thumbnail:hover {
 
 .nested-comment-text-box {
     display: none;
-    width: 250px;
+    width: 600px;
 }
 
 .nested-submit-comment-button {
@@ -293,16 +304,6 @@ div.github-fork-text {
 
 .profile-comment-div {
     text-decoration: italic;
-}
-
-.align-right-col {
-    margin-left: -17px;
-}
-
-.subreddit-desc {
-    margin-left: -17px;
-    width: 270px;
-    margin-bottom: 21px;
 }
 
 .karma-star {

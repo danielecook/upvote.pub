@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Parse Pubs
+import os
 import re
 import hashlib
 import requests
@@ -32,8 +33,9 @@ def download_pdf(url):
         Downloads a pdf to a temporary location
     """
     try:
-        download_url = requests.head(url, allow_redirects=True)
-        response = requests.get(download_url.url, stream = True)
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        download_url = requests.head(url, allow_redirects=True, headers = headers)
+        response = requests.get(download_url.url, stream = True, headers = headers)
     except:
         return None
     out = NamedTemporaryFile(suffix=".pdf", delete=False)
@@ -43,15 +45,15 @@ def download_pdf(url):
     return out.name
 
 
-def pdf_to_thumb(fname):
+def pdf_to_thumb(fname, sha1_fname):
     """
         Generates a thumbnail
         for the URL provided for a PDF
     """
-    comm = ['convert', '-thumbnail', '200', fname + "[0]", fname + ".thumb.png"]
-    print(comm)
+    thumbnail_fname = sha1_fname + ".thumb.png"
+    comm = ['convert', '-thumbnail', '200', fname + "[0]", thumbnail_fname]
     out, err = Popen(comm).communicate()
-    return fname + ".thumb.png"
+    return thumbnail_fname
 
 
 def google_storage():
@@ -63,14 +65,16 @@ def google_storage():
 def process_pdf(url):
     # Download the PDF
     fname = download_pdf(url)
-    thumbnail_fname = pdf_to_thumb(fname)
     sha1_fname = sha1_file(fname)
-    print(thumbnail_fname)
-    print(sha1_fname)
+    thumbnail_fname = pdf_to_thumb(fname, sha1_fname)
 
-
-    #gs_client = g.gs
-    #bucket = gs_client.get_bucket('pdf_thumbnails')
+    gs_client = google_storage()
+    bucket = gs_client.get_bucket('pdf_thumbnails')
+    thumbnail_obj = bucket.blob(thumbnail_fname)
+    thumbnail_obj.upload_from_filename(thumbnail_fname)
+    # Delete after upload
+    os.remove(thumbnail_fname)
+    return thumbnail_fname
 
 
 
@@ -203,6 +207,7 @@ def fetch_pub(pub_id):
     pub_type = id_type(pub_id)
 
     if pub_type == 'arxiv':
+        pub_id = pub_id.lower().replace("arxiv:","")
         pub = fetch_arxiv(pub_id)
     elif pub_type in ['pmc', 'pmid']:
         pub = fetch_pubmed(pub_id, pub_type)
@@ -211,8 +216,11 @@ def fetch_pub(pub_id):
     else:
         return None
 
+
     if pub.get('pub_pdf_url'):
-        process_pdf(pub['pub_pdf_url'])
+        thumbnail = process_pdf(pub['pub_pdf_url'])
+        if thumbnail:
+            pub['thumbnail'] = thumbnail
 
     # Strip periods
     pub['pub_title'] = pub['pub_title'].strip(".")

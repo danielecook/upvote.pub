@@ -4,24 +4,34 @@
 {% from "macros.html" import render_pub %}
     {{ render_pub(thread, user) }}
 
-<div>
-    <div class="col-lg-6 thread-comment-section">
-        {% if user is defined and user != None %}
-        <h5>Submit a comment:</h5>
-        <div class="comment-form-parent">
-            <textarea class="form-control thread-comment-box"></textarea>       
-            <button class="btn btn-sm btn-primary submit-comment main-submit">
-                    Submit</button>
-        </div>
-        {% else %}
-        <br>
-        <i>
-        <a href="{{ url_for('frontends.login') }}">Login</a> or 
-        <a href="{{ url_for('frontends.register') }}">register</a> to comment!
-        </i>
-        {% endif %}
+{% if thread.pub_abstract %}
+    <h5>Abstract</h5>
+    <div class='well'>
+        {{ thread.pub_abstract }}
     </div>
+{% endif %}
+
+<div class="thread-comment-section">
+    {% if user is defined and user != None %}
+    <h5>Submit a comment</h5>
+    <div class="comment-form-parent">
+        <textarea class="form-control thread-comment-box"></textarea>       
+        <button class="btn btn-sm btn-primary submit-comment main-submit">
+                Submit</button>
+    </div>
+    {% else %}
+    <br>
+    <i>
+        <a href="{{ url_for('frontends.login') }}">
+            Login
+        </a> or 
+        <a href="{{ url_for('frontends.register') }}">
+            register
+        </a> to comment!
+    </i>
+    {% endif %}
 </div>
+
 
 <div class="row"></div>
 <br>
@@ -36,7 +46,7 @@
             name="{{ comment.id }}"> 
             <p class="comment-body">{{ comment.text }}</p>
             <div class="post-listing-meta">
-                by: <a href="{{ url_for('users.home_page', username=comment.user.username) }}">
+                by <a href="{{ url_for('users.home_page', username=comment.user.username) }}">
                     {{ comment.user.username }}</a> {{ comment.pretty_date() }} 
                 <a href="javascript:void(0)" class="comment-reply">reply</a>
             </div>
@@ -107,7 +117,7 @@ $(document).ready(function() {
                         'style="margin-left:' + response.margin_left + '">' +
                         '<p class="comment-body">' + response.comment_text + '</p>' + 
                         '<div class="post-listing-meta">' + 
-                        'by: <a href="{{ config.ROOT_URL }}/users/{{ user.username }}/">' +
+                        'by <a href="/users/{{ user.username }}/">' +
                         '{{ user.username }}</a>' + 
                         ' ' + response.date + 
                         ' <a href="javascript:void(0)" class="comment-reply">reply</a>' +

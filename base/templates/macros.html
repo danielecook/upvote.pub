@@ -22,7 +22,7 @@
                       <a data-voted="true" style="color:#0080ff;" href="javascript:void(0)" 
                           class="listing-vote-button">▲</a>
                   {% else %}
-                      <a data-voted="false" style="color:#000;" href="javascript:void(0)" 
+                      <a data-voted="false" style="color:#888;" href="javascript:void(0)" 
                           class="listing-vote-button">▲</a>
                   {% endif %}
               <div class="listing-votes-number">
@@ -31,16 +31,20 @@
           </div>
     <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs listing-thumbnail-box">
         <div class='pub-img'>
-            <a href="{{ thread.pub_url }}" class="thumbnail pub_thumb">
-        {% if thread.thumbnail %}
-              <img src="{{ url_for('static', filename='thumbnail/' + thread.thumbnail) }}"/>
-        {% else %}
-              <img src="{{ url_for('static', filename='img/paper.png') }}"/>
-        {% endif %}
-            </a>
+            {% if thread.pub_pdf_url %}
+                <a href="{{ thread.pub_pdf_url }}" class="thumbnail pub_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
+                    <img src="https://storage.googleapis.com/pdf_thumbnails/{{ thread.thumbnail }}"/>
+                </a>
+            {% else %}
+              <div class='thumbnail pub_thumb no_pdf_thumb' data-toggle="tooltip" data-placement="bottom" title="No PDF Found">
+                <div class='no_pdf'>
+                    ?
+                </div>
+                <br />No PDF</div>
+            {% endif %}
         </div>
     </div>
-    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-10 listing-text">
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-10 listing-text">
         <a href="{{ thread.pub_url }}" class="listing-title">{{ thread.pub_title }}</a>
         <div class='pub_authors'>{{ thread.pub_authors }}</div>
         <div class='pub_line'>
@@ -60,18 +64,18 @@
             </a>
 
         <div class='pub_links'>
-                {% if thread.pub_pdf_url %}
-                <a href='{{ thread.pub_pdf_url }}' target="_blank">PDF</a>&nbsp;
-                {% endif %}
-                {% if thread.pub_doi %}
-                <a href='https://dx.doi.org/{{ thread.pub_doi }}'>DOI</a>&nbsp;
-                {% endif %}
-                <a href="{{ url_for('threads.thread_permalink',
+
+            <a href="{{ url_for('threads.thread_permalink',
                           subreddit_name = thread.subreddit.name,
                           title=thread.pub_title[:100].replace(" ", "_"),
                           thread_id = thread.id) 
-             }}">          {{ thread.comments.all()|length() }} comments</a>
-            
+             }}">
+                    {{ thread.comments.all()|length() }} comments
+            </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            {#{% if thread.pub_doi %}
+            <a href='https://dx.doi.org/{{ thread.pub_doi }}'>{{ thread.pub_doi }}</a>{% endif %}#}
+        
         </div>
 
         </div>
