@@ -72,15 +72,6 @@
     </nav>
 
     <div class="container">
-      <div id="messages-wrap">
-        <div id="messages">
-          {% for category, msg in get_flashed_messages(with_categories=true) %}
-          <div class="flash-{{ category }} alert alert-dismissable alert-{{ category }} flash-banner">
-              {{ msg }}</p>
-          {% endfor %}
-        </div>
-      </div>
-
 
       {% block content %}{% endblock %}
       

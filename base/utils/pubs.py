@@ -1,82 +1,19 @@
 # -*- coding: utf-8 -*-
 
 # Parse Pubs
-import os
 import re
-import hashlib
 import requests
 import arxiv
-from flask import g
-from gcloud import storage
+from logzero import logger
 from bs4 import BeautifulSoup
-from metapub import CrossRef, PubMedFetcher
+from metapub import PubMedFetcher
 from metapub.base import MetaPubError
 from dateutil.parser import parse
-from subprocess import Popen
-from tempfile import NamedTemporaryFile
-
-BUFFER_SIZE = 65336
-
-def sha1_file(input):
-    sha1 = hashlib.sha1()
-    with open(input, 'rb') as f:
-        while True:
-            data = f.read(BUFFER_SIZE)
-            if not data:
-                break
-            sha1.update(data)
-    return sha1.hexdigest()
+from base.async.tasks import process_pdf_task
 
 
-def download_pdf(url):
-    """
-        Downloads a pdf to a temporary location
-    """
-    try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        download_url = requests.head(url, allow_redirects=True, headers = headers)
-        response = requests.get(download_url.url, stream = True, headers = headers)
-    except:
-        return None
-    out = NamedTemporaryFile(suffix=".pdf", delete=False)
-    with open(out.name, 'wb') as handle:
-        for block in response.iter_content(1024):
-            handle.write(block)
-    return out.name
-
-
-def pdf_to_thumb(fname, sha1_fname):
-    """
-        Generates a thumbnail
-        for the URL provided for a PDF
-    """
-    thumbnail_fname = sha1_fname + ".thumb.png"
-    comm = ['convert','-strip','-quality','90', '-thumbnail', '200', fname + "[0]", thumbnail_fname]
-    out, err = Popen(comm).communicate()
-    return thumbnail_fname
-
-
-def google_storage():
-    if not hasattr(g, 'gs'):
-        g.gs = storage.Client.from_service_account_json("pdf_thumbnail_creator_credentials.json", project='upvote')
-    return g.gs
-
-
-def process_pdf(url):
-    # Download the PDF
-    fname = download_pdf(url)
-    sha1_fname = sha1_file(fname)
-    thumbnail_fname = pdf_to_thumb(fname, sha1_fname)
-
-    gs_client = google_storage()
-    bucket = gs_client.get_bucket('pdf_thumbnails')
-    thumbnail_obj = bucket.blob(thumbnail_fname)
-    thumbnail_obj.upload_from_filename(thumbnail_fname)
-    # Delete after upload
-    os.remove(thumbnail_fname)
-    return thumbnail_fname
-
-
+def unique_id():
+    pass
 
 
 def fetch_pubmed(pub_id, id_type = "pmid"):
@@ -187,6 +124,7 @@ def fetch_arxiv(arxiv_id):
 
 
 def id_type(pub_id):
+    pub_id = pub_id.strip()
     if re.match("(arXiv:)?[0-9]{4}\.[0-9]{4,5}(v[0-9]+)?", pub_id, re.IGNORECASE):
         return 'arxiv'
     elif re.match("[a-z]+(\.[a-z]+)/[0-9]+", pub_id, re.IGNORECASE):
@@ -204,7 +142,7 @@ def fetch_pub(pub_id):
     """
         Fetch pub and process accordingly
     """
-
+    pub_id = pub_id.strip()
     pub_type = id_type(pub_id)
 
     if pub_type == 'arxiv':
@@ -219,15 +157,20 @@ def fetch_pub(pub_id):
 
 
     if pub.get('pub_pdf_url'):
-        thumbnail = process_pdf(pub['pub_pdf_url'])
-        if thumbnail:
-            pub['thumbnail'] = thumbnail
+        thumbnail = process_pdf_task(pub)
+        #if thumbnail:
+        #    pub['thumbnail'] = thumbnail
 
     # Strip periods
     pub['pub_title'] = pub['pub_title'].strip(".")
 
     # Format authors
-    pub['pub_authors'] = ', '.join(pub['pub_authors'])
+    logger.info(pub['pub_authors'])
+    logger.info(len(pub['pub_authors']))
+    if len(pub['pub_authors']) > 10:
+        pub['pub_authors'] = pub['pub_authors'][0] + " <em>et al.</em>"
+    else:
+        pub['pub_authors'] = ', '.join(pub['pub_authors'])
 
     return pub
 

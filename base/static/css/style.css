@@ -29,6 +29,10 @@ a {
     color: #1484e4;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 a.listing-title:visited {
     color: #551a8b;
 }
@@ -68,6 +72,11 @@ a.thumbnail:hover {
     color: #888;
 }
 
+.pub_links a:hover {
+    text-decoration: underline;
+    color: #666;
+}
+
 .no_pdf {
     font-size: 50px;
     line-height: 40px;
@@ -103,18 +112,18 @@ a.thumbnail:hover {
     border-color: #1484e4;
 }
 
-#subreddit-list {
+#sublist {
+    list-style-type: none;
     padding-left: 0px;
     margin-bottom: 21px;
 }
 
-#subreddit-list, a {
+#sublist, a {
     text-decoration: none;
 }
 
-#subreddit-list a:hover, #subreddit-list a:focus {
+#sublist a:hover, #sublist a:focus {
     color: #1484e4;
-    text-decoration: underline;
 }
 
 
@@ -180,9 +189,6 @@ a.thumbnail:hover {
     margin-top: 0px;
 }
 
-.listing-title:hover {
-    text-decoration: underline;
-}
 
 .all-subreddits-label {
     margin: 0px 0 20px 0px;
@@ -239,10 +245,6 @@ a.brand-nav {
 
 a.brand-nav:hover, a.brand-nav:focus {
     background-color: #eeeeee !important;
-}
-
-.flash-banner {
-    margin-top: 12px;
 }
 
 img.permalink-listing-image {

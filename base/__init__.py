@@ -6,11 +6,14 @@ Lucas Ou -- http://lucasou.com
 """
 from flask import Flask, render_template, url_for, g
 from flask_sqlalchemy import SQLAlchemy
+from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.routing import BaseConverter
 from slugify import slugify
 
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object('config')
+
+toolbar = DebugToolbarExtension(app)
 
 db = SQLAlchemy(app)
 
@@ -54,7 +57,7 @@ def inject():
                 subreddits=get_subreddits(),
                 user=g.user)
 
-from base.manage import (initdb)
+from base.manage import (initdb, swot)
 
 
 def custom_render(template, *args, **kwargs):

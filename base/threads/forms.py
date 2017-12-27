@@ -12,7 +12,7 @@ from wtforms.validators import Required, URL
 
 def is_valid_id(form, field):
     if field.data:
-        if not id_type(field.data):
+        if not id_type(field.data.strip()):
             raise ValidationError("Invalid publication ID.")
 
 

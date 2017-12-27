@@ -4,11 +4,14 @@ All code for scraping images and videos from posted
 links go in this file.
 """
 import requests
-import click
+from click import echo, style
 import os
 import sys
+import shutil
 import readline
-from pprint import pprint
+import pickle
+from collections import defaultdict
+from subprocess import Popen, PIPE
 
 from flask import *
 from werkzeug import check_password_hash, generate_password_hash
@@ -19,6 +22,8 @@ from base.threads.models import *
 from base.subreddits.models import *
 
 from base import app
+
+
 
 base_subreddits = {'biology': ['biochemistry',
                                'bioengineering',
@@ -72,3 +77,37 @@ def create_subreddit():
 
     db.session.add(first_subreddit)
     db.session.commit()
+
+
+@app.cli.command()
+def worker():
+    comm=['huey_consumer.py','-w','4','--logfile', 'tasks.log', 'base.async.tasks.huey']
+    Popen(comm).communicate()
+
+
+@app.cli.command()
+def swot():
+    """ Generate school affiliation database """
+    echo(style('Generating school/university affiliations', fg='green'))
+    out, err = Popen(['git','clone','https://github.com/leereilly/swot'],
+                      stdout=PIPE,
+                      stderr=PIPE).communicate()
+    school_directory = defaultdict()
+    for root, dirs, files in os.walk("swot/lib/domains"):
+        domain_root = root.split("/")[3:]
+        current_dir = school_directory
+        for i in domain_root:
+            if i not in current_dir.keys():
+                current_dir[i] = defaultdict()
+            current_dir = current_dir[i]
+        for file in files:
+            domain = file
+            if file != ".DS_Store":
+                with open(root + "/" + file, 'r',  encoding="utf-8") as f:
+                    school = f.read().strip().encode('utf-8')
+                current_dir[domain] = school.decode('utf-8').split(" In ")[0].strip()
+
+    shutil.rmtree("swot")
+    with open('base/static/data/school_directory.pkl', 'wb') as f:
+        f.write(pickle.dumps(school_directory))
+

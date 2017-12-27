@@ -3,6 +3,7 @@
 """
 from flask import (Blueprint, request, render_template, flash, g, session,
                    redirect, url_for, abort)
+from slugify import slugify
 from base.threads.forms import submit_pub_form
 from base.threads.models import Thread
 from base.users.models import User
@@ -57,18 +58,18 @@ def submit(subreddit_name=None):
         # Switch to using a validator for pub data - 
         # store results in redis...?
         if not pub_data:
-            subreddits = get_subreddits()
-            return render_template('threads/submit_post.html', form=form, user=g.user,
-                cur_subreddit=subreddit.name)
+            return render_template('threads/submit_post.html', form=form, cur_subreddit=subreddit.name)
         
         thread = Thread(text=text, user_id=user_id, subreddit_id=subreddit.id, **pub_data)
 
         db.session.add(thread)
         db.session.commit()
         thread.set_hotness()
-
-        flash('thanks for submitting!', 'success')
-        return redirect(url_for('subreddits.permalink', subreddit_name=subreddit.name))
+        flash("Thank you for submitting!", "success")
+        return redirect(url_for('threads.thread_permalink',
+                                thread_id=thread.id,
+                                subreddit_name=thread.subreddit.name,
+                                title = slugify(thread.pub_title)))
     return render_template('threads/submit_post.html',
                            form=form,
                            page_title='Submit a new pub/manuscript',

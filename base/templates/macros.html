@@ -31,9 +31,18 @@
           </div>
     <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs listing-thumbnail-box">
         <div class='pub-img'>
-            {% if thread.pub_pdf_url %}
+            {% if thread.pub_pdf_url and thread.thumbnail %}
                 <a href="{{ thread.pub_pdf_url }}" class="thumbnail pub_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
                     <img src="https://storage.googleapis.com/pdf_thumbnails/{{ thread.thumbnail }}"/>
+                </a>
+            {% elif thread.pub_pdf_url %}
+                <a href="{{ thread.pub_pdf_url }}" class="thumbnail pub_thumb no_pdf_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
+                    <div class='no_pdf'>
+                    <span class='glyphicon glyphicon-time'></span>
+                    </div>
+                    <br />
+                    Loading<br />
+                    Preview
                 </a>
             {% else %}
               <div class='thumbnail pub_thumb no_pdf_thumb' data-toggle="tooltip" data-placement="bottom" title="No PDF Found">
@@ -70,8 +79,7 @@
                           title=slugify(thread.pub_title),
                           thread_id = thread.id) 
              }}">
-                    {{ thread.comments.all()|length() }} comments
-            </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ thread.comments.all()|length() }} comments</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
             {#{% if thread.pub_doi %}
             <a href='https://dx.doi.org/{{ thread.pub_doi }}'>{{ thread.pub_doi }}</a>{% endif %}#}

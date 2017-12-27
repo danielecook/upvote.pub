@@ -3,8 +3,20 @@
 {% block content %}
 <div class="col-md-9">
 
+  <div id="messages-wrap">
+    <div id="messages">
+      {% for category, msg in get_flashed_messages(with_categories=true) %}
+      <div class="flash-{{ category }} alert alert-dismissable alert-{{ category }} flash-banner">
+          <p>{{ msg }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+    {% if page_title %}
     <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
     <hr />
+    {% endif %}
 
   {% block left %}
 
@@ -64,9 +76,8 @@
 
     {% endblock %}
 
-    <h4 class="subreddit-desc">Sub-pubs</h4>
-    <hr />
-    <ul id="subreddit-list">
+    <h4 class="subreddit-desc">Subs</h4>
+    <ul id="sublist">
         {% for subreddit in subreddits[:10] %}
         <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
         {% endfor %}
