@@ -2,7 +2,6 @@
 
 {% block left %}
 
-<h2>{{ current_user.username }} <small>{{ current_user.university }}</h2>
 <hr />
 <strong>Threads:</strong> {{ current_user.threads.all()|length() }}</span><br />
 <strong>Thread Karma:</strong> {{ current_user.get_thread_karma() }}<br />

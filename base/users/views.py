@@ -22,13 +22,15 @@ def before_request():
 
 
 @mod.route('/<username>/')
-def home_page(username=None):
+def user_profile(username=None):
     if not username:
         abort(404)
     user = User.query.filter_by(username=username).first()
     if not user:
         abort(404)
     return render_template('users/profile.html',
-                           current_user=user, 
+                           current_user=user,
+                           page_title=user.username,
+                           page_subtitle=user.university,
                            subreddits = get_subreddits())
 

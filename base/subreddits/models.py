@@ -40,7 +40,9 @@ class Subreddit(db.Model):
     __tablename__ = 'subreddits_subreddit'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(SUBREDDIT.MAX_NAME), unique=True)
-    desc = db.Column(db.String(SUBREDDIT.MAX_DESCRIPTION))
+    group = db.Column(db.String(SUBREDDIT.MAX_NAME))
+
+    description = db.Column(db.String(SUBREDDIT.MAX_DESCRIPTION))
 
     admin_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
 
@@ -50,10 +52,6 @@ class Subreddit(db.Model):
     threads = db.relationship('Thread', backref='subreddit', lazy='dynamic')
     status = db.Column(db.SmallInteger, default=SUBREDDIT.ALIVE)
 
-    def __init__(self, name, desc, admin_id):
-        self.name = name
-        self.desc = desc
-        self.admin_id = admin_id
 
     def __repr__(self):
         return '<Subreddit %r>' % (self.name)

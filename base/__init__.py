@@ -50,7 +50,8 @@ app.register_blueprint(apis_module)
 from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
 
-from base.manage import (generate_id_db)
+from base.manage import (initdb)
+
 
 def custom_render(template, *args, **kwargs):
     """
@@ -59,8 +60,6 @@ def custom_render(template, *args, **kwargs):
     return render_template(template, *args, **kwargs)
 
 app.debug = app.config['DEBUG']
-
-
 
 
 if __name__ == '__main__':

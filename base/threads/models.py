@@ -54,6 +54,7 @@ class Thread(db.Model):
     pub_doi = db.Column(db.String(250))
     pub_pmid = db.Column(db.String(15))
     pub_pmcid = db.Column(db.String(18))
+    pub_arxiv = db.Column(db.String(25))
     pub_url = db.Column(db.String(250))
     pub_pdf_url = db.Column(db.String(250))
     pub_journal = db.Column(db.String(100))

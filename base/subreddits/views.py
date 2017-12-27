@@ -57,8 +57,10 @@ def submit():
         db.session.commit()
 
         return redirect(url_for('subreddits.permalink', subreddit_name=new_subreddit.name))
-    return render_template('subreddits/submit_subreddit.html', form=form, user=g.user,
-            subreddits=get_subreddits())
+    return render_template('subreddits/submit_subreddit.html',
+                           form=form,
+                           page_title='Submit!',
+                           subreddits=get_subreddits())
 
 
 @mod.route('/delete/', methods=['GET', 'POST'])
@@ -67,13 +69,6 @@ def delete():
     """
     pass
 
-
-@mod.route('/subreddits/view_all/', methods=['GET'])
-def view_all():
-    """
-    """
-    return render_template('subreddits/all.html', user=g.user,
-            subreddits=Subreddit.query.all())
 
 
 @mod.route('/<subreddit_name>/', methods=['GET'])

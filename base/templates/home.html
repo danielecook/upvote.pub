@@ -2,7 +2,12 @@
 
 {% block content %}
 <div class="col-md-9">
+
+    <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
+    <hr />
+
   {% block left %}
+
   {% from "macros.html" import render_pub %}
       {% if num_searches is defined %}
         <h4 class="highlight">We have found {{ num_searches }} search results </h4>
@@ -40,7 +45,7 @@
         <form method="GET" action="/search/" class="" role="search">
             <div class="form-group">
                 <input type="text" name="query" class="search form-control" 
-                    placeholder="Search reddit!">
+                    placeholder="Search">
             </div>
         </form>  
         {% if cur_subreddit is defined %}
@@ -63,13 +68,14 @@
 
     {% endblock %}
 
-    <h4 class="subreddit-desc">Sub pubs</h4>
+    <h4 class="subreddit-desc">Sub-pubs</h4>
+    <hr />
     <ul id="subreddit-list">
         {% for subreddit in subreddits[:10] %}
         <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
         {% endfor %}
     </ul>
-    <a class="align-right-col" href="{{ url_for('subreddits.view_all') }}">view all</a>
+    <a class="align-right-col" href="{{ url_for('frontends.view_all') }}">view all</a>
   {% endblock %}
 </div>
 

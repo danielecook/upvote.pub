@@ -178,6 +178,7 @@ def fetch_arxiv(arxiv_id):
            "pub_authors": result.get('authors'),
            "pub_abstract": result.get('summary'),
            "pub_doi": result.get('doi'),
+           "pub_arxiv": arxiv_id,
            "pub_url": result.get('arxiv_url'),
            "pub_pdf_url": result.get('pdf_url'),
            "pub_journal": result.get('journal_reference') or "arXiv",

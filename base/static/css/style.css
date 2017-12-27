@@ -227,14 +227,17 @@ a.thumbnail:hover {
     font-size: 12px;
 }
 
+.brand-nav-color {
+    color: #1484e4;
+}
+
+
 a.brand-nav {
-    margin-left: -12px;
-    background-color: #eeeeee;
+    font-weight: 800;
 }
 
 
 a.brand-nav:hover, a.brand-nav:focus {
-    margin-left: -12px;
     background-color: #eeeeee !important;
 }
 
@@ -407,4 +410,9 @@ div.github-fork-text {
 
 .navbar {
     min-height: 25px;
+}
+
+h1 {
+    font-size: large;
+    margin: 0px 0px 0px 10px;
 }

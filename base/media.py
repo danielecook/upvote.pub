@@ -38,22 +38,6 @@ def get_top_img(url, timeout=4):
         return url
     try:
         pass
-        #html = requests.get(url, timeout=timeout).text
-        #soup = BeautifulSoup.BeautifulSoup(html)
-#
-        #og_image = (soup.find('meta', property='og:image') or
-        #            soup.find('meta', attrs={'name': 'og:image'}))
-#
-        #if og_image and og_image['content']:
-        #    src_url = og_image['content']
-        #    return make_abs(url, src_url)
-#
-        ## <link rel="image_src" href="http://...">
-        #thumbnail_spec = soup.find('link', rel='image_src')
-        #if thumbnail_spec and thumbnail_spec['href']:
-        #    src_url = thumbnail_spec['href']
-        #    return make_abs(url, src_url)
-
     except Exception as e:
         print('FAILED WHILE EXTRACTING THREAD IMG', str(e))
         return None

@@ -73,12 +73,14 @@ def home(trending=False):
     If not trending we order by creation date
     """
     trending = True if request.path.endswith('trending') else False
+    page_title = "Trending" if trending else "Welcome!"
     subreddits = get_subreddits()
     thread_paginator = process_thread_paginator(trending)
 
-    return render_template('home.html', user=g.user,
-            subreddits=subreddits, cur_subreddit=home_subreddit(),
-            thread_paginator=thread_paginator)
+    return render_template('home.html',
+                           page_title=page_title,
+                           subreddits=subreddits, cur_subreddit=home_subreddit(),
+                           thread_paginator=thread_paginator)
 
 
 @mod.route('/search/', methods=['GET'])
@@ -168,3 +170,11 @@ def register():
 
     return render_template("register.html", form=form, next=next)
 
+
+@mod.route('/browse/', methods=['GET'])
+def view_all():
+    """
+    """
+    return render_template('subreddits/all.html',
+                           page_title='Browse',
+                           subreddits=Subreddit.query.all())

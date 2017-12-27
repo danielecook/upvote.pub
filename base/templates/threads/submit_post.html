@@ -1,9 +1,6 @@
 {% extends "home.html" %}
 
 {% block left %}
-  <div class="">
-  <h2 class="thread-submit-title">Submit</h2>
-  <br>
   <div class="col-lg-10 thread-submit-box">
   {% from "macros.html" import render_field %}
   <form method="POST" action="." class="form bs-example form-horizontal">
@@ -15,6 +12,5 @@
     <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
   </form>
   </div>
-  </div> 
 {% endblock %}
 

@@ -46,7 +46,7 @@
             name="{{ comment.id }}"> 
             <p class="comment-body">{{ comment.text }}</p>
             <div class="post-listing-meta">
-                by <a href="{{ url_for('users.home_page', username=comment.user.username) }}">
+                by <a href="{{ url_for('users.user_profile', username=comment.user.username) }}">
                     {{ comment.user.username }}</a> {{ comment.pretty_date() }} 
                 <a href="javascript:void(0)" class="comment-reply">reply</a>
             </div>
