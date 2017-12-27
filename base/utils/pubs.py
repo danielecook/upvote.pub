@@ -51,7 +51,7 @@ def pdf_to_thumb(fname, sha1_fname):
         for the URL provided for a PDF
     """
     thumbnail_fname = sha1_fname + ".thumb.png"
-    comm = ['convert', '-thumbnail', '200', fname + "[0]", thumbnail_fname]
+    comm = ['convert','-strip','-quality','90', '-thumbnail', '200', fname + "[0]", thumbnail_fname]
     out, err = Popen(comm).communicate()
     return thumbnail_fname
 

@@ -7,6 +7,7 @@ Lucas Ou -- http://lucasou.com
 from flask import Flask, render_template, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from werkzeug.routing import BaseConverter
+from slugify import slugify
 
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object('config')
@@ -20,6 +21,10 @@ class RegexConverter(BaseConverter):
 
 app.url_map.converters['regex'] = RegexConverter
 
+@app.context_processor
+def inject():
+    return dict(slugify=slugify)
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404
@@ -27,6 +32,8 @@ def not_found(error):
 @app.errorhandler(500)
 def not_found(error):
     return render_template('500.html'), 500
+
+
 
 from base.users.views import mod as users_module
 app.register_blueprint(users_module)
@@ -53,6 +60,8 @@ def custom_render(template, *args, **kwargs):
 
 app.debug = app.config['DEBUG']
 
+
+
+
 if __name__ == '__main__':
-    print('We are running flask via main()')
     app.run()

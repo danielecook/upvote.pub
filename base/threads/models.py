@@ -66,8 +66,8 @@ class Thread(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
     subreddit_id = db.Column(db.Integer, db.ForeignKey('subreddits_subreddit.id'))
 
-    created_on = db.Column(db.DateTime, default=db.func.now())
-    updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    created_on = db.Column(db.DateTime, default=arrow.utcnow().datetime)
+    updated_on = db.Column(db.DateTime, default=arrow.utcnow().datetime, onupdate=arrow.utcnow().datetime)
     comments = db.relationship('Comment', backref='thread', lazy='dynamic')
 
     status = db.Column(db.SmallInteger, default=THREAD.ALIVE)

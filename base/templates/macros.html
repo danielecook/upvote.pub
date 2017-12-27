@@ -12,7 +12,7 @@
 {% endmacro %}
 
 
-{% macro render_pub(thread, user) %}
+{% macro render_pub(thread, user, slugify) %}
 
 
 <div name="{{ thread.id }}" class="row listing-row">
@@ -67,7 +67,7 @@
 
             <a href="{{ url_for('threads.thread_permalink',
                           subreddit_name = thread.subreddit.name,
-                          title=thread.pub_title[:100].replace(" ", "_"),
+                          title=slugify(thread.pub_title),
                           thread_id = thread.id) 
              }}">
                     {{ thread.comments.all()|length() }} comments

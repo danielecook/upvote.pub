@@ -12,6 +12,7 @@ from base.users.models import User
 from base.threads.models import Thread
 from base.subreddits.models import Subreddit
 from base.users.decorators import requires_login
+from base.utils.user_utils import get_school
 
 mod = Blueprint('frontends', __name__, url_prefix='')
 
@@ -65,13 +66,13 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
     return thread_paginator
 
 
-#@mod.route('/<regex("trending"):trending>/')
 @mod.route('/')
+@mod.route('/trending')
 def home(trending=False):
     """
     If not trending we order by creation date
     """
-    trending = True if request.args.get('trending') else False
+    trending = True if request.path.endswith('trending') else False
     subreddits = get_subreddits()
     thread_paginator = process_thread_paginator(trending)
 
@@ -152,7 +153,8 @@ def register():
     if form.validate_on_submit():
         # create an user instance not yet stored in the database
         user = User(username=form.username.data, email=form.email.data, \
-                password=generate_password_hash(form.password.data))
+                    password=generate_password_hash(form.password.data),
+                    university=get_school(form.email.data))
         # Insert the record in our database and commit it
         db.session.add(user)
         db.session.commit()

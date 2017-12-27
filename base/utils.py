@@ -30,4 +30,3 @@ def make_dir(dir_path):
             os.mkdir(dir_path)
     except Exception as e:
         raise e
-

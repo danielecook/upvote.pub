@@ -10,7 +10,7 @@
       {% endif %}
       <div class="spacer"></div>
       {% for thread in thread_paginator.items %}
-            {{ render_pub(thread, user) }}
+            {{ render_pub(thread, user, slugify) }}
       {% endfor %}
 
       <ul class="pager text-center">
@@ -36,10 +36,6 @@
         <!-- <h4 class="pre-reg-info">Please register or login to post!</h4>-->
     {% endif %}
     {% block create_buttons %}
-
-        {% block user_dashboard %}
-        {% endblock %}
-
 
         <form method="GET" action="/search/" class="" role="search">
             <div class="form-group">

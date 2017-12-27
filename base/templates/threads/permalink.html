@@ -2,7 +2,7 @@
 
 {% block left %}
 {% from "macros.html" import render_pub %}
-    {{ render_pub(thread, user) }}
+    {{ render_pub(thread, user, slugify) }}
 
 {% if thread.pub_abstract %}
     <h5>Abstract</h5>

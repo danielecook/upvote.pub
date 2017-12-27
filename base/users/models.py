@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 """
+import arrow
 from base import db
 from base.users import constants as USER
 from base.threads.models import thread_upvotes, comment_upvotes
+
 
 class User(db.Model):
     """
@@ -13,19 +15,16 @@ class User(db.Model):
     username = db.Column(db.String(USER.MAX_USERNAME), unique=True)
     email = db.Column(db.String(USER.MAX_EMAIL), unique=True)
     password = db.Column(db.String(USER.MAX_PASSW))
-    created_on = db.Column(db.DateTime, default=db.func.now())
+    created_on = db.Column(db.DateTime, default=arrow.utcnow().datetime)
 
     threads = db.relationship('Thread', backref='user', lazy='dynamic')
     comments = db.relationship('Comment', backref='user', lazy='dynamic')
     subreddits = db.relationship('Subreddit', backref='user', lazy='dynamic')
 
+    university = db.Column(db.String(100))
+
     status = db.Column(db.SmallInteger, default=USER.ALIVE)
     role = db.Column(db.SmallInteger, default=USER.USER)
-
-    def __init__(self, username, email, password):
-        self.username = username
-        self.email = email
-        self.password = password
 
     def __repr__(self):
         return '<User %r>' % (self.username)
