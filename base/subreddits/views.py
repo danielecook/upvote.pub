@@ -23,10 +23,6 @@ def before_request():
         g.user = User.query.get(session['user_id'])
 
 
-def meets_subreddit_criterea(subreddit):
-    return True
-
-
 @mod.route('/subreddits/submit/', methods=['GET', 'POST'])
 def submit():
     """
@@ -49,9 +45,7 @@ def submit():
                 subreddits=get_subreddits())
         new_subreddit = Subreddit(name=name, desc=desc, admin_id=user_id)
 
-        if not meets_subreddit_criterea(subreddit):
-            return render_template('subreddits/submit_subreddit.html', form=form, user=g.user,
-                subreddits=get_subreddits())
+        return render_template('subreddits/submit_subreddit.html', form=form)
 
         db.session.add(new_subreddit)
         db.session.commit()
@@ -59,8 +53,7 @@ def submit():
         return redirect(url_for('subreddits.permalink', subreddit_name=new_subreddit.name))
     return render_template('subreddits/submit_subreddit.html',
                            form=form,
-                           page_title='Submit!',
-                           subreddits=get_subreddits())
+                           page_title='Submit!')
 
 
 @mod.route('/delete/', methods=['GET', 'POST'])
@@ -83,6 +76,9 @@ def permalink(subreddit_name=""):
     thread_paginator = process_thread_paginator(trending=trending, subreddit=subreddit)
     subreddits = get_subreddits()
 
-    return render_template('home.html', user=g.user, thread_paginator=thread_paginator,
-        subreddits=subreddits, cur_subreddit=subreddit)
+    return render_template('home.html',
+                           thread_paginator=thread_paginator,
+                           subreddits=subreddits,
+                           cur_subreddit=subreddit,
+                           page_title=subreddit.name)
 

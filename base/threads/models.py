@@ -233,8 +233,8 @@ class Comment(db.Model):
 
     depth = db.Column(db.Integer, default=1) # start at depth 1
 
-    created_on = db.Column(db.DateTime, default=db.func.now())
-    updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    created_on = db.Column(db.DateTime, default=arrow.utcnow().datetime)
+    updated_on = db.Column(db.DateTime, default=arrow.utcnow().datetime, onupdate=arrow.utcnow().datetime)
 
     votes = db.Column(db.Integer, default=1)
 

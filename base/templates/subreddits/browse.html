@@ -2,8 +2,6 @@
 
 {% block left %}
   <div class="col-lg-10 thread-submit-box">
-  <h1 class="all-subreddits-label">List of all subreddits</h1>
-  <h4 />
   {% for group, group_set in subreddits|groupby('group') %}
   <h2>{{ group }}</h2>
         {% for subreddit in group_set %}

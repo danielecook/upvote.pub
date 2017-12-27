@@ -5,7 +5,7 @@ from flask import url_for
 from sqlalchemy import or_
 from base.utils.pubs import id_type
 from base.threads.models import Thread
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import TextField, TextAreaField, ValidationError
 from wtforms.validators import Required, URL
 

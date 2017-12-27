@@ -40,6 +40,7 @@
     {% else %}
         <!-- <h4 class="pre-reg-info">Please register or login to post!</h4>-->
     {% endif %}
+
     {% block create_buttons %}
 
         <form method="GET" action="/search/" class="" role="search">
@@ -53,12 +54,7 @@
                 <button class="btn btn-primary btn-block submit-post-button">
                     submit to {{ cur_subreddit.name }}</button>
             </a>
-        {% else %}
-            <a href="{{ url_for('threads.submit', subreddit_name='frontpage') }}">
-                <button class="btn btn-primary submit-post-button">submit post</button></a>
         {% endif %} 
-
-
 
     {% if cur_subreddit is defined %}
     <p>
@@ -75,7 +71,6 @@
         <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
         {% endfor %}
     </ul>
-    <a class="align-right-col" href="{{ url_for('frontends.view_all') }}">view all</a>
   {% endblock %}
 </div>
 

@@ -175,6 +175,6 @@ def register():
 def view_all():
     """
     """
-    return render_template('subreddits/all.html',
+    return render_template('subreddits/browse.html',
                            page_title='Browse',
                            subreddits=Subreddit.query.all())

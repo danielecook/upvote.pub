@@ -12,8 +12,14 @@
     <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
     <link rel="icon" href="{{ url_for('static', filename='img/upvote.ico') }}" type="image/x-icon">
     {% block css %}
-        {#<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />#}
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+        {#<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">#}
     
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% endblock %}

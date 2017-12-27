@@ -46,7 +46,7 @@
     </div>
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-10 listing-text">
         <a href="{{ thread.pub_url }}" class="listing-title">{{ thread.pub_title }}</a>
-        <div class='pub_authors'>{{ thread.pub_authors }}</div>
+        <div class='pub_authors'>{{ thread.pub_authors|safe }}</div>
         <div class='pub_line'>
             {{ thread.pub_date.strftime("%Y-%m-%d") }} — <em>{{ thread.pub_journal }}</em>
         </div>

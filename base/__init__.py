@@ -4,8 +4,8 @@
 Written by:
 Lucas Ou -- http://lucasou.com
 """
-from flask import Flask, render_template, url_for
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, url_for, g
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.routing import BaseConverter
 from slugify import slugify
 
@@ -20,10 +20,6 @@ class RegexConverter(BaseConverter):
         self.regex = items[0]
 
 app.url_map.converters['regex'] = RegexConverter
-
-@app.context_processor
-def inject():
-    return dict(slugify=slugify)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -49,6 +45,14 @@ app.register_blueprint(apis_module)
 
 from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
+
+
+from base.frontends.views import get_subreddits
+@app.context_processor
+def inject():
+    return dict(slugify=slugify,
+                subreddits=get_subreddits(),
+                user=g.user)
 
 from base.manage import (initdb)
 
