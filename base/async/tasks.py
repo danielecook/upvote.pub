@@ -1,19 +1,22 @@
 import os
 from sqlalchemy import or_
-from huey import RedisHuey
+from huey import RedisHuey, crontab
 from base.threads.models import Thread
 from base.utils.file_utils import (download_pdf,
                                    pdf_to_thumb,
                                    sha1_file)
+from base.utils.bioarxiv import fetch_bioarxiv
 from base.utils.gs import google_storage
 from base import db, app
-huey = RedisHuey('snippets',
+huey = RedisHuey('upvote',
                  connection_pool=app.config['REDIS_CONNECTION_POOL'])
 
 
 @huey.task(include_task=True)
 def process_pdf_task(pub, task):
-    # Download the PDF
+    """
+        This task processes a PDF and generates a thumbnail preview of it.
+    """
     url = pub.get('pub_pdf_url')
     if url:
         fname = download_pdf(url)
@@ -38,3 +41,14 @@ def process_pdf_task(pub, task):
                                          Thread.pub_arxiv == pub_id)).first()
         thread.thumbnail = thumbnail_fname
         db.session.commit()
+
+
+@huey.periodic_task(crontab(minute='*/1'), always_eager=True)
+def store_bioarxiv():
+    """
+        Stores URLS for bioarxiv articles
+    """
+    r = huey.storage.conn
+    for k, v in fetch_bioarxiv().items():
+        r.set('biorxiv:' + k, v)
+

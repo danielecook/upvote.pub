@@ -10,20 +10,13 @@ from base.users.models import User
 from base.subreddits.models import Subreddit
 from base.frontends.views import get_subreddits
 from base import db
-from base.utils.pubs import fetch_pub
+from base.utils.pubs import fetch_pub, get_pub_thread
 
-mod = Blueprint('threads', __name__, url_prefix='/threads')
+mod = Blueprint('threads', __name__, url_prefix='/r')
 
 #################
 # Threads Views #
 #################
-
-
-@mod.context_processor
-def inject():
-    return dict(subreddits=get_subreddits(),
-                user=g.user)
-
 
 
 @mod.before_request
@@ -49,17 +42,28 @@ def submit(subreddit_name=None):
         abort(404)
 
     form = submit_pub_form(request.form)
+
+    # Check if pub has already been submitted
+    if form.pub_id.data:
+        thread = get_pub_thread(form.pub_id.data)
+        if thread:
+            flash('That pub has already been submitted!', 'warning')
+            return redirect(url_for('threads.thread_permalink',
+                                    thread_id=thread.id,
+                                    subreddit_name=thread.subreddit.name,
+                                    title=slugify(thread.pub_title)))
+
     if form.validate_on_submit():
         # Fetch data from publication
         pub_id = form.pub_id.data
         pub_data = fetch_pub(pub_id)
         text = form.text.data.strip()
 
-        # Switch to using a validator for pub data - 
+        # Switch to using a validator for pub data -
         # store results in redis...?
         if not pub_data:
             return render_template('threads/submit_post.html', form=form, cur_subreddit=subreddit.name)
-        
+
         thread = Thread(text=text, user_id=user_id, subreddit_id=subreddit.id, **pub_data)
 
         db.session.add(thread)
@@ -72,7 +76,7 @@ def submit(subreddit_name=None):
                                 title = slugify(thread.pub_title)))
     return render_template('threads/submit_post.html',
                            form=form,
-                           page_title='Submit a new pub/manuscript',
+                           page_title='Submit to ' + subreddit_name,
                            cur_subreddit=subreddit,
                            subreddits=get_subreddits())
 

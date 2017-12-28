@@ -50,8 +50,9 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
     # if we are passing in a resultset, that means we are just looking to
     # quickly paginate some arbitrary data, no sorting
     if rs:
-        thread_paginator = rs.paginate(cur_page, per_page=threads_per_page,
-            error_out=True)
+        thread_paginator = rs.paginate(cur_page,
+                                       per_page=threads_per_page,
+                                       error_out=True)
         return thread_paginator
 
     # sexy line of code :)
@@ -68,7 +69,7 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
 
 @mod.route('/')
 @mod.route('/trending')
-def home(trending=False):
+def home():
     """
     If not trending we order by creation date
     """

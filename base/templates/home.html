@@ -19,29 +19,28 @@
     {% endif %}
 
   {% block left %}
+        {% from "macros.html" import render_pub %}
+              {% if num_searches is defined %}
+                <h4 class="highlight">We have found {{ num_searches }} search results </h4>
+                <br>
+              {% endif %}
+              <div class="spacer"></div>
+              {% for thread in thread_paginator.items %}
+                    {{ render_pub(thread, user, slugify) }}
+              {% endfor %}
 
-  {% from "macros.html" import render_pub %}
-      {% if num_searches is defined %}
-        <h4 class="highlight">We have found {{ num_searches }} search results </h4>
-        <br>
-      {% endif %}
-      <div class="spacer"></div>
-      {% for thread in thread_paginator.items %}
-            {{ render_pub(thread, user, slugify) }}
-      {% endfor %}
-
-      <ul class="pager text-center">
-        {% if thread_paginator.has_prev %}
-            <li><a href="?page={{ thread_paginator.prev_num }}">prev</a></li>
-        {% else %}
-            <li style="opacity:0.3;"><a>prev</a></li>
-        {% endif %}
-        {% if thread_paginator.has_next %}
-            <li><a href="?page={{ thread_paginator.next_num }}">next</a></li>
-        {% else %}
-            <li style="opacity:0.3;"><a>next</a></li>
-        {% endif %}
-      </ul>
+              <ul class="pager text-center">
+                    {% if thread_paginator.has_prev %}
+                        <li><a href="?page={{ thread_paginator.prev_num }}">prev</a></li>
+                    {% else %}
+                        <li style="opacity:0.3;"><a>prev</a></li>
+                    {% endif %}
+                    {% if thread_paginator.has_next %}
+                        <li><a href="?page={{ thread_paginator.next_num }}">next</a></li>
+                    {% else %}
+                        <li style="opacity:0.3;"><a>next</a></li>
+                    {% endif %}
+              </ul>
   {% endblock %}
 </div>
 

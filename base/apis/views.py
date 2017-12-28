@@ -20,6 +20,7 @@ def before_request():
     if 'user_id' in session:
         g.user = User.query.get(session['user_id'])
 
+
 @mod.route('/comments/submit/', methods=['POST'])
 @requires_login
 def submit_comment():
@@ -37,9 +38,12 @@ def submit_comment():
     comment = thread.add_comment(comment_text, comment_parent_id,
             g.user.id)
 
-    return jsonify(comment_text=comment.text, date=comment.pretty_date(),
-            username=g.user.username, comment_id=comment.id,
-            margin_left=comment.get_margin_left())
+    return jsonify(comment_text=comment.text,
+                   date=comment.pretty_date(),
+                   username=g.user.username,
+                   comment_id=comment.id,
+                   margin_left=comment.get_margin_left())
+
 
 @mod.route('/threads/vote/', methods=['POST'])
 @requires_login
@@ -56,6 +60,7 @@ def vote_thread():
     thread = Thread.query.get_or_404(int(thread_id))
     vote_status = thread.vote(user_id=user_id)
     return jsonify(new_votes=thread.votes, vote_status=vote_status)
+
 
 @mod.route('/comments/vote/', methods=['POST'])
 @requires_login

@@ -53,8 +53,10 @@ class Thread(db.Model):
     pub_abstract = db.Column(db.Text())
     pub_doi = db.Column(db.String(250))
     pub_pmid = db.Column(db.String(15))
-    pub_pmcid = db.Column(db.String(18))
+    pub_pmc = db.Column(db.String(25))
     pub_arxiv = db.Column(db.String(25))
+    pub_biorxiv = db.Column(db.String(250))
+    pub_biorxiv_url = db.Column(db.String(250))
     pub_url = db.Column(db.String(250))
     pub_pdf_url = db.Column(db.String(250))
     pub_journal = db.Column(db.String(100))
@@ -83,7 +85,7 @@ class Thread(db.Model):
     def get_comments(self, order_by='timestamp'):
         """
         default order by timestamp
-        return only top levels!
+        return top level
         """
         if order_by == 'timestamp':
             return self.comments.filter_by(depth=1).\
@@ -98,11 +100,10 @@ class Thread(db.Model):
         """
         return THREAD.STATUS[self.status]
 
+
     def get_age(self):
-        """
-        returns the raw age of this thread in seconds
-        """
-        return (self.created_on - datetime.datetime(1970, 1, 1)).total_seconds()
+        return (arrow.utcnow() - arrow.get(self.created_on)).total_seconds()
+
 
     def get_hotness(self):
         """
@@ -126,12 +127,6 @@ class Thread(db.Model):
         """
 
         return arrow.get(self.created_on).humanize()
-
-        # Replace with humanize function
-        #if typeof == 'created':
-        #    return utils.pretty_date(self.created_on)
-        #elif typeof == 'updated':
-        #    return utils.pretty_date(self.updated_on)
 
     def add_comment(self, comment_text, comment_parent_id, user_id):
         """
@@ -187,7 +182,7 @@ class Thread(db.Model):
             # vote up the thread
             db.engine.execute(
                 thread_upvotes.insert(),
-                user_id   = user_id,
+                user_id = user_id,
                 thread_id = self.id
             )
             self.votes = self.votes + 1
@@ -274,13 +269,6 @@ class Comment(db.Model):
         margin_left = 15 + ((self.depth-1) * 32)
         margin_left = min(margin_left, 680)
         return str(margin_left) + "px"
-
-
-    def get_age(self):
-        """
-        returns the raw age of this thread in seconds
-        """
-        return (self.created_on - datetime.datetime(1970,1,1)).total_seconds()
 
 
     def pretty_date(self, typeof='created'):

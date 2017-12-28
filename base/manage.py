@@ -44,7 +44,7 @@ base_subreddits = {'biology': ['biochemistry',
 @app.cli.command()
 def initdb():
     """Initialize the ID database"""
-    click.echo('Init the db')
+    echo('Init the db')
     db.drop_all()
     db.create_all()
     first_user = User(username='dec', email='dec@u.northwestern.edu', \

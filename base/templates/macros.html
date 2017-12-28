@@ -1,14 +1,16 @@
 {% macro render_field(field) %}
-  <div class="form_field">
   <!--{ field.label(class="label") }}-->
   {% if field.errors %}
+  <div class="has-error">
     {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
     {{ field(class=css_class, **kwargs) }}
-    <div class="alert alert-dismissable alert-danger">{% for error in field.errors %}<li>{{ error|safe|e }}</li>{% endfor %}</ul>
+    <label class="control-label" for="inputError1">{% for error in field.errors %}{{ error|safe|e }}</br />{% endfor %}</label>
+    </div>
   {% else %}
+  <div class='form_field'>
     {{ field(**kwargs) }}
-  {% endif %}
   </div>
+  {% endif %}
 {% endmacro %}
 
 
@@ -79,10 +81,24 @@
                           title=slugify(thread.pub_title),
                           thread_id = thread.id) 
              }}">
-                    {{ thread.comments.all()|length() }} comments</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ thread.comments.all()|length() }} Comments</a>
 
-            {#{% if thread.pub_doi %}
-            <a href='https://dx.doi.org/{{ thread.pub_doi }}'>{{ thread.pub_doi }}</a>{% endif %}#}
+            {% if thread.pub_doi %}
+                <small><a href='https://dx.doi.org/{{ thread.pub_doi }}' class='pub_id'>{{ thread.pub_doi }}</a></small>
+            {% endif %}
+
+            {% if thread.pub_pmid %}
+                <small><a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ thread.pub_pmid }}" class='pub_id'>PMID:{{ thread.pub_pmid }}</a></small>
+            {% endif %}
+
+            {% if thread.pub_pmcid %}
+                <small><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/{{ thread.pub_pmcid }}" class='pub_id'>PMC:{{ thread.pub_pmid }}</a></small>
+            {% endif %}
+
+            {% if thread.pub_arxiv %}
+                <small><a href="https://arxiv.org/abs/{{ thread.pub_arxiv }}" class='pub_id'>arXiv:{{ thread.pub_arxiv }}</a></small>
+            {% endif %}
+
         
         </div>
 

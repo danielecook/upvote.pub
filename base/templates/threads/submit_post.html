@@ -1,16 +1,58 @@
 {% extends "home.html" %}
 
 {% block left %}
-  <div class="col-lg-10 thread-submit-box">
+  <div class="col-lg-6 thread-submit-box">
   {% from "macros.html" import render_field %}
   <form method="POST" action="." class="form bs-example form-horizontal">
     {{ form.csrf_token }}
-    {{ render_field(form.pub_id, class="form-control", placeholder="DOI, Pubmed ID, Arxiv or BioArxiv") }}
+    {{ render_field(form.pub_id, class="form-control", placeholder="DOI, PMID, Arxiv or BioArxiv") }}
     <br>
     {{ render_field(form.text, class="form-control", placeholder="body text", style="height: 150px;") }}
     <br>
     <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
   </form>
   </div>
+  <div class='col-lg-6'>
+    <h4>Examples</h4>
+  <hr />
+
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>Pub ID</th>
+            <th>Description</th>
+            <th>Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href='http://www.doi.org/' target="_blank">DOI</a></td>
+            <td>Digital Object Identifier</td>
+            <td>10.1000/182</td>
+        </tr>
+        <tr>
+            <td><a href='https://www.ncbi.nlm.nih.gov/pubmed/' target="_blank">PMID</a></td>
+            <td>Pubmed identifier</td>
+            <td>28524281</td>
+        </tr>
+        <tr>
+            <td><a href='https://www.ncbi.nlm.nih.gov/pubmed/' target="_blank">PMCID</a></td>
+            <td>Pubmed Central identifier</td>
+            <td>PMC2760059</td>
+        </tr>
+        <tr>
+            <td><a href='https://arxiv.org/' target="_blank">arXiv</a></td>
+            <td>arXiv</td>
+            <td>arXiv:1712.08619</td>
+        </tr>
+        <tr>
+            <td><a href='https://arxiv.org/' target="_blank">bioRxiv</a></td>
+            <td>bioRxiv</td>
+            <td>bioRxiv 238477</td>
+        </tr>
+    </tbody>
+</table>
+
+</div>
 {% endblock %}
 

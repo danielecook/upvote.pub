@@ -42,22 +42,21 @@
 
 <div class="row comments-tree">
     {%- for comment in thread.get_comments() recursive %}
-        <div class="row comments-element" style="margin-left:{{ comment.get_margin_left() }}" 
-            name="{{ comment.id }}"> 
-            <p class="comment-body">{{ comment.text }}</p>
+        <div class="comments-element" name="{{ comment.id }}"> 
             <div class="post-listing-meta">
-                by <a href="{{ url_for('users.user_profile', username=comment.user.username) }}">
-                    {{ comment.user.username }}</a> {{ comment.pretty_date() }} 
-                <a href="javascript:void(0)" class="comment-reply">reply</a>
+                <a href="{{ url_for('users.user_profile', username=comment.user.username) }}">
+                    <strong>{{ comment.user.username }}</strong></a> {{ comment.pretty_date() }} 
             </div>
+            <p class="comment-body">{{ comment.text }}</p>
+            <div class='comment-meta'><a href="javascript:void(0)">reply</a></div>
 
             <textarea class="nested-comment-text-box form-control"></textarea>
             <button class="btn btn-sm btn-primary submit-comment nested-submit-comment-button">
                 Submit</button>
-        </div>
         {%- if comment.get_comments() -%}
             {{ loop(comment.get_comments()) }}
         {%- endif %}
+        </div>
     {%- endfor %}
 </div>
 
@@ -113,15 +112,14 @@ $(document).ready(function() {
                 comment_text: comment_text },
                 function(response) {
                     var write_string = 
-                        '<div class="row comments-element" name="'+ response.comment_id + '"' + 
-                        'style="margin-left:' + response.margin_left + '">' +
-                        '<p class="comment-body">' + response.comment_text + '</p>' + 
+                        '<div class="comments-element" name="'+ response.comment_id + '">' +
                         '<div class="post-listing-meta">' + 
-                        'by <a href="/users/{{ user.username }}/">' +
-                        '{{ user.username }}</a>' + 
+                        '<a href="/users/{{ user.username }}/">' +
+                        '<strong>{{ user.username }}</strong></a>' + 
                         ' ' + response.date + 
-                        ' <a href="javascript:void(0)" class="comment-reply">reply</a>' +
                         '</div>' +
+                        '<p class="comment-body">' + response.comment_text + '</p>' + 
+                        ' <a href="javascript:void(0)" class="comment-meta">reply</a>' +
                         '<textarea class="nested-comment-text-box form-control"></textarea>' +
                         '<button class="btn btn-sm btn-primary submit-comment ' + 
                         'nested-submit-comment-button">Submit</button>';
@@ -138,7 +136,7 @@ $(document).ready(function() {
         {% endif %}
     });
 
-    $(document).on('click', 'a.comment-reply', function(e) {
+    $(document).on('click', '.comment-meta a', function(e) {
         $(this).parent().parent().children('textarea.nested-comment-text-box').toggle();
         $(this).parent().parent().children('button.nested-submit-comment-button').toggle();
     });
