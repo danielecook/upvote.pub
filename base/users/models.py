@@ -43,6 +43,7 @@ class User(db.Model):
         """
         return USER.ROLE[self.role]
 
+
     def get_thread_karma(self):
         """
         fetch the number of votes this user has had on his/her threads

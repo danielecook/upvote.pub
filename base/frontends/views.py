@@ -26,7 +26,15 @@ def before_request():
 
 
 def home_subreddit():
-    return Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness))
+    logger.info(g.user)
+    if g.user:
+        subreddit_subs = g.user.subreddit_subs.get('subs')
+        subs = Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness)) \
+                           .filter(Subreddit.name.in_(subreddit_subs))
+        #logger.info(subs)
+    else:
+        subs = Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness))
+    return subs
 
 
 def get_subreddits():
@@ -36,6 +44,7 @@ def get_subreddits():
     if g.user:
         subreddit_subs = g.user.subreddit_subs.get('subs')
         subreddits = Subreddit.query.filter(Subreddit.name.in_(subreddit_subs))
+    logger.info(subreddits)
     return subreddits
 
 
@@ -60,12 +69,19 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
     # sexy line of code :)
     base_query = subreddit.threads if subreddit else Thread.query
 
+    # Filter by user subs
+    logger.info(g.user)
+    if g.user:
+        subreddit_subs = g.user.subreddit_subs.get('subs')
+        base_query = base_query.join(Subreddit).filter(Subreddit.name.in_(subreddit_subs))
+
     if trending:
-        thread_paginator = base_query.order_by(db.desc(Thread.votes)).\
+        thread_paginator = base_query.order_by(db.desc(Thread.votes)). \
         paginate(cur_page, per_page=threads_per_page, error_out=True)
     else:
         thread_paginator = base_query.order_by(db.desc(Thread.hotness)).\
                 paginate(cur_page, per_page=threads_per_page, error_out=True)
+
     return thread_paginator
 
 
@@ -77,7 +93,7 @@ def home():
     """
     trending = True if request.path.endswith('trending') else False
     page_title = "Trending" if trending else "Welcome!"
-    thread_paginator = process_thread_paginator(trending)
+    thread_paginator = process_thread_paginator(trending=trending)
 
     return render_template('home.html',
                            page_title=page_title,
@@ -181,11 +197,10 @@ def view_all():
     if request.form:
         form = subreddit_subs(request.form)
         logger.info("FORM")
-        if form.data.get('subs'):
+        if form.validate_on_submit():
             form_subs = form.data.get('subs')
             form_subs = list(set([x['sub_name'] for x in form_subs if x['value']]))
             g.user.subreddit_subs = {'subs': form_subs}
-            logger.info(form.validate_on_submit())
             flash("Updated Subs", 'success')
             db.session.commit()
     else:

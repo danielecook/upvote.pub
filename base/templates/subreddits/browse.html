@@ -7,6 +7,7 @@
 
 {% for group, group_set in form.subs|groupby('sub_group.data') %}
 <h2>{{ group }}</h2>
+{{ form.csrf_token }}
 {% for sub in group_set %}
     {{ sub.csrf_token }}
     {{ sub.sub_name }}
