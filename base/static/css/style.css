@@ -429,3 +429,7 @@ h1 {
     font-size: large;
     margin: 0px 0px 0px 10px;
 }
+
+label {
+    font-weight: 500;
+}

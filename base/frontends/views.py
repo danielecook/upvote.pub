@@ -185,6 +185,7 @@ def view_all():
             form_subs = form.data.get('subs')
             form_subs = list(set([x['sub_name'] for x in form_subs if x['value']]))
             g.user.subreddit_subs = {'subs': form_subs}
+            logger.info(form.validate_on_submit())
             flash("Updated Subs", 'success')
             db.session.commit()
     else:

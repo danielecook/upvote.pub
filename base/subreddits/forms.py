@@ -8,8 +8,8 @@ from wtforms.validators import Required, URL, Length, optional
 
 
 class sub_form(Form):
-    sub_name = HiddenField('sub_name')
-    sub_group = HiddenField('sub_group')
+    sub_name = HiddenField('sub_name', [Required()])
+    sub_group = HiddenField('sub_group', [Required()])
     value = BooleanField('sub')
 
 
