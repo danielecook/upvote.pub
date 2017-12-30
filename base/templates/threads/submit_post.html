@@ -1,7 +1,7 @@
 {% extends "home.html" %}
 
 {% block left %}
-  <div class="col-lg-6 thread-submit-box">
+  <div class="col-lg-6 col-md-6 col-sm-6 thread-submit-box">
   {% from "macros.html" import render_field %}
   <form method="POST" action="." class="form bs-example form-horizontal">
     {{ form.csrf_token }}
@@ -12,7 +12,7 @@
     <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
   </form>
   </div>
-  <div class='col-lg-6'>
+  <div class='col-lg-6 col-md-6 col-sm-6'>
 
 <table class="table table-condensed table-hover">
     <thead>

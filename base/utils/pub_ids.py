@@ -9,7 +9,7 @@ from base.threads.models import Thread
 def id_type(pub_id):
     pub_id = pub_id.strip().upper()
     if re.match("(arXiv)?[: ]?([0-9]{4}\.[0-9]{4,5}(v[0-9]+)?)", pub_id, re.IGNORECASE):
-        m = re.match("(arXiv:)?([0-9]{4}\.[0-9]{4,5}(v[0-9]+)?)", pub_id, re.IGNORECASE)
+        m = re.match("(arXiv)?[: ]?([0-9]{4}\.[0-9]{4,5}(v[0-9]+)?)", pub_id, re.IGNORECASE)
         return 'arxiv', m.group(2)
     elif re.match("[a-z]+(\.[a-z]+)/[0-9]+", pub_id, re.IGNORECASE):
         m = re.match("[a-z]+(\.[a-z]+)/[0-9]+", pub_id, re.IGNORECASE)

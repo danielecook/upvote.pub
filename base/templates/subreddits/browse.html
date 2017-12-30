@@ -2,12 +2,25 @@
 
 {% block left %}
   <div class="col-lg-10 thread-submit-box">
-  {% for group, group_set in subreddits|groupby('group') %}
-  <h2>{{ group }}</h2>
-        {% for subreddit in group_set %}
-        <li><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></li>
-        {% endfor %}
-  {% endfor %}
+
+<form method="POST" action="." >
+
+{% for group, group_set in form.subs|groupby('sub_group.data') %}
+<h2>{{ group }}</h2>
+{% for sub in group_set %}
+    {{ sub.csrf_token }}
+    {{ sub.sub_name }}
+    {{ sub.sub_group }}
+    {{ sub.value }}
+    <label for='{{ sub.value.name }}'>{{ sub.sub_name.data }}</label><br />
+    
+{% endfor %}
+{% endfor %}
+
+<button type="submit" value="Submit" class="btn btn-primary">Submit</button>
+
+</form>
+
   </div>
 {% endblock %}
 

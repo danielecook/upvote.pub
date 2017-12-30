@@ -4,7 +4,7 @@
 from flask import (Blueprint, request, render_template, flash,
     g, session, redirect, url_for)
 from werkzeug import check_password_hash, generate_password_hash
-
+from logzero import logger
 from base import db
 from base import search as search_module  # don't override function name
 from base.users.forms import RegisterForm, LoginForm
@@ -13,6 +13,7 @@ from base.threads.models import Thread
 from base.subreddits.models import Subreddit
 from base.users.decorators import requires_login
 from base.utils.user_utils import get_school
+from base.subreddits.forms import subreddit_subs, sub_form
 
 mod = Blueprint('frontends', __name__, url_prefix='')
 
@@ -30,10 +31,11 @@ def home_subreddit():
 
 def get_subreddits():
     """
-    important and widely imported method because a list of
-    the top 30 subreddits are present on every page in the sidebar
+    Fetch user subreddits otherwise fetch a list of defaults
     """
-    subreddits = Subreddit.query.filter(Subreddit.id != 1)[:25]
+    if g.user:
+        subreddit_subs = g.user.subreddit_subs.get('subs')
+        subreddits = Subreddit.query.filter(Subreddit.name.in_(subreddit_subs))
     return subreddits
 
 
@@ -171,10 +173,31 @@ def register():
     return render_template("register.html", form=form, next=next)
 
 
-@mod.route('/browse/', methods=['GET'])
+
+@mod.route('/subs/', methods=['GET', 'POST'])
 def view_all():
     """
     """
+    if request.form:
+        form = subreddit_subs(request.form)
+        logger.info("FORM")
+        if form.data.get('subs'):
+            form_subs = form.data.get('subs')
+            form_subs = list(set([x['sub_name'] for x in form_subs if x['value']]))
+            g.user.subreddit_subs = {'subs': form_subs}
+            flash("Updated Subs", 'success')
+            db.session.commit()
+    else:
+        logger.info("NO FORM NO FORM FORM")
+        form = subreddit_subs()
+        for subreddit in Subreddit.query.all():
+            sform = sub_form()
+            sform.sub_name = subreddit.name
+            sform.sub_group = subreddit.group
+            sform.value=subreddit.name in g.user.subreddit_subs['subs']
+            form.subs.append_entry(sform)
+
+
     return render_template('subreddits/browse.html',
                            page_title='Browse',
-                           subreddits=Subreddit.query.all())
+                           form=form)
