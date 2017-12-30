@@ -59,18 +59,16 @@
                 <input type="text" name="query" class="search form-control" 
                     placeholder="Search">
             </div>
-        </form>  
-        {% if cur_subreddit is defined %}
+        </form>
+        {% if cur_subreddit and cur_subreddit.name %}
             <a href="{{ url_for('threads.submit', subreddit_name=cur_subreddit.name) }}">
                 <button class="btn btn-primary btn-block submit-post-button">
                     submit to {{ cur_subreddit.name }}</button>
             </a>
         {% endif %} 
 
-    {% if cur_subreddit is defined %}
-    <p>
+    {% if cur_subreddit %}
         {{ cur_subreddit.desc }}
-    </p>
     {% endif %}
 
     {% endblock %}
