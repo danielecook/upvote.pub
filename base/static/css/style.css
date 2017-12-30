@@ -43,16 +43,8 @@ a.thumbnail:hover {
 
 .listing-text {
     color: #b3b3b3;
-    margin-left: 18px;
 }
 
-.listing-vote-box {
-    width: 10px;
-}
-
-.listing-vote-box:hover {
-
-}
 
 .listing-vote-button:hover, .listing-vote-button:focus {
     text-decoration: none !important;
@@ -292,6 +284,10 @@ img.listing-image {
     margin-top: 7px;
 }
 
+.listing-vote-box {
+    text-align: center;
+}
+
 .byline-lucas {
     font-size: 14px;
     margin-top: 80px;
@@ -317,9 +313,6 @@ div.github-fork-text {
     text-decoration: underline;
 }
 
-.listing-votes-number {
-    margin-left: 4px;
-}
 
 #footer-row {
     font-size: 13px;

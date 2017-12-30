@@ -6,7 +6,7 @@ from flask import (Blueprint, request, render_template, flash,
 from werkzeug import check_password_hash, generate_password_hash
 
 from base import db
-from base import search as search_module # don't override function name
+from base import search as search_module  # don't override function name
 from base.users.forms import RegisterForm, LoginForm
 from base.users.models import User
 from base.threads.models import Thread
@@ -25,7 +25,7 @@ def before_request():
 
 
 def home_subreddit():
-    return Subreddit.query.get_or_404(1)
+    return Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness))
 
 
 def get_subreddits():
@@ -75,12 +75,11 @@ def home():
     """
     trending = True if request.path.endswith('trending') else False
     page_title = "Trending" if trending else "Welcome!"
-    subreddits = get_subreddits()
     thread_paginator = process_thread_paginator(trending)
 
     return render_template('home.html',
                            page_title=page_title,
-                           subreddits=subreddits, cur_subreddit=home_subreddit(),
+                           cur_subreddit=home_subreddit(),
                            thread_paginator=thread_paginator)
 
 

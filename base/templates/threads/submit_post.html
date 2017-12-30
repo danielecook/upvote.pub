@@ -5,7 +5,7 @@
   {% from "macros.html" import render_field %}
   <form method="POST" action="." class="form bs-example form-horizontal">
     {{ form.csrf_token }}
-    {{ render_field(form.pub_id, class="form-control", placeholder="DOI, PMID, Arxiv or BioArxiv") }}
+    {{ render_field(form.pub_id, class="form-control", placeholder="DOI, PMID, PMCID, Arxiv or BioArxiv") }}
     <br>
     {{ render_field(form.text, class="form-control", placeholder="body text", style="height: 150px;") }}
     <br>
@@ -13,8 +13,6 @@
   </form>
   </div>
   <div class='col-lg-6'>
-    <h4>Examples</h4>
-  <hr />
 
 <table class="table table-condensed table-hover">
     <thead>
@@ -48,10 +46,14 @@
         <tr>
             <td><a href='https://arxiv.org/' target="_blank">bioRxiv</a></td>
             <td>bioRxiv</td>
-            <td>bioRxiv 238477</td>
+            <td>bioRxiv 238477, biorxiv:238477</td>
         </tr>
     </tbody>
 </table>
+
+<div class='well'>
+    In order to submit to <strong>upvote.pub</strong>, you must submit a publication ID. The table above details the IDs supported. For more information on where to find these IDs see the <a href=''>FAQ</a>.
+</div>
 
 </div>
 {% endblock %}

@@ -88,16 +88,22 @@
             {% endif %}
 
             {% if thread.pub_pmid %}
-                <small><a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ thread.pub_pmid }}" class='pub_id'>PMID:{{ thread.pub_pmid }}</a></small>
+                <small><a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ thread.pub_pmid }}" class='pub_id'>PMID {{ thread.pub_pmid }}</a></small>
             {% endif %}
 
-            {% if thread.pub_pmcid %}
-                <small><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/{{ thread.pub_pmcid }}" class='pub_id'>PMC:{{ thread.pub_pmid }}</a></small>
+            {% if thread.pub_pmc %}
+                <small><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/{{ thread.pub_pmcid }}" class='pub_id'>PMC {{ thread.pub_pmid }}</a></small>
             {% endif %}
 
             {% if thread.pub_arxiv %}
-                <small><a href="https://arxiv.org/abs/{{ thread.pub_arxiv }}" class='pub_id'>arXiv:{{ thread.pub_arxiv }}</a></small>
+                <small><a href="https://arxiv.org/abs/{{ thread.pub_arxiv }}" class='pub_id'>arXiv {{ thread.pub_arxiv }}</a></small>
             {% endif %}
+
+            {% if thread.pub_biorxiv %}
+                <small><a href="{{ thread.pub_biorxiv_url }}" class='pub_id'>bioRxiv {{ thread.pub_biorxiv }}</a></small>
+            {% endif %}
+
+            <small>{{ thread.hotness }}</small>
 
         
         </div>

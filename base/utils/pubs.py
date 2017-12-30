@@ -13,23 +13,9 @@ from metapub import PubMedFetcher
 from metapub.base import MetaPubError
 from dateutil.parser import parse
 from base.async.tasks import process_pdf_task
+from base.utils.pub_ids import id_type, get_pub_thread
 from sqlalchemy import or_
 
-
-def clean_pub_id(pub_id):
-    if pub_id:
-        return pub_id.strip().upper().replace("ARXIV", "").replace("BIORXIV", "").replace(":", "")
-
-
-def get_pub_thread(pub_id):
-    """
-    Get pub thread from the database
-    """
-    pub_id = pub_id.strip()
-    pub_id_type = id_type(pub_id)
-
-    thread = Thread.query.filter(getattr(Thread, 'pub_' + pub_id_type) == pub_id).first()
-    return thread
 
 
 def fetch_pubmed(pub_id, id_type = "pmid"):
@@ -50,8 +36,8 @@ def fetch_pubmed(pub_id, id_type = "pmid"):
             return None
     elif id_type == "pmc":
         try:
-            result = pm.article_by_pmcid(pub_id)
-        except AttributeError:
+            result = pm.article_by_pmcid('PMC' + str(pub_id))
+        except (AttributeError, MetaPubError):
             return None
     result = result.to_dict()
 
@@ -64,14 +50,14 @@ def fetch_pubmed(pub_id, id_type = "pmid"):
     # Provide PDF if possible
     if result.get('pmc'):
         result['pdf_url'] = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{result['pmc']}/pdf"
-        result['pmc'] = "PMC" + result['pmc']
+    
 
     out = {"pub_title": result.get('title'),
            "pub_authors": result.get('authors'),
            "pub_abstract": result.get('abstract'),
            "pub_doi": result.get('doi'),
            "pub_pmid": result.get('pmid'),
-           "pub_pmc": result.get('pmc'),
+           "pub_pmc": pub_id if id_type == 'pmc' else None,
            "pub_url": result.get('url'),
            "pub_pdf_url": result.get('pdf_url'),
            "pub_journal": result.get('journal'),
@@ -93,7 +79,7 @@ def fetch_doi(doi):
 
     url = "http://dx.doi.org/" + doi
     headers = {"accept": "application/json"}
-    r = requests.get(url, headers = headers)
+    r = requests.get(url, headers= headers)
     if r.status_code == 200:
         result = r.json()
 
@@ -112,7 +98,7 @@ def fetch_doi(doi):
 
         out = {"pub_title": result.get('title').strip(),
                "pub_authors": authors,
-               "pub_abstract": result.get('abstract').strip(),
+               "pub_abstract": result.get('abstract'),
                "pub_doi": result.get('DOI'),
                "pub_url": result.get('URL'),
                "pub_pdf_url": result.get('pdf_url'),
@@ -142,14 +128,18 @@ def fetch_arxiv(arxiv_id):
 
 def fetch_biorxiv(biorxiv_id):
     r = app.config.get('REDIS_DB')
-    biorxiv_id = re.split("[: ]{1}", biorxiv_id.lower())[1]
-    biorxiv_url = str(r.get('biorxiv:' + biorxiv_id), encoding='utf-8')
+    biorxiv_url = r.get('biorxiv:' + biorxiv_id)
+    if not biorxiv_url:
+        return None
+    biorxiv_url = str(biorxiv_url, encoding='utf-8')
     biorxiv_resp = requests.get(biorxiv_url)
     b = BeautifulSoup(biorxiv_resp.content, 'lxml')
     doi_span = b.findAll('span', {'class': 'highwire-cite-metadata-doi'})
     if len(doi_span) > 0:
         doi = doi_span[0].text.replace('doi: https://doi.org/', '')
     pub = fetch_doi(doi)
+    if not pub:
+        return None
     pub['pub_journal'] = 'bioRxiv'
     pub['pub_pdf_url'] = biorxiv_url + ".full.pdf"
     pub['pub_biorxiv'] = biorxiv_id
@@ -157,30 +147,11 @@ def fetch_biorxiv(biorxiv_id):
     return pub
 
 
-def id_type(pub_id):
-    pub_id = pub_id.strip().upper()
-    logger.info(re.match("bio[a]?rxiv[: ]?[0-9\.]{6,9}", pub_id, re.IGNORECASE))
-    if re.match("(arXiv:)?[0-9]{4}\.[0-9]{4,5}(v[0-9]+)?", pub_id, re.IGNORECASE):
-        return 'arxiv'
-    elif re.match("[a-z]+(\.[a-z]+)/[0-9]+", pub_id, re.IGNORECASE):
-        return 'arxiv'
-    elif re.match("PMC[0-9]+", pub_id):
-        return 'pmc'
-    elif re.match('(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'<>])\S)+)', pub_id):
-        return 'doi'
-    elif re.match('[0-9]+', pub_id):
-        return 'pmid'
-    elif re.match("bio[a]?rxiv[: ]?[0-9\.]{6,9}", pub_id, re.IGNORECASE):
-        return 'biorxiv'
-
-
 def fetch_pub(pub_id):
     """
         Fetch pub and process accordingly
     """
-    pub_id = clean_pub_id(pub_id)
-    pub_type = id_type(pub_id)
-
+    pub_type, pub_id = id_type(pub_id)
     if pub_type == 'arxiv':
         pub = fetch_arxiv(pub_id)
     elif pub_type in ['pmc', 'pmid']:
@@ -192,11 +163,11 @@ def fetch_pub(pub_id):
     else:
         return None
 
+    if not pub:
+        return None
 
     if pub.get('pub_pdf_url'):
         thumbnail = process_pdf_task(pub)
-        #if thumbnail:
-        #    pub['thumbnail'] = thumbnail
 
     # Strip periods
     pub['pub_title'] = pub['pub_title'].strip(".")

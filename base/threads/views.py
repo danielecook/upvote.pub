@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 """
+from logzero import logger
 from flask import (Blueprint, request, render_template, flash, g, session,
                    redirect, url_for, abort)
 from slugify import slugify
@@ -10,7 +11,9 @@ from base.users.models import User
 from base.subreddits.models import Subreddit
 from base.frontends.views import get_subreddits
 from base import db
-from base.utils.pubs import fetch_pub, get_pub_thread
+from base.utils.pubs import fetch_pub
+from base.utils.pub_ids import id_type, get_pub_thread
+
 
 mod = Blueprint('threads', __name__, url_prefix='/r')
 
@@ -46,6 +49,7 @@ def submit(subreddit_name=None):
     # Check if pub has already been submitted
     if form.pub_id.data:
         thread = get_pub_thread(form.pub_id.data)
+        logger.info(form.pub_id.data)
         if thread:
             flash('That pub has already been submitted!', 'warning')
             return redirect(url_for('threads.thread_permalink',
@@ -62,13 +66,13 @@ def submit(subreddit_name=None):
         # Switch to using a validator for pub data -
         # store results in redis...?
         if not pub_data:
+            flash("Could not find a pub with the ID: '{}'".format(form.pub_id.data), 'danger')
             return render_template('threads/submit_post.html', form=form, cur_subreddit=subreddit.name)
 
-        thread = Thread(text=text, user_id=user_id, subreddit_id=subreddit.id, **pub_data)
+        thread = Thread(text_comment=text, user_id=user_id, subreddit_id=subreddit.id, **pub_data)
 
         db.session.add(thread)
         db.session.commit()
-        thread.set_hotness()
         flash("Thank you for submitting!", "success")
         return redirect(url_for('threads.thread_permalink',
                                 thread_id=thread.id,

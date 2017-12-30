@@ -55,7 +55,6 @@ app.register_blueprint(subreddits_module)
 from base.frontends.views import get_subreddits
 @app.context_processor
 def inject():
-    logger.info(dir(g))
     return dict(slugify=slugify,
                 subreddits=get_subreddits(),
                 user=g.get('user'))

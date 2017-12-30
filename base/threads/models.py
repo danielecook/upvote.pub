@@ -28,6 +28,8 @@ from base import media
 from math import log
 import datetime
 import arrow
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy import text
 
 thread_upvotes = db.Table('thread_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
@@ -52,8 +54,8 @@ class Thread(db.Model):
     pub_authors = db.Column(db.String(1000))
     pub_abstract = db.Column(db.Text())
     pub_doi = db.Column(db.String(250))
-    pub_pmid = db.Column(db.String(15))
-    pub_pmc = db.Column(db.String(25))
+    pub_pmid = db.Column(db.Integer())
+    pub_pmc = db.Column(db.Integer())
     pub_arxiv = db.Column(db.String(25))
     pub_biorxiv = db.Column(db.String(250))
     pub_biorxiv_url = db.Column(db.String(250))
@@ -62,7 +64,7 @@ class Thread(db.Model):
     pub_journal = db.Column(db.String(100))
     pub_date = db.Column(db.DateTime)
 
-    text = db.Column(db.String(3000), default=None)
+    text_comment = db.Column(db.String(3000), default=None)
 
     thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
 
@@ -76,7 +78,7 @@ class Thread(db.Model):
     status = db.Column(db.SmallInteger, default=THREAD.ALIVE)
 
     votes = db.Column(db.Integer, default=1)
-    hotness = db.Column(db.Float(15,6), default=0.00)
+    hotness = db.column_property(db.func.ROUND(100+(db.func.LN(votes)*50 - db.func.POW(db.func.LN(db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2)), 2))
 
 
     def __repr__(self):
@@ -100,25 +102,6 @@ class Thread(db.Model):
         """
         return THREAD.STATUS[self.status]
 
-
-    def get_age(self):
-        return (arrow.utcnow() - arrow.get(self.created_on)).total_seconds()
-
-
-    def get_hotness(self):
-        """
-        returns the reddit hotness algorithm (votes/(age^1.5))
-        """
-        order = log(max(abs(self.votes), 1), 10) # Max/abs are not needed in our case
-        seconds = self.get_age() - 1134028003
-        return round(order + seconds / 45000, 6)
-
-    def set_hotness(self):
-        """
-        returns the reddit hotness algorithm (votes/(age^1.5))
-        """
-        self.hotness = self.get_hotness()
-        db.session.commit()
 
     def pretty_date(self, typeof='created'):
         """
