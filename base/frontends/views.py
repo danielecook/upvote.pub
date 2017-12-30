@@ -44,7 +44,8 @@ def get_subreddits():
     if g.user:
         subreddit_subs = g.user.subreddit_subs.get('subs')
         subreddits = Subreddit.query.filter(Subreddit.name.in_(subreddit_subs))
-    logger.info(subreddits)
+    else:
+        subreddits = Subreddit.query.all()
     return subreddits
 
 
