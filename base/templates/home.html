@@ -2,6 +2,15 @@
 
 {% block content %}
 <div class="col-md-9">
+    {% if page_title %}
+
+              {% if num_searches is defined %}
+                <p class='pull-right'>{{num_searches }} result{{ num_searches|pluralize }}</p>
+              {% endif %}
+
+    <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
+    <hr />
+    {% endif %}
 
   <div id="messages-wrap">
     <div id="messages">
@@ -13,17 +22,8 @@
     </div>
   </div>
 
-    {% if page_title %}
-    <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
-    <hr />
-    {% endif %}
-
   {% block left %}
         {% from "macros.html" import render_pub %}
-              {% if num_searches is defined %}
-                <h4 class="highlight">We have found {{ num_searches }} search results </h4>
-                <br>
-              {% endif %}
               <div class="spacer"></div>
               {% for thread in thread_paginator.items %}
                     {{ render_pub(thread, user, slugify) }}
@@ -76,7 +76,11 @@
     <h4 class="subreddit-desc">Subs</h4>
     <ul id="sublist">
         {% for subreddit in subreddits[:10] %}
-        <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
+        {% if subreddit.name == cur_subreddit.name %}
+            <li><strong><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></strong></li>
+        {% else %}
+            <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
+        {% endif %}
         {% endfor %}
     </ul>
   {% endblock %}

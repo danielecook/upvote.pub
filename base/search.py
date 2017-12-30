@@ -18,8 +18,9 @@ def search(query, orderby='creation', filter_user=None, search_title=True,
 
     base_qs = Thread.query
 
-    title_clause = Thread.title.like(base_query) if search_title else False
-    text_clause = Thread.text.like(base_query) if search_text else False
+    title_clause = Thread.pub_title.like(base_query) if search_title else False
+    text_clause = Thread.pub_authors.like(base_query) if search_text else False
+
     # TODO: Searching by subreddit requires joining, leave out for now.
     # subreddit_clause = Thread.subreddit.name.like(subreddit.name) if subreddit else False
 

@@ -30,6 +30,7 @@ def user_profile(username=None):
         abort(404)
     return render_template('users/profile.html',
                            current_user=user,
+                           cur_subreddit=None,
                            page_title=user.username,
                            page_subtitle=user.university,
                            subreddits = get_subreddits())

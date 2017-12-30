@@ -45,6 +45,7 @@ def get_subreddits():
         subreddit_subs = g.user.subreddit_subs.get('subs')
         subreddits = Subreddit.query.filter(Subreddit.name.in_(subreddit_subs))
     else:
+        # Default set of subreddits
         subreddits = Subreddit.query.all()
     return subreddits
 
@@ -108,6 +109,7 @@ def search():
     Allows users to search threads and comments
     """
     query = request.args.get('query')
+    page_title=f"Search results for '{query}'"
     rs = search_module.search(query, orderby='creation', search_title=True,
             search_text=True, limit=100)
 
@@ -116,9 +118,10 @@ def search():
     num_searches = len(rs)
     subreddits = get_subreddits()
 
-    return render_template('home.html', user=g.user,
-            subreddits=subreddits, cur_subreddit=home_subreddit(),
-            thread_paginator=thread_paginator, num_searches=num_searches)
+    return render_template('home.html',
+                            page_title=page_title,
+                            cur_subreddit=home_subreddit(),
+                            thread_paginator=thread_paginator, num_searches=num_searches)
 
 
 @mod.route('/login/', methods=['GET', 'POST'])
@@ -215,6 +218,7 @@ def view_all():
             form.subs.append_entry(sform)
 
 
-    return render_template('subreddits/browse.html',
-                           page_title='Browse',
+    return render_template('subreddits/subs.html',
+                           cur_subreddit=None,
+                           page_title='Subs',
                            form=form)

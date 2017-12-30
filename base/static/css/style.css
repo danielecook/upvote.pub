@@ -62,7 +62,7 @@ a.thumbnail:hover {
     display: inline-block;
 }
 
-.pub_links a:hover, .comment-meta a:hover {
+.pub_links a:hover, .comment-meta a:hover, {
     text-decoration: underline;
     color: #666;
 }
@@ -136,9 +136,6 @@ a.thumbnail:hover {
     text-decoration: none;
 }
 
-#sublist a:hover, #sublist a:focus {
-    color: #1484e4;
-}
 
 
 .pre-reg-info {
@@ -152,8 +149,12 @@ a.thumbnail:hover {
 
 .nested-comment-text-box {
     display: none;
-    margin: 10px 0px;
+    margin: 10px 0px 10px 50px;
     width: 600px;
+}
+
+.nested-submit-comment-button {
+    margin-left: 50px;
 }
 
 .nested-submit-comment-button {

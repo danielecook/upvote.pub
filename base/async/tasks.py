@@ -51,6 +51,7 @@ def process_pdf_task(pub):
         db.session.commit()
 
 
+
 @huey.periodic_task(crontab(minute='*/1'), always_eager=True)
 def store_bioarxiv():
     """

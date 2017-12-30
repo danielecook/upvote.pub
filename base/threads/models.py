@@ -245,15 +245,6 @@ class Comment(db.Model):
             return self.comments.order_by(db.desc(Comment.created_on)).\
                 all()[:THREAD.MAX_COMMENTS]
 
-    def get_margin_left(self):
-        """
-        nested comments are pushed right on a page
-        -15px is our default margin for top level comments
-        """
-        margin_left = 15 + ((self.depth-1) * 32)
-        margin_left = min(margin_left, 680)
-        return str(margin_left) + "px"
-
 
     def pretty_date(self, typeof='created'):
         """

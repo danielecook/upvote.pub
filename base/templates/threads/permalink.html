@@ -108,9 +108,10 @@ $(document).ready(function() {
         {% if user is defined and user != None %}
             $.post(post_to, { 
                 parent_id: parent_id, // empty if top-level (none)
-                thread_id: thread_id, 
+                thread_id: thread_id,
                 comment_text: comment_text },
                 function(response) {
+                    console.log(response);
                     var write_string = 
                         '<div class="comments-element" name="'+ response.comment_id + '">' +
                         '<div class="post-listing-meta">' + 
@@ -127,7 +128,7 @@ $(document).ready(function() {
                     if (not_nested == 'true') {
                         $('div.comments-tree').prepend(write_string);
                     } else {
-                        $parent_comment.after(write_string);
+                        $parent_comment.append(write_string);
                     }
                 }, 'json'
             );              
@@ -140,8 +141,7 @@ $(document).ready(function() {
         $(this).parent().parent().children('textarea.nested-comment-text-box').toggle();
         $(this).parent().parent().children('button.nested-submit-comment-button').toggle();
     });
-    //
-    //
+
 });
 </script>
 {% endblock %}

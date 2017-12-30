@@ -35,14 +35,14 @@ def submit_comment():
         abort(404)
 
     thread = Thread.query.get_or_404(int(thread_id))
-    comment = thread.add_comment(comment_text, comment_parent_id,
-            g.user.id)
+    comment = thread.add_comment(comment_text,
+                                 comment_parent_id,
+                                 g.user.id)
 
     return jsonify(comment_text=comment.text,
                    date=comment.pretty_date(),
                    username=g.user.username,
-                   comment_id=comment.id,
-                   margin_left=comment.get_margin_left())
+                   comment_id=comment.id)
 
 
 @mod.route('/threads/vote/', methods=['POST'])

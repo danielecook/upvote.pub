@@ -62,6 +62,9 @@ def inject():
 from base.manage import (initdb, swot)
 
 
+# Template filters
+from base.utils import template_filters
+
 def custom_render(template, *args, **kwargs):
     """
     custom template rendering including some base vars
