@@ -105,13 +105,12 @@ $(document).ready(function() {
 
         var thread_id = "{{ thread.id }}";
         var post_to = '/apis/comments/submit/';
-        {% if user is defined and user != None %}
+        {% if user and user != None %}
             $.post(post_to, { 
                 parent_id: parent_id, // empty if top-level (none)
                 thread_id: thread_id,
                 comment_text: comment_text },
                 function(response) {
-                    console.log(response);
                     var write_string = 
                         '<div class="comments-element" name="'+ response.comment_id + '">' +
                         '<div class="post-listing-meta">' + 

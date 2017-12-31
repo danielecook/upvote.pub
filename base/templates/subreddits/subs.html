@@ -2,7 +2,9 @@
 
 {% block left %}
   <div class="col-lg-10 thread-submit-box">
-
+<p>
+    Select the topics you want to be subscribed to below. These will appear in the sidebar and pubs will be aggregated on the frontpage.
+</p>
 <form method="POST" action="." >
 
 {% for group, group_set in form.subs|groupby('sub_group.data') %}
@@ -17,7 +19,7 @@
     
 {% endfor %}
 {% endfor %}
-
+<br />
 <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
 
 </form>

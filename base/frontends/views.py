@@ -200,7 +200,6 @@ def view_all():
     """
     if request.form:
         form = subreddit_subs(request.form)
-        logger.info("FORM")
         if form.validate_on_submit():
             form_subs = form.data.get('subs')
             form_subs = list(set([x['sub_name'] for x in form_subs if x['value']]))
@@ -208,13 +207,13 @@ def view_all():
             flash("Updated Subs", 'success')
             db.session.commit()
     else:
-        logger.info("NO FORM NO FORM FORM")
         form = subreddit_subs()
         for subreddit in Subreddit.query.all():
             sform = sub_form()
             sform.sub_name = subreddit.name
             sform.sub_group = subreddit.group
-            sform.value=subreddit.name in g.user.subreddit_subs['subs']
+            if g.user:
+                sform.value=subreddit.name in g.user.subreddit_subs['subs']
             form.subs.append_entry(sform)
 
 
