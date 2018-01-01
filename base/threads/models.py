@@ -21,15 +21,16 @@ CREATE TABLE `comment_upvotes` (
   CONSTRAINT `comment_upvotes_ibfk_2` FOREIGN KEY (`comment_id`) REFERENCES `threads_comment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
 """
+import datetime
+import arrow
 from base import db
 from base.threads import constants as THREAD
 from base import utils
 from base import media
 from math import log
-import datetime
-import arrow
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy import text
+from base.utils.misc import now
 from logzero import logger
 
 thread_upvotes = db.Table('thread_upvotes',
@@ -41,6 +42,7 @@ comment_upvotes = db.Table('comment_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
     db.Column('comment_id', db.Integer, db.ForeignKey('threads_comment.id'))
 )
+
 
 class Thread(db.Model):
     """
@@ -72,8 +74,8 @@ class Thread(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
     subreddit_id = db.Column(db.Integer, db.ForeignKey('subreddits_subreddit.id'))
 
-    created_on = db.Column(db.DateTime, default=arrow.utcnow().datetime)
-    updated_on = db.Column(db.DateTime, default=arrow.utcnow().datetime, onupdate=arrow.utcnow().datetime)
+    created_on = db.Column(db.DateTime, default=now)
+    updated_on = db.Column(db.DateTime, default=now, onupdate=now)
     comments = db.relationship('Comment', backref='thread', lazy='dynamic')
 
     status = db.Column(db.SmallInteger, default=THREAD.ALIVE)
@@ -214,8 +216,8 @@ class Comment(db.Model):
 
     depth = db.Column(db.Integer, default=1) # start at depth 1
 
-    created_on = db.Column(db.DateTime, default=arrow.utcnow().datetime)
-    updated_on = db.Column(db.DateTime, default=arrow.utcnow().datetime)
+    created_on = db.Column(db.DateTime, default=now)
+    updated_on = db.Column(db.DateTime, default=now)
 
     votes = db.Column(db.Integer, default=1)
 
@@ -254,9 +256,11 @@ class Comment(db.Model):
         eg: 34 minutes ago versus 2040 seconds ago.
         """
         if typeof == 'created':
-            return arrow.get(self.created_on).humanize()
+            logger.info(arrow.get(self.created_on, 'UTC'))
+            logger.info(arrow.get(self.created_on, 'UTC').humanize())
+            return arrow.get(self.created_on, 'UTC').humanize()
         elif typeof == 'updated':
-            return arrow.get(self.updated_on).humanize()
+            return arrow.get(self.updated_on, 'UTC').humanize()
 
 
     def has_voted(self, user_id):
