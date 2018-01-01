@@ -6,7 +6,7 @@ must be contained in this file.
 from flask import (Blueprint, request, render_template, flash, g,
         session, redirect, url_for, jsonify, abort)
 from werkzeug import check_password_hash, generate_password_hash
-
+from logzero import logger
 from base import db
 from base.users.models import User
 from base.threads.models import Thread, Comment
@@ -76,5 +76,6 @@ def vote_comment():
 
     comment = Comment.query.get_or_404(int(comment_id))
     comment.vote(user_id=user_id)
-    return jsonify(new_votes=comment.get_votes())
+    logger.info(comment.votes)
+    return jsonify(votes=comment.votes)
 

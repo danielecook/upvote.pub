@@ -82,9 +82,28 @@ a.thumbnail:hover {
     color: #d6d6d6;
 }
 
+.comment-vote {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.comment-vote a {
+    text-decoration: none;
+    color: #888;
+}
+
+.voted {
+    color: #277ae2 !important;
+}
+
 .comments-element {
     border-left: 1px dotted #e6e6e6;
     padding-left: 10px;
+    margin-bottom: 25px;
+    margin-left: 50px;
+    margin: 10px 0px 25px 50px;
 }
 
 .comment-body {
@@ -102,12 +121,6 @@ a.thumbnail:hover {
 
 .comments-tree {
     margin-left: -50px;
-}
-
-.comments-element {
-    margin-bottom: 25px;
-    margin-left: 50px;
-
 }
 
 .inverse-white-button {
@@ -154,11 +167,16 @@ a.thumbnail:hover {
 }
 
 .nested-submit-comment-button {
-    margin-left: 50px;
+    margin-left: 85px;
+    display: none;
 }
 
 .nested-submit-comment-button {
     display: none;
+}
+
+.block {
+    display: block;
 }
 
 .main-box {

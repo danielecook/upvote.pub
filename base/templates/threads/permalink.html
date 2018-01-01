@@ -43,7 +43,14 @@
 <div class="row comments-tree">
     {%- for comment in thread.get_comments() recursive %}
         <div class="comments-element" name="{{ comment.id }}"> 
-<a style="color: rgb(20, 132, 228);" href="javascript:void(0)" class="comment-vote-button">▲</a>
+
+        <div class='comment-vote'>
+            <a class="{% if comment.has_voted(g.user.id) %}voted {% endif %}comment-vote-button" href="javascript:void(0)" >▲</a>
+                      <div class="listing-votes-number">
+                          {{ comment.votes }}
+                      </div>
+        </div>
+
 
             <div class="post-listing-meta">
                 <a href="{{ url_for('users.user_profile', username=comment.user.username) }}">
@@ -70,18 +77,14 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
-$(document).ready(function() {
-    $(document).on('click', 'button.submit-comment', function() {
-        // We will submit user id data via session.
-        // Don't need to include parent comment because we are commenting 
-        // on a thread, not a comment!
+
+comment_submit = function() {
         var parent_id = "";
         var comment_text = "";
-        var not_nested =  $(this).hasClass('main-submit').toString();
+        var not_nested =  $(this).hasClass('main-submit')
         var $parent_comment = $(this).parent('div.comments-element');
-        // the logic is funky because we are using string booleans...
-        if (not_nested == 'false') {
-            // it is nested 
+        if (not_nested === false) {
+            {# nested #}
             parent_id = $(this).parent('div.comments-element').attr('name');
             $comment_box = $(this).parent('div.comments-element').children(
                 'textarea.nested-comment-text-box')
@@ -93,7 +96,7 @@ $(document).ready(function() {
             $comment_box.toggle();
 
         } else {
-            // it isn't nested
+            {# not nested #}
             $comment_box = $(this).parent('div.comment-form-parent').children(
                 'textarea.thread-comment-box');
             comment_text = $comment_box.val();
@@ -106,15 +109,17 @@ $(document).ready(function() {
         }
 
         var thread_id = "{{ thread.id }}";
-        var post_to = '/apis/comments/submit/';
         {% if user and user != None %}
-            $.post(post_to, { 
+            $.post("{{ url_for('apis.submit_comment') }}", { 
                 parent_id: parent_id, // empty if top-level (none)
                 thread_id: thread_id,
                 comment_text: comment_text },
                 function(response) {
                     var write_string = 
                         '<div class="comments-element" name="'+ response.comment_id + '">' +
+                        '<div class="comment-vote">' +
+                        '<a style="color:#888;" href="javascript:void(0)" class="comment-vote-button">▲</a>' +
+                        '<div class="listing-votes-number">1</div></div>' +
                         '<div class="post-listing-meta">' + 
                         '<a href="/users/{{ user.username }}/">' +
                         '<strong>{{ user.username }}</strong></a>' + 
@@ -126,31 +131,53 @@ $(document).ready(function() {
                         '<button class="btn btn-sm btn-primary submit-comment ' + 
                         'nested-submit-comment-button">Submit</button>';
 
-                    if (not_nested == 'true') {
+                    if (not_nested) {
                         $('div.comments-tree').prepend(write_string);
                     } else {
                         $parent_comment.append(write_string);
                     }
+                initialize();
                 }, 'json'
             );              
         {% else %}
             alert("You must be logged in to do that!");
         {% endif %}
-    });
+    }
 
-    $(document).on('click', '.comment-meta a', function(e) {
+comment_vote = function(e) {
+        {% if user and user != None %}
+        comment=$(this);
+        $.post("{{ url_for('apis.vote_comment') }}", {
+            comment_id: $(this).parent().parent().attr('name')
+            },
+            function(response) {
+                comment.parent().children(".listing-votes-number").text(response.votes);
+                comment.toggleClass('voted');
+            }
+        );
+        {% else %}
+            alert("You must be logged in to do that!")
+        {% endif %}
+    }
+
+initialize = function() {
+    $('.submit-comment').unbind();
+    $('.comment-meta a').unbind();
+    $(".comment-vote-button").unbind();
+    
+    $('.submit-comment').on('click', comment_submit);
+
+    $('.comment-meta a').on('click', function(e) {
         $(this).parent().parent().children('textarea.nested-comment-text-box').toggle();
-        $(this).parent().parent().children('button.nested-submit-comment-button').toggle();
+        $(this).parent().parent().children('button.nested-submit-comment-button').toggleClass('block');
     });
 
     {# Comment voting #}
+    $(".comment-vote-button").on('click', comment_vote);
+}
 
-    $("").on('click', function(e) {
-        $.post("{{ url_for('apis.vote_comment') }}", {
-
-        });
-    });
-
+$(document).ready(function() {
+    initialize();
 });
 </script>
 {% endblock %}

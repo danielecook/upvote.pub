@@ -190,7 +190,7 @@ class Thread(db.Model):
 class Comment(db.Model):
     """
     This class is here because comments can only be made on threads,
-    so it is contained completly in the threads module.
+    so it is contained in the threads module.
 
     Note the parent_id and children values. A comment can be commented
     on, so a comment has a one to many relationship with itself.
@@ -207,8 +207,8 @@ class Comment(db.Model):
     thread_id = db.Column(db.Integer, db.ForeignKey('threads_thread.id'))
 
     parent_id = db.Column(db.Integer, db.ForeignKey('threads_comment.id'))
-    children = db.relationship('Comment', backref=db.backref('parent',
-            remote_side=[id]), lazy='dynamic')
+    children = db.relationship('Comment',
+                               backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
     depth = db.Column(db.Integer, default=1) # start at depth 1
 
@@ -257,10 +257,47 @@ class Comment(db.Model):
             return arrow.get(self.updated_on).humanize()
 
 
-    def vote(self, direction):
+    def has_voted(self, user_id):
+        select_votes = comment_upvotes.select(
+                db.and_(
+                    comment_upvotes.c.user_id == user_id,
+                    comment_upvotes.c.comment_id == self.id
+                )
+        )
+        rs = db.engine.execute(select_votes)
+        return False if rs.rowcount == 0 else True
+
+
+    def vote(self, user_id):
         """
+            Add a vote from user id to a comment.
         """
-        pass
+        already_voted = self.has_voted(user_id)
+        vote_status = None
+        if not already_voted:
+            # vote up the thread
+            db.engine.execute(
+                comment_upvotes.insert(),
+                user_id = user_id,
+                comment_id = self.id
+            )
+            self.votes = self.votes + 1
+            vote_status = True
+        else:
+            # unvote the thread
+            db.engine.execute(
+                comment_upvotes.delete(
+                    db.and_(
+                        comment_upvotes.c.user_id == user_id,
+                        comment_upvotes.c.comment_id == self.id
+                    )
+                )
+            )
+            self.votes = self.votes - 1
+            vote_status = False
+        db.session.commit() # for the vote count
+        return vote_status
+        
 
     def comment_on(self):
         """

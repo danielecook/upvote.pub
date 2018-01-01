@@ -27,7 +27,7 @@ def before_request():
 
 def home_subreddit():
     logger.info(g.user)
-    if g.user:
+    if g.get('user'):
         subreddit_subs = g.user.subreddit_subs.get('subs')
         subs = Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness)) \
                            .filter(Subreddit.name.in_(subreddit_subs))
@@ -41,7 +41,7 @@ def get_subreddits():
     """
     Fetch user subreddits otherwise fetch a list of defaults
     """
-    if g.user:
+    if g.get('user'):
         subreddit_subs = g.user.subreddit_subs.get('subs')
         subreddits = Subreddit.query.filter(Subreddit.name.in_(subreddit_subs))
     else:
@@ -193,31 +193,34 @@ def register():
     return render_template("register.html", form=form, next=next)
 
 
-
 @mod.route('/subs/', methods=['GET', 'POST'])
 def view_all():
     """
     """
-    if request.form:
-        form = subreddit_subs(request.form)
-        if form.validate_on_submit():
-            form_subs = form.data.get('subs')
-            form_subs = list(set([x['sub_name'] for x in form_subs if x['value']]))
-            g.user.subreddit_subs = {'subs': form_subs}
-            flash("Updated Subs", 'success')
-            db.session.commit()
-    else:
-        form = subreddit_subs()
-        for subreddit in Subreddit.query.all():
-            sform = sub_form()
-            sform.sub_name = subreddit.name
-            sform.sub_group = subreddit.group
-            if g.user:
-                sform.value=subreddit.name in g.user.subreddit_subs['subs']
-            form.subs.append_entry(sform)
+    subreddit_list = Subreddit.query.all()
+    form = None
+    if g.user:
+        if request.form:
+            form = subreddit_subs(request.form)
+            if form.validate_on_submit():
+                form_subs = form.data.get('subs')
+                form_subs = list(set([x['sub_name'] for x in form_subs if x['value']]))
+                g.user.subreddit_subs = {'subs': form_subs}
+                flash("Updated Subs", 'success')
+                db.session.commit()
+        else:
+            form = subreddit_subs()
+            for subreddit in subreddit_list:
+                sform = sub_form()
+                sform.sub_name = subreddit.name
+                sform.sub_group = subreddit.group
+                if g.user:
+                    sform.value=subreddit.name in g.user.subreddit_subs['subs']
+                form.subs.append_entry(sform)
 
 
     return render_template('subreddits/subs.html',
                            cur_subreddit=None,
                            page_title='Subs',
-                           form=form)
+                           form=form,
+                           subreddit_list=subreddit_list)
