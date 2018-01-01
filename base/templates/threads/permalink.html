@@ -82,7 +82,7 @@ comment_submit = function() {
         var parent_id = "";
         var comment_text = "";
         var not_nested =  $(this).hasClass('main-submit')
-        var $parent_comment = $(this).parent('div.comments-element');
+        var parent_comment = $(this).parent('div.comments-element');
         if (not_nested === false) {
             {# nested #}
             parent_id = $(this).parent('div.comments-element').attr('name');
@@ -92,8 +92,8 @@ comment_submit = function() {
                 'button.nested-submit-comment-button');
             comment_text = $comment_box.val();
             $comment_box.val('');
-            $button_box.toggle();
-            $comment_box.toggle();
+            $button_box.toggleClass('block');
+            $comment_box.toggleClass('block');
 
         } else {
             {# not nested #}
@@ -126,7 +126,7 @@ comment_submit = function() {
                         ' ' + response.date + 
                         '</div>' +
                         '<p class="comment-body">' + response.comment_text + '</p>' + 
-                        ' <a href="javascript:void(0)" class="comment-meta">reply</a>' +
+                        '<div class="comment-meta"><a href="javascript:void(0)">reply</a></div>' +
                         '<textarea class="nested-comment-text-box form-control"></textarea>' +
                         '<button class="btn btn-sm btn-primary submit-comment ' + 
                         'nested-submit-comment-button">Submit</button>';
@@ -134,9 +134,8 @@ comment_submit = function() {
                     if (not_nested) {
                         $('div.comments-tree').prepend(write_string);
                     } else {
-                        $parent_comment.append(write_string);
+                        $(":nth-child(8)", parent_comment).first().after(write_string);
                     }
-                initialize();
                 }, 'json'
             );              
         {% else %}
@@ -161,19 +160,16 @@ comment_vote = function(e) {
     }
 
 initialize = function() {
-    $('.submit-comment').unbind();
-    $('.comment-meta a').unbind();
-    $(".comment-vote-button").unbind();
-    
-    $('.submit-comment').on('click', comment_submit);
+    $(document).on('click','.submit-comment', comment_submit);
 
-    $('.comment-meta a').on('click', function(e) {
-        $(this).parent().parent().children('textarea.nested-comment-text-box').toggle();
+    $(".comments-tree").on('click','.comment-meta a', function(e) {
+        console.log(e);
+        $(this).parent().parent().children('textarea.nested-comment-text-box').toggleClass('block');
         $(this).parent().parent().children('button.nested-submit-comment-button').toggleClass('block');
     });
 
     {# Comment voting #}
-    $(".comment-vote-button").on('click', comment_vote);
+    $(".comments-tree").on('click', ".comment-vote-button", comment_vote);
 }
 
 $(document).ready(function() {

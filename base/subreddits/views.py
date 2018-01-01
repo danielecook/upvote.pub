@@ -23,10 +23,9 @@ def before_request():
         g.user = User.query.get(session['user_id'])
 
 
+"""
 @mod.route('/subreddits/submit/', methods=['GET', 'POST'])
 def submit():
-    """
-    """
     if g.user is None:
         flash('You must be logged in to submit subreddits!', 'danger')
         return redirect(url_for('frontends.login', next=request.path))
@@ -54,6 +53,7 @@ def submit():
     return render_template('subreddits/submit_subreddit.html',
                            form=form,
                            page_title='Submit!')
+"""
 
 
 @mod.route('/delete/', methods=['GET', 'POST'])

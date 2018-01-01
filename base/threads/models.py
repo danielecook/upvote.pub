@@ -30,6 +30,7 @@ import datetime
 import arrow
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy import text
+from logzero import logger
 
 thread_upvotes = db.Table('thread_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
@@ -85,17 +86,18 @@ class Thread(db.Model):
     def __repr__(self):
         return '<Thread %r>' % (self.pub_title)
 
-    def get_comments(self, order_by='timestamp'):
+    def get_comments(self, order_by='votes'):
         """
         default order by timestamp
         return top level
         """
-        if order_by == 'timestamp':
-            return self.comments.filter_by(depth=1).\
+        if order_by == 'votes':
+            return self.comments.filter_by(depth=1). \
+                order_by(db.desc(Comment.votes)).all()[:THREAD.MAX_COMMENTS]
+        elif order_by == 'timestamp':
+            return self.comments.filter_by(depth=1). \
                 order_by(db.desc(Comment.created_on)).all()[:THREAD.MAX_COMMENTS]
-        else:
-            return self.comments.filter_by(depth=1).\
-                order_by(db.desc(Comment.created_on)).all()[:THREAD.MAX_COMMENTS]
+
 
     def get_status(self):
         """
@@ -234,15 +236,15 @@ class Comment(db.Model):
             self.depth = self.parent.depth + 1
             db.session.commit()
 
-    def get_comments(self, order_by='timestamp'):
+    def get_comments(self, order_by='votes'):
         """
-        default order by timestamp
+        default order by votes
         """
-        if order_by == 'timestamp':
-            return self.children.order_by(db.desc(Comment.created_on)).\
+        if order_by == 'votes':
+            return self.children.order_by(db.desc(Comment.votes)).\
                 all()[:THREAD.MAX_COMMENTS]
-        else:
-            return self.comments.order_by(db.desc(Comment.created_on)).\
+        elif order_by == 'timestamp':
+            return self.comments.order_by(db.desc(Comment.votes)).\
                 all()[:THREAD.MAX_COMMENTS]
 
 
