@@ -29,7 +29,7 @@ def submit_comment():
     """
     thread_id = int(request.form['thread_id'])
     comment_text = request.form['comment_text']
-    comment_parent_id = request.form['parent_id'] # empty means none
+    comment_parent_id = request.form['parent_id']  # empty means none
 
     if not comment_text:
         abort(404)
