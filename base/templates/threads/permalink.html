@@ -43,6 +43,8 @@
 <div class="row comments-tree">
     {%- for comment in thread.get_comments() recursive %}
         <div class="comments-element" name="{{ comment.id }}"> 
+<a style="color: rgb(20, 132, 228);" href="javascript:void(0)" class="comment-vote-button">▲</a>
+
             <div class="post-listing-meta">
                 <a href="{{ url_for('users.user_profile', username=comment.user.username) }}">
                     <strong>{{ comment.user.username }}</strong></a> {{ comment.pretty_date() }} 
@@ -139,6 +141,14 @@ $(document).ready(function() {
     $(document).on('click', '.comment-meta a', function(e) {
         $(this).parent().parent().children('textarea.nested-comment-text-box').toggle();
         $(this).parent().parent().children('button.nested-submit-comment-button').toggle();
+    });
+
+    {# Comment voting #}
+
+    $("").on('click', function(e) {
+        $.post("{{ url_for('apis.vote_comment') }}", {
+
+        });
     });
 
 });

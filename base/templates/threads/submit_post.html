@@ -6,17 +6,15 @@
   <form method="POST" action="." class="form bs-example form-horizontal">
     {{ form.csrf_token }}
     {{ render_field(form.pub_id, class="form-control", placeholder="DOI, PMID, PMCID, Arxiv or BioArxiv") }}
-    <br>
-    {{ render_field(form.text, class="form-control", placeholder="body text", style="height: 150px;") }}
-    <br>
-    <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
+    <br />
+    <div class='well'>
+    In order to submit to <strong>upvote.pub</strong>, you must submit a publication ID. The table examples table details the IDs supported. For more information on where to find these IDs see the <a href=''>FAQ</a>.
+    </div>
+    {#{{ render_field(form.text, class="form-control", placeholder="body text", style="height: 150px;") }}#}
+    <button type="submit" value="Submit" class="btn btn-primary btn-block">Submit</button>
   </form>
   </div>
   <div class='col-lg-6 col-md-6 col-sm-6'>
-
-<div class='well'>
-    In order to submit to <strong>upvote.pub</strong>, you must submit a publication ID. The table below details the IDs supported. For more information on where to find these IDs see the <a href=''>FAQ</a>.
-</div>
 
 <table class="table table-condensed table-hover">
     <thead>

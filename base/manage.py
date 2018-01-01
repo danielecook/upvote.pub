@@ -36,7 +36,7 @@ base_subreddits = {'biology': ['biochemistry',
                                'systems_biology'],
                    'statistics': ['stat_application',
                                   'stat_computation',
-                                  ('ml', 'machine_learning'),
+                                  'machine_learning',
                                   'stat_methods']
                   }
 

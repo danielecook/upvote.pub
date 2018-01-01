@@ -1,12 +1,13 @@
 {% extends "home.html" %}
 
 {% block left %}
-  <div class="col-lg-10 thread-submit-box">
+<div class="col-lg-10 thread-submit-box">
+
+{% if form %}
 <p>
     Select the topics you want to be subscribed to below. These will appear in the sidebar and pubs will be aggregated on the frontpage.
 </p>
 <form method="POST" action="." >
-
 {% for group, group_set in form.subs|groupby('sub_group.data') %}
 <h2>{{ group }}</h2>
 {{ form.csrf_token }}
@@ -21,8 +22,21 @@
 {% endfor %}
 <br />
 <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
-
 </form>
+{% else %}
+
+
+{% for group, group_set in subreddit_list|groupby('group') %}
+<h2>{{ group }}</h2>
+{% for sub in group_set %}
+{{ sub.name }}<br />
+
+{% endfor %}
+
+{% endfor %}
+
+
+{% endif %}
 
   </div>
 {% endblock %}
