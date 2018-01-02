@@ -94,7 +94,7 @@ def home():
     If not trending we order by creation date
     """
     trending = True if request.path.endswith('trending') else False
-    page_title = "Trending" if trending else "Welcome!"
+    page_title = "Trending" if trending else "Frontpage"
     thread_paginator = process_thread_paginator(trending=trending)
 
     return render_template('home.html',
@@ -221,6 +221,6 @@ def view_all():
 
     return render_template('subreddits/subs.html',
                            cur_subreddit=None,
-                           page_title='Subs',
+                           page_title='subs',
                            form=form,
                            subreddit_list=subreddit_list)

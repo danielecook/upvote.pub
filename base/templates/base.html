@@ -5,7 +5,7 @@
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <meta name="description" content="The front page of science!">
     <meta name="author" content="Lucas Ou-Yang">
-    <title>{% block title %}upvote.pub | The Front Page of Science!{% endblock %}</title>
+    <title>upvote.pub | {{ page_title }}</title>
     <meta name="keywords" content="science,publications,doi,pubmed,reddit,daniel e. cook">
 
     <!-- Bootstrap core CSS -->
@@ -28,7 +28,7 @@
 
   <body>
     <nav class="navbar navbar-default " role="navigation">
-      <div class="container">
+      <div class="container-fluid">
 
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" 
@@ -49,7 +49,7 @@
                   </a>
               </li>
               <li>
-                  <a href='{{ url_for('frontends.view_all') }}'>Subs</a>
+                  <a href='{{ url_for('frontends.view_all') }}'>subs</a>
               </li>
               {#<li>
                   <a href="/trending">Trending</a>
@@ -57,7 +57,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
           {% if user is not defined or user == None %}
-              <li><a href="{{ url_for('frontends.register', next=request.path) }}">Register</a></li>
+              <li><a href="{{ url_for('frontends.register', next=request.path) }}">Create Account</a></li>
               <li><a href="{{ url_for('frontends.login', next=request.path) }}">Login</a></li>
           {% else %}
               <li><a href="{{ url_for('users.user_profile', username=user.username) }}">
@@ -71,7 +71,7 @@
       </div><!-- /.container -->
     </nav>
 
-    <div class="container">
+    <div class="container-fluid">
 
       {% block content %}{% endblock %}
       
@@ -95,6 +95,10 @@
       {% if user %}
       gtag('set', {'user_id': "{{ user.username }}"});
       {% endif %}
+
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
 
     </script>
 

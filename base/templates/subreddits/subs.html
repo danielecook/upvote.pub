@@ -5,7 +5,7 @@
 
 {% if form %}
 <p>
-    Select the topics you want to be subscribed to below. These will appear in the sidebar and pubs will be aggregated on the frontpage.
+    Subs are topics you can subscribe to. Subscribing will make the Sub link available in your sidebar and aggregate its content on the <a href="{{ url_for('frontends.home') }}">frontpage</a>. Send suggestions for new subs to <a href='mailto:admin@upvote.pub'>admin@upvote.pub</a>.
 </p>
 <form method="POST" action="." >
 {% for group, group_set in form.subs|groupby('sub_group.data') %}
@@ -16,7 +16,7 @@
     {{ sub.sub_name }}
     {{ sub.sub_group }}
     {{ sub.value }}
-    <label for='{{ sub.value.name }}'>{{ sub.sub_name.data }}</label><br />
+    <label for='{{ sub.value.name }}'>{{ sub.sub_name.data }} - <a href="{{ url_for('subreddits.permalink', subreddit_name=sub.sub_name.data) }}">View</a></label><br />
     
 {% endfor %}
 {% endfor %}
@@ -29,7 +29,7 @@
 {% for group, group_set in subreddit_list|groupby('group') %}
 <h2>{{ group }}</h2>
 {% for sub in group_set %}
-{{ sub.name }}<br />
+<a href="{{ url_for('subreddits.permalink', subreddit_name=sub.name) }}">{{ sub.name }}</a><br />
 
 {% endfor %}
 

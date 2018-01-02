@@ -63,8 +63,6 @@ def submit(subreddit_name=None):
         pub_data = fetch_pub(pub_id)
         text = form.text.data.strip()
 
-        # Switch to using a validator for pub data -
-        # store results in redis...?
         if not pub_data:
             flash("Could not find a pub with the ID: '{}'".format(form.pub_id.data), 'danger')
             return render_template('threads/submit_post.html', form=form, cur_subreddit=subreddit.name)

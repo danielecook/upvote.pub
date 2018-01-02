@@ -3,8 +3,16 @@
  *  fairly organized!
  */
 
+p {
+    margin-left: 10px;
+}
+
 .well {
     background-color: #fff;
+}
+
+.jumbotron {
+    padding: 25px !important;
 }
 
 .listing-row {
@@ -141,7 +149,7 @@ a.thumbnail:hover {
 
 #sublist {
     list-style-type: none;
-    padding-left: 0px;
+    padding-left: 10px;
     margin-bottom: 21px;
 }
 

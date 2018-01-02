@@ -34,10 +34,8 @@ base_subreddits = {'biology': ['biochemistry',
                                'genomics',
                                'molecular_biology',
                                'systems_biology'],
-                   'statistics': ['stat_application',
-                                  'stat_computation',
-                                  'machine_learning',
-                                  'stat_methods']
+                   'statistics': ['statistics',
+                                  'machine_learning']
                   }
 
 

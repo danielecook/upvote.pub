@@ -12,6 +12,17 @@
     <hr />
     {% endif %}
 
+    {% if not g.user and request.path == '/' %}
+                <div class="jumbotron">
+                <p class="lead"><strong>upvote.pub</strong> allows users to browse, submit, vote on, and discuss noteworthy papers or preprints from <a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a>, <a href='https://arxiv.org/'>Arxiv</a>, <a href='https://www.biorxiv.org/'>BioArxiv</a>, or a <span data-toggle='tooltip' data-placement='bottom' title='Document Object Identifier'><a href='http://www.doi.org'>DOI</a></span>.</p>
+                
+                    <a class="btn btn-primary" href="{{ url_for('frontends.register') }}" role="button">Create account</a> <a class="btn btn-primary" href="{{ url_for('frontends.view_all') }}" role="button">Browse Subs</a>
+                </div>
+    {% elif g.user and request.path == '/' %}
+    <p>The frontpage aggregates pubs from all of the <a href="{{ url_for('frontends.view_all') }}">subs</a> you are subscribed to.</p><br />
+    {% endif %}
+
+
   <div id="messages-wrap">
     <div id="messages">
       {% for category, msg in get_flashed_messages(with_categories=true) %}
@@ -62,7 +73,7 @@
         </form>
         {% if cur_subreddit and cur_subreddit.name %}
             <a href="{{ url_for('threads.submit', subreddit_name=cur_subreddit.name) }}">
-                <button class="btn btn-primary btn-block submit-post-button">
+                <button class="btn btn-primary btn-block submit-post-button {% if not g.user %}disabled{% endif %}">
                     submit to {{ cur_subreddit.name }}</button>
             </a>
         {% endif %} 
@@ -73,9 +84,9 @@
 
     {% endblock %}
 
-    <h4 class="subreddit-desc">Subs</h4>
+    <h4 class="subreddit-desc">subs <span class='glyphicon glyphicon-question-sign' data-toggle='tooltip' data-placement='bottom' title="You are subscribed to the subs below."></span></h4>
     <ul id="sublist">
-        {% for subreddit in subreddits[:10] %}
+        {% for subreddit in subreddits %}
         {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
             <li><strong><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></strong></li>
         {% else %}

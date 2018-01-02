@@ -21,14 +21,12 @@
     </div>
     {% else %}
     <br>
-    <i>
         <a href="{{ url_for('frontends.login') }}">
             Login
         </a> or 
         <a href="{{ url_for('frontends.register') }}">
-            register
-        </a> to comment!
-    </i>
+            create account
+        </a> to comment
     {% endif %}
 </div>
 
@@ -44,24 +42,28 @@
     {%- for comment in thread.get_comments() recursive %}
         <div class="comments-element" name="{{ comment.id }}"> 
 
+        {% if g.user %}
         <div class='comment-vote'>
             <a class="{% if comment.has_voted(g.user.id) %}voted {% endif %}comment-vote-button" href="javascript:void(0)" >▲</a>
                       <div class="listing-votes-number">
                           {{ comment.votes }}
                       </div>
         </div>
+        {% endif %}
 
 
             <div class="post-listing-meta">
                 <a href="{{ url_for('users.user_profile', username=comment.user.username) }}">
-                    <strong>{{ comment.user.username }}</strong></a> {{ comment.pretty_date() }} 
+                    <strong>{{ comment.user.username }}</strong></a> {{ comment.user.university }} - {{ comment.pretty_date() }} 
             </div>
             <p class="comment-body">{{ comment.text }}</p>
+            {% if g.user %}
             <div class='comment-meta'><a href="javascript:void(0)">reply</a></div>
 
             <textarea class="nested-comment-text-box form-control"></textarea>
             <button class="btn btn-sm btn-primary submit-comment nested-submit-comment-button">
                 Submit</button>
+            {% endif %}
         {%- if comment.get_comments() -%}
             {{ loop(comment.get_comments()) }}
         {%- endif %}
