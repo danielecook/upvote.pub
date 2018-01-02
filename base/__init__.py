@@ -51,6 +51,8 @@ app.register_blueprint(apis_module)
 from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
 
+from base.meta.views import mod as meta_module
+app.register_blueprint(meta_module)
 
 from base.frontends.views import get_subreddits
 @app.context_processor

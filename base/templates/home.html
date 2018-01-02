@@ -76,7 +76,7 @@
     <h4 class="subreddit-desc">Subs</h4>
     <ul id="sublist">
         {% for subreddit in subreddits[:10] %}
-        {% if subreddit.name == cur_subreddit.name %}
+        {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
             <li><strong><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></strong></li>
         {% else %}
             <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>

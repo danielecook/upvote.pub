@@ -23,47 +23,6 @@ def before_request():
         g.user = User.query.get(session['user_id'])
 
 
-"""
-@mod.route('/subreddits/submit/', methods=['GET', 'POST'])
-def submit():
-    if g.user is None:
-        flash('You must be logged in to submit subreddits!', 'danger')
-        return redirect(url_for('frontends.login', next=request.path))
-
-    form = SubmitForm(request.form)
-    user_id = g.user.id
-
-    if form.validate_on_submit():
-        name = form.name.data.strip()
-        desc = form.desc.data.strip()
-
-        subreddit = Subreddit.query.filter_by(name=name).first()
-        if subreddit:
-            flash('subreddit already exists!', 'danger')
-            return render_template('subreddits/submit_subreddit.html', form=form, user=g.user,
-                subreddits=get_subreddits())
-        new_subreddit = Subreddit(name=name, desc=desc, admin_id=user_id)
-
-        return render_template('subreddits/submit_subreddit.html', form=form)
-
-        db.session.add(new_subreddit)
-        db.session.commit()
-
-        return redirect(url_for('subreddits.permalink', subreddit_name=new_subreddit.name))
-    return render_template('subreddits/submit_subreddit.html',
-                           form=form,
-                           page_title='Submit!')
-"""
-
-
-@mod.route('/delete/', methods=['GET', 'POST'])
-def delete():
-    """
-    """
-    pass
-
-
-
 @mod.route('/<subreddit_name>/', methods=['GET'])
 def permalink(subreddit_name=""):
     """
