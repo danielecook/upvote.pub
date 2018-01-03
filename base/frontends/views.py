@@ -111,17 +111,18 @@ def search():
     query = request.args.get('query')
     page_title=f"Search results for '{query}'"
     rs = search_module.search(query, orderby='creation', search_title=True,
-            search_text=True, limit=100)
+            search_text=True)
 
     thread_paginator = process_thread_paginator(rs=rs)
-    rs = rs.all()
-    num_searches = len(rs)
+    #rs = rs.all()
+    num_searches = rs.count()
     subreddits = get_subreddits()
 
     return render_template('home.html',
                             page_title=page_title,
                             cur_subreddit=home_subreddit(),
-                            thread_paginator=thread_paginator, num_searches=num_searches)
+                            thread_paginator=thread_paginator,
+                            num_searches=num_searches)
 
 
 @mod.route('/login/', methods=['GET', 'POST'])

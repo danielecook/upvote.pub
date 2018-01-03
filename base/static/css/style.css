@@ -61,6 +61,7 @@ a.thumbnail:hover {
 /* pub */
 .pub_authors, .pub_line {
     font-size: small;
+    color: #467298;
 }
 
 .pub_links a, .comment-meta a {

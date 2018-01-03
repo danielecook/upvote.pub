@@ -5,28 +5,22 @@ on user queries.
 """
 from base.threads.models import Thread, Comment
 from base import db
+from sqlalchemy_fulltext import FullTextSearch
+import sqlalchemy_fulltext.modes as FullTextMode
+
 
 def search(query, orderby='creation', filter_user=None, search_title=True,
-            search_text=True, subreddit=None, limit=100):
+            search_text=True, subreddit=None):
     """
     search for threads (and maybe comments in the future)
     """
     if not query:
         return []
     query = query.strip()
-    base_query = '%' + query + '%'
 
-    base_qs = Thread.query
 
-    title_clause = Thread.pub_title.like(base_query) if search_title else False
-    text_clause = Thread.pub_authors.like(base_query) if search_text else False
+    base_qs = Thread.query.filter(FullTextSearch(query, Thread, FullTextMode.NATURAL))
 
-    # TODO: Searching by subreddit requires joining, leave out for now.
-    # subreddit_clause = Thread.subreddit.name.like(subreddit.name) if subreddit else False
-
-    or_clause = db.or_(title_clause, text_clause)
-
-    base_qs = base_qs.filter(or_clause)
 
     if orderby == 'creation':
         base_qs = base_qs.order_by(db.desc(Thread.created_on))
@@ -35,5 +29,4 @@ def search(query, orderby='creation', filter_user=None, search_title=True,
     elif orderby == 'numb_comments':
         pass
 
-    base_qs = base_qs.limit(limit)
     return base_qs

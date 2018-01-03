@@ -32,6 +32,9 @@ from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy import text
 from base.utils.misc import now
 from logzero import logger
+from sqlalchemy_fulltext import FullText, FullTextSearch
+import sqlalchemy_fulltext.modes as FullTextMode
+
 
 thread_upvotes = db.Table('thread_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
@@ -44,12 +47,15 @@ comment_upvotes = db.Table('comment_upvotes',
 )
 
 
-class Thread(db.Model):
+class Thread(FullText, db.Model):
     """
     We will mimic reddit, with votable threads. Each thread may have either
     a body text or a link, but not both.
     """
     __tablename__ = 'threads_thread'
+    __fulltext_columns__ = ('pub_title',
+                            'pub_authors',
+                            'pub_abstract',)
     id = db.Column(db.Integer, primary_key=True)
 
     # Publication information
@@ -191,7 +197,7 @@ class Thread(db.Model):
         return vote_status
 
 
-class Comment(db.Model):
+class Comment(FullText, db.Model):
     """
     This class is here because comments can only be made on threads,
     so it is contained in the threads module.
@@ -204,6 +210,7 @@ class Comment(db.Model):
         A comment can refer to its parent comment (if exists) with 'parent'
     """
     __tablename__ = 'threads_comment'
+    __fulltext_columns__ = ('text',)
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(THREAD.MAX_BODY), default=None)
 

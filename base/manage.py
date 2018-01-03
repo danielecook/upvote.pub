@@ -20,6 +20,7 @@ from base import db
 from base.users.models import *
 from base.threads.models import *
 from base.subreddits.models import *
+from base.utils.pubs import fetch_pub
 
 from base import app
 
@@ -109,3 +110,15 @@ def swot():
     with open('base/static/data/school_directory.pkl', 'wb') as f:
         f.write(pickle.dumps(school_directory))
 
+@app.cli.command()
+def create_pub():
+    """
+        For debugging purposes really
+    """
+    for i in range(1000,3000):
+        pub_data = fetch_pub(str(i))
+        if pub_data:
+            thread = Thread(user_id=1, subreddit_id=1, **pub_data)
+
+            db.session.add(thread)
+            db.session.commit()

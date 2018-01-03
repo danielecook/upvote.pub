@@ -15,7 +15,7 @@ from dateutil.parser import parse
 from base.async.tasks import process_pdf_task
 from base.utils.pub_ids import id_type, get_pub_thread
 from sqlalchemy import or_
-
+from metapub.exceptions import InvalidPMID
 
 
 def fetch_pubmed(pub_id, id_type = "pmid"):
@@ -32,7 +32,7 @@ def fetch_pubmed(pub_id, id_type = "pmid"):
     elif id_type == "pmid":
         try:
             result = pm.article_by_pmid(pub_id)
-        except AttributeError:
+        except (AttributeError, InvalidPMID):
             return None
     elif id_type == "pmc":
         try:
@@ -170,7 +170,7 @@ def fetch_pub(pub_id):
         thumbnail = process_pdf_task(pub)
 
     # Strip periods
-    pub['pub_title'] = pub['pub_title'].strip(".")
+    pub['pub_title'] = pub['pub_title'].strip(".")[:300]
 
     # Format authors
     logger.info(pub['pub_authors'])
