@@ -6,7 +6,7 @@ from base.utils.file_utils import (download_pdf,
                                    pdf_to_thumb,
                                    sha1_file)
 from base.utils.bioarxiv import fetch_bioarxiv
-from base.utils.gs import google_storage
+from base.utils.gcloud import google_storage
 from base.utils.pub_ids import id_type, get_pub_thread
 from base import db, app
 from logzero import logger

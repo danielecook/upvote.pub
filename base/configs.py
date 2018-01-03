@@ -3,22 +3,17 @@ import datetime
 from redis import Redis
 from datetime import timedelta
 from redis import Redis, ConnectionPool
-
+from gcloud import datastore
+from base.utils.gcloud import get_item
 
 class base_config(object):
     JSON_SORT_KEYS = False
     BRAND = "upvote.pub"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    
 
 class local(base_config):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
-    RECAPTCHA_USE_SSL = False
-    RECAPTCHA_PUBLIC_KEY = ''
-    RECAPTCHA_PRIVATE_KEY = ''
-    RECAPTCHA_OPTIONS = {'theme': 'white'}
-
     DEBUG = True
     CSRF_ENABLED = True
     CSRF_SESSION_KEY = "eNr24cD79[KpDe;vbZ9t"
@@ -39,19 +34,28 @@ class local(base_config):
     SESSION_COOKIE_PATH='/'
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = False
-    SESSION_COOKIE_NAME = 'flask_session'
+    SESSION_COOKIE_NAME = 'upvote_pub_debug'
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     PERMANENT_SESSION_LIFETIME = timedelta(days=1000)
 
 
-class TestConfig(object):
-    SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://xxxxxxxxxxxxxxxxx'
-    SQLALCHEMY_ECHO = False
+class staging(object):
+    DEBUG = False
+    SESSION_COOKIE_NAME = 'upvote-staging'
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SECURE = True
+    SQLALCHEMY_ECHO = True
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
 
 
-class ProductionConfig(object):
+class production(object):
+    DEBUG = False
     SQLALCHEMY_ECHO = False
     DEBUG = False
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    SESSION_COOKIE_NAME = 'upvote'
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SECURE = True
+    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')

@@ -170,7 +170,7 @@ def fetch_pub(pub_id):
         thumbnail = process_pdf_task(pub)
 
     # Strip periods
-    pub['pub_title'] = pub['pub_title'].strip(".")[:300]
+    pub['pub_title'] = pub['pub_title'].strip(".")
 
     # Format authors
     logger.info(pub['pub_authors'])

@@ -34,6 +34,7 @@ from base.utils.misc import now
 from logzero import logger
 from sqlalchemy_fulltext import FullText, FullTextSearch
 import sqlalchemy_fulltext.modes as FullTextMode
+from sqlalchemy.orm import validates
 
 
 thread_upvotes = db.Table('thread_upvotes',
@@ -93,6 +94,15 @@ class Thread(FullText, db.Model):
 
     def __repr__(self):
         return '<Thread %r>' % (self.pub_title)
+
+
+    @validates('pub_title', 'pub_authors', 'pub_abstract', 'pub_journal')
+    def truncate(self, key, value):
+        max_len = getattr(self.__class__, key).prop.columns[0].type.length
+        if value and len(value) > max_len:
+            return value[:max_len]
+        return value
+
 
     def get_comments(self, order_by='votes'):
         """

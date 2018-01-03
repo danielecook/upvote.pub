@@ -4,12 +4,14 @@ All code for scraping images and videos from posted
 links go in this file.
 """
 import requests
-from click import echo, style
+import click
+from click import secho
 import os
 import sys
 import shutil
 import readline
 import pickle
+from base import configs
 from collections import defaultdict
 from subprocess import Popen, PIPE
 
@@ -40,10 +42,17 @@ base_subreddits = {'biology': ['biochemistry',
                   }
 
 
+def staging_app(info):
+    from base import app
+    return app(config=os.environ.get('WIKI_CONFIG', 'wikiconfig.py'))
+
+
 @app.cli.command()
-def initdb():
+@click.argument('env', type=click.Choice(['local', 'staging', 'production']))
+def initdb(env):
     """Initialize the ID database"""
-    echo('Init the db')
+    app.config.from_object(getattr(configs, env))
+    secho(f"Init the db -- {env}", fg='green')
     db.drop_all()
     db.create_all()
     first_user = User(username='dec', email='dec@u.northwestern.edu', \
@@ -70,16 +79,26 @@ def initdb():
 
 
 @app.cli.command()
-def create_subreddit():
-    first_subreddit = Subreddit(name='frontpage', desc='Welcome to Reddit! Here is our homepage.',
-            admin_id=first_user.id)
+@click.argument('env', type=click.Choice(['local', 'staging', 'production']))
+@click.argument('name')
+@click.argument('group')
+def create_subreddit(env, name, group):
+    """
+        Add a new subreddit
+    """
+    app.config.from_object(getattr(configs, env))
+    secho(f"Adding a subreddit -- {env}", fg='green')
+    add_sub = Subreddit(name=name, group=group, admin_id=1)
 
-    db.session.add(first_subreddit)
+    db.session.add(add_sub)
     db.session.commit()
 
 
 @app.cli.command()
 def worker():
+    """
+        Run the huey worker
+    """
     comm=['huey_consumer.py','-w','4','--logfile', 'tasks.log', 'base.async.tasks.huey']
     Popen(comm).communicate()
 
@@ -87,7 +106,7 @@ def worker():
 @app.cli.command()
 def swot():
     """ Generate school affiliation database """
-    echo(style('Generating school/university affiliations', fg='green'))
+    secho('Generating school/university affiliations', fg='green')
     out, err = Popen(['git','clone','https://github.com/leereilly/swot'],
                       stdout=PIPE,
                       stderr=PIPE).communicate()
