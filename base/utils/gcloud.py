@@ -35,7 +35,8 @@ def get_item(kind, name):
         returns item by kind and name
     """
     ds = google_datastore()
-    return ds.get(ds.key(kind, name))
+    result = ds.get(ds.key(kind, name))
+    return {k:v for k,v in result.items() if v}
 
 
 

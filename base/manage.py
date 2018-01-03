@@ -11,6 +11,8 @@ import sys
 import shutil
 import readline
 import pickle
+import redis
+import IPython
 from base import configs
 from collections import defaultdict
 from subprocess import Popen, PIPE
@@ -25,7 +27,7 @@ from base.subreddits.models import *
 from base.utils.pubs import fetch_pub
 
 from base import app
-
+from base.utils.gcloud import get_item
 
 
 base_subreddits = {'biology': ['biochemistry',
@@ -40,11 +42,6 @@ base_subreddits = {'biology': ['biochemistry',
                    'statistics': ['statistics',
                                   'machine_learning']
                   }
-
-
-def staging_app(info):
-    from base import app
-    return app(config=os.environ.get('WIKI_CONFIG', 'wikiconfig.py'))
 
 
 @app.cli.command()
@@ -104,6 +101,16 @@ def worker():
 
 
 @app.cli.command()
+@click.argument('env', type=click.Choice(['local', 'staging', 'production']))
+def remote_redis(env):
+    """
+        Launches a python terminal with redis available
+    """
+    r = redis.Redis(**get_item('credential', 'redis-{}'.format(env)))
+    IPython.embed(user_ns=locals())
+
+
+@app.cli.command()
 def swot():
     """ Generate school affiliation database """
     secho('Generating school/university affiliations', fg='green')
@@ -128,6 +135,7 @@ def swot():
     shutil.rmtree("swot")
     with open('base/static/data/school_directory.pkl', 'wb') as f:
         f.write(pickle.dumps(school_directory))
+
 
 @app.cli.command()
 def create_pub():

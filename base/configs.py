@@ -6,10 +6,12 @@ from redis import Redis, ConnectionPool
 from gcloud import datastore
 from base.utils.gcloud import get_item
 
+
 class base_config(object):
     JSON_SORT_KEYS = False
     BRAND = "upvote.pub"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 
 class local(base_config):
@@ -25,10 +27,6 @@ class local(base_config):
                                            port=REDIS_PORT,
                                            db=REDIS_DB_NAME)
     REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
-    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"  # For cache
-    REDIS_USER = ""
-    REDIS_PASSWORD = None
-    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"  # For cache
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     SECRET_KEY = 's'
     SESSION_COOKIE_PATH='/'
@@ -47,7 +45,10 @@ class staging(object):
     SESSION_COOKIE_SECURE = True
     SQLALCHEMY_ECHO = True
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
     SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
+    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
+    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 
 
 class production(object):
@@ -58,4 +59,7 @@ class production(object):
     SESSION_COOKIE_NAME = 'upvote'
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = True
+    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
     SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
+    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
+    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
