@@ -99,8 +99,9 @@ class Thread(FullText, db.Model):
     @validates('pub_title', 'pub_authors', 'pub_abstract', 'pub_journal')
     def truncate(self, key, value):
         max_len = getattr(self.__class__, key).prop.columns[0].type.length
-        if value and len(value) > max_len:
-            return value[:max_len]
+        if value and max_len:
+            if len(value) > max_len:
+                return value[:max_len]
         return value
 
 

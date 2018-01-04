@@ -18,12 +18,8 @@ readiness_check:
   timeout_sec: 4
   failure_threshold: 2
   success_threshold: 2
-  app_start_timeout_sec: 300
+  app_start_timeout_sec: 30
 
-handlers:
-- url: /favicon\.ico
-  static_files: favicon.ico
-  upload: favicon\.ico
-
-- url: .*
-  script: main.app
+env_variables:
+  FLASK_APP: /app/base/__init__.py
+  VERSION: staging-0-0

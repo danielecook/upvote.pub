@@ -15,7 +15,7 @@ from base import configs
 
 app = Flask(__name__, static_url_path='/static')
 
-STAGE, VERSION_NUM = os.environ.get('CURRENT_VERSION_ID').split("-", 1)
+STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
 
 app.config.from_object(getattr(configs, STAGE))
 

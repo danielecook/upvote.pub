@@ -10,7 +10,7 @@ from logzero import logger
 
 logger.info("Loading Config")
 
-STAGE, VERSION_NUM = os.environ.get('CURRENT_VERSION_ID').split("-", 1)
+STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
 
 class base_config(object):
     JSON_SORT_KEYS = False
