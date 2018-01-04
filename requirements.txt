@@ -22,7 +22,6 @@ Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.9.4
 future==0.16.0
 gcloud==0.18.3
-gitdata==0.0.0
 googleapis-common-protos==1.5.3
 gunicorn==18.0
 httplib2==0.10.3
@@ -68,7 +67,6 @@ simplegeneric==0.8.1
 six==1.11.0
 SQLAlchemy==1.2.0
 SQLAlchemy-FullText-Search==0.2.3
-swot-python==1.1.1
 tabulate==0.8.2
 tldextract==2.0.2
 tox==2.9.1

@@ -14,7 +14,10 @@ from slugify import slugify
 from base import configs
 
 app = Flask(__name__, static_url_path='/static')
-app.config.from_object(getattr(configs, os.environ['APP_CONFIG']))
+
+STAGE, VERSION_NUM = os.environ.get('CURRENT_VERSION_ID').split("-", 1)
+
+app.config.from_object(getattr(configs, STAGE))
 
 toolbar = DebugToolbarExtension(app)
 
