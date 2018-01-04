@@ -1,5 +1,20 @@
-flask\_reddit
-=============
+Upvote.pub
+---
+
+__Interactive__
+
+```
+docker run -it --rm --env-file <(cat .envrc | grep -v '#' | cut -f 2 -d ' ')  -p 8080:8080 -h 127.0.0.1  -t upvote:latest  /bin/bash
+
+# Then run:
+supervisord -c supervisord.conf
+```
+
+__Non-interactive__
+```
+docker run -d --rm --env-file <(cat .envrc | grep -v '#' | cut -f 2 -d ' ')  -p 8080:8080 -h 127.0.0.1  -t upvote:latest
+```
+
 
 **base** is an extendable + minimalist [Reddit](http://reddit.com) clone.
 

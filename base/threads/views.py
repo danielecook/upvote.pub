@@ -49,7 +49,7 @@ def submit(subreddit_name=None):
     # Check if pub has already been submitted
     if form.pub_id.data:
         thread = get_pub_thread(form.pub_id.data)
-        logger.info(form.pub_id.data)
+        logger.debug(form.pub_id.data)
         if thread:
             flash('That pub has already been submitted!', 'warning')
             return redirect(url_for('threads.thread_permalink',

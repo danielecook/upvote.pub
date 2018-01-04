@@ -20,5 +20,10 @@ readiness_check:
   success_threshold: 2
   app_start_timeout_sec: 300
 
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
 - url: .*
-  script: base.app
+  script: main.app

@@ -6,7 +6,7 @@ Lucas Ou -- http://lucasou.com
 """
 import os
 from logzero import logger
-from flask import Flask, render_template, url_for, g
+from flask import Flask, render_template, url_for, g, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.routing import BaseConverter
@@ -38,6 +38,10 @@ def not_found(error):
 def not_found(error):
     return render_template('500.html'), 500
 
+@app.route("/_ah/health")
+@app.route("/ready")
+def ready():
+    return Response("Yep!")
 
 from base.users.views import mod as users_module
 app.register_blueprint(users_module)

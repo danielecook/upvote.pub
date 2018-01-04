@@ -1,4 +1,5 @@
 from gcloud import datastore, storage
+from logzero import logger
 
 
 def google_datastore():
@@ -34,6 +35,7 @@ def get_item(kind, name):
     """
         returns item by kind and name
     """
+    logger.info("Retrieving {} {}".format(kind, name))
     ds = google_datastore()
     result = ds.get(ds.key(kind, name))
     return {k:v for k,v in result.items() if v}

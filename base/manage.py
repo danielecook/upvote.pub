@@ -84,7 +84,7 @@ def create_subreddit(env, name, group):
         Add a new subreddit
     """
     app.config.from_object(getattr(configs, env))
-    secho(f"Adding a subreddit -- {env}", fg='green')
+    secho(f"Adding subreddit -- {env}", fg='green')
     add_sub = Subreddit(name=name, group=group, admin_id=1)
 
     db.session.add(add_sub)
@@ -112,7 +112,9 @@ def remote_redis(env):
 
 @app.cli.command()
 def swot():
-    """ Generate school affiliation database """
+    """
+        Generate school affiliation database
+    """
     secho('Generating school/university affiliations', fg='green')
     out, err = Popen(['git','clone','https://github.com/leereilly/swot'],
                       stdout=PIPE,
