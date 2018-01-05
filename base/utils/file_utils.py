@@ -1,8 +1,9 @@
+import os
 import requests
 import hashlib
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, mkdtemp
 from subprocess import Popen
-
+from logzero import logger
 
 BUFFER_SIZE = 65336
 
@@ -42,8 +43,12 @@ def pdf_to_thumb(fname, sha1_fname):
         for the URL provided for a PDF
     """
     thumbnail_fname = sha1_fname + ".thumb.png"
+    thumbnail_fname = os.path.join(mkdtemp(), thumbnail_fname)
     comm = ['convert', '-strip', '-quality',
             '95', '-thumbnail', '200',
             fname + "[0]", thumbnail_fname]
+    logger.info(comm)
     out, err = Popen(comm).communicate()
+    if err:
+        logger.error(err)
     return thumbnail_fname

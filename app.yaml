@@ -3,7 +3,7 @@ env: flex
 entrypoint: /usr/bin/supervisord -c /app/supervisord.conf
 
 runtime_config:
-  python_version: 3
+  python_version: 3.6
 
 manual_scaling:
   instances: 1

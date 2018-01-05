@@ -88,9 +88,9 @@
     <ul id="sublist">
         {% for subreddit in subreddits %}
         {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
-            <li><strong><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></strong></li>
+            <li><strong><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></strong></li>
         {% else %}
-            <li><a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a></li>
+            <li><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></li>
         {% endif %}
         {% endfor %}
     </ul>

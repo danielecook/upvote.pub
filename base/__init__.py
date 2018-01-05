@@ -12,8 +12,13 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.routing import BaseConverter
 from slugify import slugify
 from base import configs
+from flask_sslify import SSLify
+# Ignore leading slash of urls; skips must use start of path
 
 app = Flask(__name__, static_url_path='/static')
+
+# Disable strict slashes
+app.url_map.strict_slashes = False
 
 STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
 
@@ -30,6 +35,10 @@ app.logger.addHandler(handler)
 
 app.config.from_object(getattr(configs, STAGE))
 
+if STAGE in ['staging', 'production']:
+    sslify = SSLify(app)
+
+
 toolbar = DebugToolbarExtension(app)
 
 db = SQLAlchemy(app)
@@ -43,18 +52,19 @@ app.url_map.converters['regex'] = RegexConverter
 
 @app.errorhandler(404)
 def not_found(error):
-    app.logger.error('404 error: %s', (e))
+    app.logger.error('404 error: %s', (error))
     return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def not_found(error):
-    app.logger.error('500 error: %s', (e))
+    app.logger.error('500 error: %s', (error))
     return render_template('500.html'), 500
 
 @app.errorhandler(Exception)
-def unhandled_exception(e):
-    app.logger.error('Unhandled Exception: %s', (e))
-    return render_template('500.htm'), 500
+def unhandled_exception(error):
+    app.logger.error('Unhandled Exception: %s', (error))
+    return render_template('404.html'), 404
+
 
 @app.route("/readiness_check")
 @app.route("/liveness_check")

@@ -101,7 +101,7 @@ def worker():
 
 
 @app.cli.command()
-@click.argument('env', type=click.Choice(['local', 'staging', 'production']))
+@click.argument('env', type=click.Choice(['locoal', 'staging', 'production']))
 def remote_redis(env):
     """
         Launches a python terminal with redis available

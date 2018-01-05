@@ -7,7 +7,8 @@ curl \
 git \
 supervisor \
 imagemagick \
-ghostscript
+ghostscript \
+redis-server
 
 # Create a virtualenv for dependencies. This isolates these packages from
 # system-level packages.

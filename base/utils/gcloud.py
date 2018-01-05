@@ -1,5 +1,5 @@
-from gcloud import datastore, storage
-from logzero import logger
+from gcloud import datastore, storage, logging
+#from logzero import logger
 
 
 def google_datastore():
@@ -35,7 +35,7 @@ def get_item(kind, name):
     """
         returns item by kind and name
     """
-    logger.info("Retrieving {} {}".format(kind, name))
+    #logger.info("Retrieving {} {}".format(kind, name))
     ds = google_datastore()
     result = ds.get(ds.key(kind, name))
     return {k:v for k,v in result.items() if v}
@@ -47,3 +47,8 @@ def google_storage():
         Fetch google storage credentials
     """
     return storage.Client(project='upvote-189514')
+
+
+def logger():
+    client = logging.Client()
+    return client
