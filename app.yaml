@@ -1,6 +1,6 @@
 runtime: custom
 env: flex
-entrypoint: /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/null
+entrypoint: /usr/bin/supervisord -c /app/supervisord.conf
 
 runtime_config:
   python_version: 3
