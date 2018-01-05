@@ -1,6 +1,6 @@
 runtime: custom
 env: flex
-entrypoint: gunicorn -b :$PORT base:app
+entrypoint: /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/null
 
 runtime_config:
   python_version: 3
