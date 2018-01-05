@@ -17,6 +17,17 @@ app = Flask(__name__, static_url_path='/static')
 
 STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
 
+# Setup logging
+import logging
+from google.cloud import logging as gcloud_logging
+from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+logging_client = gcloud_logging.Client()
+log_name = f"upvote.pub-{STAGE}-{VERSION_NUM}"
+handler = CloudLoggingHandler(logging_client, name = log_name)
+setup_logging(handler, log_level=logging.INFO)
+
+app.logger.addHandler(handler)
+
 app.config.from_object(getattr(configs, STAGE))
 
 toolbar = DebugToolbarExtension(app)
@@ -32,12 +43,21 @@ app.url_map.converters['regex'] = RegexConverter
 
 @app.errorhandler(404)
 def not_found(error):
+    app.logger.error('404 error: %s', (e))
     return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def not_found(error):
+    app.logger.error('500 error: %s', (e))
     return render_template('500.html'), 500
 
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    app.logger.error('Unhandled Exception: %s', (e))
+    return render_template('500.htm'), 500
+
+@app.route("/readiness_check")
+@app.route("/liveness_check")
 @app.route("/_ah/health")
 @app.route("/ready")
 def ready():
