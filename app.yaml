@@ -18,8 +18,11 @@ readiness_check:
   timeout_sec: 4
   failure_threshold: 2
   success_threshold: 2
-  app_start_timeout_sec: 30
+  app_start_timeout_sec: 120
 
 env_variables:
   FLASK_APP: /app/base/__init__.py
   VERSION: staging-0-0
+
+beta_settings:
+    cloud_sql_instances: upvote-189514:us-central1:upvote
