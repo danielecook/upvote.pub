@@ -47,6 +47,9 @@ if STAGE == 'local':
 
 elif STAGE == 'staging':
     class staging(base_config):
+        TESTING = True
+        TRAP_HTTP_EXCEPTIONS = True
+        TRAP_BAD_REQUEST_ERRORS = True
         DEBUG = False
         SESSION_COOKIE_NAME = 'upvote-staging'
         SESSION_COOKIE_HTTPONLY = True
@@ -54,6 +57,7 @@ elif STAGE == 'staging':
         SQLALCHEMY_ECHO = True
         MAX_CONTENT_LENGTH = 16 * 1024 * 1024
         CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+        SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
         SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
         REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
         REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
@@ -62,12 +66,14 @@ elif STAGE == 'production':
     class production(base_config):
         DEBUG = False
         SQLALCHEMY_ECHO = False
-        DEBUG = False
+        TESTING = False
         MAX_CONTENT_LENGTH = 16 * 1024 * 1024
         SESSION_COOKIE_NAME = 'upvote'
         SESSION_COOKIE_HTTPONLY = True
         SESSION_COOKIE_SECURE = True
         CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+        SECRET_KEY = get_item('credential', 'secret-production').get('secret')
         SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
         REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
         REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+
