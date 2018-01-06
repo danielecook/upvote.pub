@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="col-md-9">
+<div class="col-md-9 col-sm-9">
     {% if page_title %}
 
               {% if num_searches is defined %}
@@ -14,7 +14,7 @@
 
     {% if not g.user and request.path == '/' %}
                 <div class="jumbotron">
-                <p class="lead"><strong>upvote.pub</strong> allows users to browse, submit, vote on, and discuss noteworthy papers or preprints from <a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a>, <a href='https://arxiv.org/'>Arxiv</a>, <a href='https://www.biorxiv.org/'>BioArxiv</a>, or a <span data-toggle='tooltip' data-placement='bottom' title='Document Object Identifier'><a href='http://www.doi.org'>DOI</a></span>.</p>
+                <p class="lead"><strong>upvote.pub</strong> allows users to browse, submit, vote on, and discuss noteworthy papers or preprints from <a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a>, <a href='https://arxiv.org/'>arXiv</a>, <a href='https://www.biorxiv.org/'>BioRrxiv</a>, or a <span data-toggle='tooltip' data-placement='bottom' title='Document Object Identifier'><a href='http://www.doi.org'>DOI</a></span>.</p>
                 
                     <a class="btn btn-primary" href="{{ url_for('frontends.register') }}" role="button">Create account</a> <a class="btn btn-primary" href="{{ url_for('frontends.view_all') }}" role="button">Browse Subs</a>
                 </div>
@@ -55,7 +55,7 @@
   {% endblock %}
 </div>
 
-<div class="col-md-3">
+<div class="col-md-3 col-sm-3">
   {% block right %}
     {% if user is defined and user != None %}
         <!-- -->
@@ -71,9 +71,9 @@
                     placeholder="Search">
             </div>
         </form>
-        {% if cur_subreddit and cur_subreddit.name %}
+        {% if cur_subreddit and cur_subreddit.name and request.endpoint != 'threads.submit' %}
             <a href="{{ url_for('threads.submit', subreddit_name=cur_subreddit.name) }}">
-                <button class="btn btn-primary btn-block submit-post-button {% if not g.user %}disabled{% endif %}">
+                <button class="btn btn-primary btn-block submit-post-button">
                     submit to {{ cur_subreddit.name }}</button>
             </a>
         {% endif %} 

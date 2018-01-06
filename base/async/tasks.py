@@ -52,7 +52,7 @@ def process_pdf_task(pub):
 
 
 
-@huey.periodic_task(crontab(minute='*/1'), always_eager=True)
+@huey.periodic_task(crontab(minute='*/30'), always_eager=True)
 def store_bioarxiv():
     """
         Stores URLS for bioarxiv articles
