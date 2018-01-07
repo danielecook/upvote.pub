@@ -23,6 +23,9 @@ CREATE TABLE `comment_upvotes` (
 """
 import datetime
 import arrow
+import markdown2
+import bleach
+import re
 from base import db
 from base.threads import constants as THREAD
 from base import utils
@@ -33,8 +36,9 @@ from sqlalchemy import text
 from base.utils.misc import now
 from logzero import logger
 from sqlalchemy_fulltext import FullText, FullTextSearch
+from flask import Markup
 import sqlalchemy_fulltext.modes as FullTextMode
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, reconstructor
 
 
 thread_upvotes = db.Table('thread_upvotes',
@@ -232,21 +236,32 @@ class Comment(FullText, db.Model):
     children = db.relationship('Comment',
                                backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
-    depth = db.Column(db.Integer, default=1) # start at depth 1
+    depth = db.Column(db.Integer, default=1)  # start at depth 1
 
     created_on = db.Column(db.DateTime, default=now)
     updated_on = db.Column(db.DateTime, default=now)
 
     votes = db.Column(db.Integer, default=1)
 
+    @reconstructor
+    def setup_fields(self):
+        logger.info(self.text + " MARKDOWN")
+        link_patterns=[(re.compile(r'((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+(:[0-9]+)?|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)'),r'\1')]
+        clean_text = bleach.clean(self.text)
+        markdown_text = markdown2.markdown(clean_text,
+                                           extras = ['fenced-code-blocks',
+                                                     'fenced-code-blocks',
+                                                     'nofollow',
+                                                     'target-blank-links',
+                                                     'toc',
+                                                     'tables',
+                                                     'footnotes',
+                                                     'link-patterns'],
+                                           link_patterns=link_patterns)
+        self.text =  Markup(markdown_text)
+
     def __repr__(self):
         return '<Comment %r>' % (self.text[:25])
-
-    def __init__(self, thread_id, user_id, text, parent_id=None):
-        self.thread_id = thread_id
-        self.user_id = user_id
-        self.text = text
-        self.parent_id = parent_id
 
     def set_depth(self):
         """
@@ -267,7 +282,6 @@ class Comment(FullText, db.Model):
             return self.comments.order_by(db.desc(Comment.votes)).\
                 all()[:THREAD.MAX_COMMENTS]
 
-
     def pretty_date(self, typeof='created'):
         """
         returns a humanized version of the raw age of this thread,
@@ -280,7 +294,6 @@ class Comment(FullText, db.Model):
         elif typeof == 'updated':
             return arrow.get(self.updated_on, 'UTC').humanize()
 
-
     def has_voted(self, user_id):
         select_votes = comment_upvotes.select(
                 db.and_(
@@ -290,7 +303,6 @@ class Comment(FullText, db.Model):
         )
         rs = db.engine.execute(select_votes)
         return False if rs.rowcount == 0 else True
-
 
     def vote(self, user_id):
         """
@@ -319,9 +331,8 @@ class Comment(FullText, db.Model):
             )
             self.votes = self.votes - 1
             vote_status = False
-        db.session.commit() # for the vote count
+        db.session.commit()  # for the vote count
         return vote_status
-        
 
     def comment_on(self):
         """

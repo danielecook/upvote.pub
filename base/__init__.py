@@ -23,15 +23,15 @@ app.url_map.strict_slashes = False
 STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
 
 # Setup logging
-import logging
-from google.cloud import logging as gcloud_logging
-from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
-logging_client = gcloud_logging.Client()
-log_name = f"upvote.pub-{STAGE}-{VERSION_NUM}"
-handler = CloudLoggingHandler(logging_client, name = log_name)
-setup_logging(handler, log_level=logging.INFO)
+# import logging
+# from google.cloud import logging as gcloud_logging
+# from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+# logging_client = gcloud_logging.Client()
+# log_name = f"upvote.pub-{STAGE}-{VERSION_NUM}"
+# handler = CloudLoggingHandler(logging_client, name = log_name)
+# setup_logging(handler, log_level=logging.INFO)
 
-app.logger.addHandler(handler)
+#app.logger.addHandler(handler)
 
 app.config.from_object(getattr(configs, STAGE))
 

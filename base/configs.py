@@ -24,6 +24,7 @@ if STAGE == 'local':
     class local(base_config):
         DEBUG_TB_INTERCEPT_REDIRECTS = False
         DEBUG = True
+        TESTING = True
         CSRF_ENABLED = True
         CSRF_SESSION_KEY = "eNr24cD79[KpDe;vbZ9t"
         HOST = "docker.for.mac.localhost" if os.environ.get('IS_DOCKER') else "127.0.0.1"
