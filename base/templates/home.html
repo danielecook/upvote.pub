@@ -40,18 +40,18 @@
                     {{ render_pub(thread, user, slugify) }}
               {% endfor %}
 
-              <ul class="pager">
+              <div class='pagination'>
                     {% if thread_paginator.has_prev %}
-                        <li><a href="?page={{ thread_paginator.prev_num }}">prev</a></li>
+                        <a href="?page={{ thread_paginator.prev_num }}">prev</a>
                     {% else %}
-                        <li style="opacity:0.3;"><a>prev</a></li>
+                        <a style="opacity:0.3;">prev</a>
                     {% endif %}
                     {% if thread_paginator.has_next %}
-                        <li><a href="?page={{ thread_paginator.next_num }}">next</a></li>
+                        <a href="?page={{ thread_paginator.next_num }}">next</a>
                     {% else %}
-                        <li style="opacity:0.3;"><a>next</a></li>
+                        <a style="opacity:0.3;">next</a>
                     {% endif %}
-              </ul>
+              </div>
   {% endblock %}
 </div>{# col-md-9 #}
 

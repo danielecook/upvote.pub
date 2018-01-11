@@ -17,7 +17,7 @@
     <div class="comment-form-parent">
         <textarea class="form-control thread-comment-box"></textarea>
         <input name=csrf_token type=hidden value="{{ csrf_token() }}"> 
-        {{ session['csrf_token']}}
+        <small class='pull-right'>Markdown allowed</small>
         <button class="btn btn-sm btn-primary submit-comment main-submit">
                 Submit</button>
     </div>

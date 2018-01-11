@@ -23,8 +23,6 @@ CREATE TABLE `comment_upvotes` (
 """
 import datetime
 import arrow
-import markdown2
-import bleach
 import re
 from base import db
 from base.threads import constants as THREAD
@@ -39,6 +37,7 @@ from sqlalchemy_fulltext import FullText, FullTextSearch
 from flask import Markup
 import sqlalchemy_fulltext.modes as FullTextMode
 from sqlalchemy.orm import validates, reconstructor
+from base.utils.text_utils import format_comment
 
 
 thread_upvotes = db.Table('thread_upvotes',
@@ -245,25 +244,7 @@ class Comment(FullText, db.Model):
 
     @reconstructor
     def setup_fields(self):
-        # DOI
-        # PMC
-        # Arxiv
-        # BioArxiv
-        link_patterns=[(re.compile(r'ggg'), r'\1'),
-                       (re.compile(r'pmid:([0-9]+)', re.I), r'https://www.ncbi.nlm.nih.gov/pubmed/\1'),
-                       (re.compile(r'((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+(:[0-9]+)?|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)'),r'\1')]
-        clean_text = bleach.clean(self.text)
-        markdown_text = markdown2.markdown(clean_text,
-                                           extras = ['fenced-code-blocks',
-                                                     'fenced-code-blocks',
-                                                     'nofollow',
-                                                     'target-blank-links',
-                                                     'toc',
-                                                     'tables',
-                                                     'footnotes',
-                                                     'link-patterns'],
-                                           link_patterns=link_patterns)
-        self.text =  Markup(markdown_text)
+        self.text = format_comment(self.text)
 
     def __repr__(self):
         return '<Comment %r>' % (self.text[:25])

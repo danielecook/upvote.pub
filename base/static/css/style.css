@@ -37,10 +37,6 @@ a {
     color: #1484e4;
 }
 
-a:hover {
-    text-decoration: none;
-}
-
 a.listing-title:visited {
     color: #551a8b;
 }
@@ -213,6 +209,10 @@ a.thumbnail:hover {
 .thread-submit-box {
     padding-left: 0px;
     margin-bottom: 40px;
+}
+
+.thread-submit-box input, .thread-submit-box a {
+    margin-left: 25px;
 }
 
 .thread-submit-title {
@@ -462,4 +462,8 @@ h1 {
 
 label {
     font-weight: 500;
+}
+
+.pagination {
+    margin-left: 25px;
 }

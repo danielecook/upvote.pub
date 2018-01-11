@@ -12,6 +12,7 @@ from base.users.models import User
 from base.threads.models import Thread, Comment
 from base.users.decorators import requires_login
 from base.utils.misc import generate_csrf_token
+from base.utils.text_utils import format_comment
 
 mod = Blueprint('apis', __name__, url_prefix='/apis')
 
@@ -51,7 +52,8 @@ def submit_comment():
                                  comment_parent_id,
                                  g.user.id)
 
-    return jsonify(comment_text=comment.text,
+
+    return jsonify(comment_text=format_comment(comment.text),
                    date=comment.pretty_date(),
                    username=g.user.username,
                    comment_id=comment.id,
