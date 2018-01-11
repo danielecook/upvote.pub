@@ -14,7 +14,7 @@
 
     {% if not g.user and request.path == '/' %}
                 <div class="jumbotron">
-                <p class="lead"><strong>upvote.pub</strong> allows users to browse, submit, vote on, and discuss noteworthy papers or preprints from <a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a>, <a href='https://arxiv.org/'>arXiv</a>, <a href='https://www.biorxiv.org/'>BioRrxiv</a>, or a <span data-toggle='tooltip' data-placement='bottom' title='Document Object Identifier'><a href='http://www.doi.org'>DOI</a></span>.</p>
+                <p class="lead"><strong>upvote.pub</strong> allows users to browse, submit, upvote, and discuss noteworthy papers or preprints from <a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a>, <a href='https://arxiv.org/'>arXiv</a>, <a href='https://www.biorxiv.org/'>BioRrxiv</a>, or listed with a <span data-toggle='tooltip' data-placement='bottom' title='Document Object Identifier'><a href='http://www.doi.org'>DOI</a></span>.</p>
                 
                     <a class="btn btn-primary" href="{{ url_for('frontends.register') }}" role="button">Create account</a> <a class="btn btn-primary" href="{{ url_for('frontends.view_all') }}" role="button">Browse Subs</a>
                 </div>
@@ -31,7 +31,7 @@
       </div>
       {% endfor %}
     </div>
-  </div>
+  </div>{# /messages-wrap #}
 
   {% block left %}
         {% from "macros.html" import render_pub %}
@@ -40,7 +40,7 @@
                     {{ render_pub(thread, user, slugify) }}
               {% endfor %}
 
-              <ul class="pager text-center">
+              <ul class="pager">
                     {% if thread_paginator.has_prev %}
                         <li><a href="?page={{ thread_paginator.prev_num }}">prev</a></li>
                     {% else %}
@@ -53,16 +53,10 @@
                     {% endif %}
               </ul>
   {% endblock %}
-</div>
+</div>{# col-md-9 #}
 
 <div class="col-md-3 col-sm-3">
   {% block right %}
-    {% if user is defined and user != None %}
-        <!-- -->
-    {% else %}
-        <!-- <h4 class="pre-reg-info">Please register or login to post!</h4>-->
-    {% endif %}
-
     {% block create_buttons %}
 
         <form method="GET" action="/search/" class="" role="search">
@@ -85,15 +79,15 @@
     {% endblock %}
 
     <h4 class="subreddit-desc">subs <span class='glyphicon glyphicon-question-sign' data-toggle='tooltip' data-placement='bottom' title="You are subscribed to the subs below."></span></h4>
-    <ul id="sublist">
-        {% for subreddit in subreddits %}
-        {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
-            <li><strong><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></strong></li>
-        {% else %}
-            <li><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></li>
-        {% endif %}
-        {% endfor %}
-    </ul>
+        <ul id="sublist">
+            {% for subreddit in subreddits %}
+            {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
+                <li><strong><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></strong></li>
+            {% else %}
+                <li><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></li>
+            {% endif %}
+            {% endfor %}
+        </ul>
   {% endblock %}
 </div>
 
@@ -101,6 +95,17 @@
 
 {% block scripts %}
 <script type="text/javascript">
+
+var csrf_token;
+fetch_csrf = function() {
+    if (typeof csrf_token != "undefined") {
+        return csrf_token;
+    } else {
+        {# initial csrf token #}
+        return '{{ csrf_token() }}'
+    }
+}
+
 $(document).ready(function() {
     $(document).on('click', 'a.listing-vote-button', function() {
         var $vote_button = $(this); // cache this! can't access in callback!
@@ -114,8 +119,13 @@ $(document).ready(function() {
             $vote_button.attr("data-voted", "true");
         }
         {% if user is defined and user != None %}
-            $.post(post_to, { thread_id: thread_id },
+            $.post(post_to, 
+                { 
+                    thread_id: thread_id,
+                    csrf_token: fetch_csrf()
+                },
                 function(response) {
+                    csrf_token = response['csrf_token'];
                     var new_vote_count = response.new_votes.toString();
                     var vote_status = response.vote_status;
                     $vote_button.parent().

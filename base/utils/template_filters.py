@@ -1,7 +1,8 @@
 from base import app
 
+
 @app.template_filter('pluralize')
-def pluralize(number, singular = '', plural = 's'):
+def pluralize(number, singular='', plural='s'):
     if number == 1:
         return singular
     else:

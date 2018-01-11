@@ -103,7 +103,9 @@
                 <small><a href="{{ thread.pub_biorxiv_url }}" class='pub_id'>bioRxiv {{ thread.pub_biorxiv }}</a></small>
             {% endif %}
 
-            <small>{{ thread.hotness }}</small>
+            {% if config.DEBUG %}
+                <small>{{ thread.hotness }}</small>
+            {% endif %}
 
         
         </div>

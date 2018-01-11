@@ -9,16 +9,9 @@
 
 
 <h4 class="profile-label">Recent submissions</h4>
+{% from "macros.html" import render_pub %}
 {% for thread in current_user.threads.all()[-7:]|reverse  %}
-    <p>
-    <a class="profile-listing" href="{{ url_for('threads.thread_permalink', subreddit_name=thread.subreddit.name, thread_id=thread.id, title=slugify(thread.pub_title)) }}">{{ thread.pub_title }}</a>
-        <br>
-        <span class="profile-listing-inline">{{ thread.pretty_date() }} in 
-        <a href="{{ url_for('subreddits.permalink', subreddit_name = thread.subreddit.name) }}">
-            {{ thread.subreddit.name }}
-        </a>
-        </span>
-    </p>
+    {{ render_pub(thread, user, slugify) }}
 {% endfor %}
 
 <h4 class="profile-label">Recent comments</h4>

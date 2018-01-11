@@ -72,16 +72,20 @@
     </nav>
 
     <div class="container-fluid">
-
-      {% block content %}{% endblock %}
-      
-
-      <div class="row" class="" id="footer-row">
-          <div class="col-lg-12">
-          </div>
+      <div class='row'>
+            {% block content %}{% endblock %}
       </div>
-
     </div><!-- /.container -->
+
+    <div class='container-fluid'>
+    <div class="row" class="" id="footer-row">
+      <div class="col-lg-12">
+        <hr />
+        upvote.pub — <a href='#'>Terms of Service</a> — <a href='#'>Privacy Policy</a>
+      </div>
+    </div>
+    </div>
+
 
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-39176354-3"></script>

@@ -245,8 +245,13 @@ class Comment(FullText, db.Model):
 
     @reconstructor
     def setup_fields(self):
-        logger.info(self.text + " MARKDOWN")
-        link_patterns=[(re.compile(r'((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+(:[0-9]+)?|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)'),r'\1')]
+        # DOI
+        # PMC
+        # Arxiv
+        # BioArxiv
+        link_patterns=[(re.compile(r'ggg'), r'\1'),
+                       (re.compile(r'pmid:([0-9]+)', re.I), r'https://www.ncbi.nlm.nih.gov/pubmed/\1'),
+                       (re.compile(r'((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+(:[0-9]+)?|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)'),r'\1')]
         clean_text = bleach.clean(self.text)
         markdown_text = markdown2.markdown(clean_text,
                                            extras = ['fenced-code-blocks',

@@ -50,20 +50,21 @@ class RegexConverter(BaseConverter):
 
 app.url_map.converters['regex'] = RegexConverter
 
-@app.errorhandler(404)
-def not_found(error):
-    app.logger.error('404 error: %s', (error))
-    return render_template('404.html'), 404
+if not app.debug:
+    @app.errorhandler(404)
+    def not_found(error):
+        app.logger.error('404 error: %s', (error))
+        return render_template('404.html', page_title="404 Error"), 404
 
-@app.errorhandler(500)
-def not_found(error):
-    app.logger.error('500 error: %s', (error))
-    return render_template('500.html'), 500
+    @app.errorhandler(500)
+    def not_found(error):
+        app.logger.error('500 error: %s', (error))
+        return render_template('500.html', page_title="500 Error"), 500
 
-@app.errorhandler(Exception)
-def unhandled_exception(error):
-    app.logger.error('Unhandled Exception: %s', (error))
-    return render_template('404.html'), 404
+    @app.errorhandler(Exception)
+    def unhandled_exception(error):
+        app.logger.error('Unhandled Exception: %s', (error))
+        return render_template('404.html', page_title="Error"), 404
 
 
 @app.route("/readiness_check")
@@ -73,28 +74,37 @@ def unhandled_exception(error):
 def ready():
     return Response("Yep!")
 
+
 from base.users.views import mod as users_module
 app.register_blueprint(users_module)
+
 
 from base.threads.views import mod as threads_module
 app.register_blueprint(threads_module)
 
+
 from base.frontends.views import mod as frontends_module
 app.register_blueprint(frontends_module)
+
 
 from base.apis.views import mod as apis_module
 app.register_blueprint(apis_module)
 
+
 from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
+
 
 from base.meta.views import mod as meta_module
 app.register_blueprint(meta_module)
 
+
 from base.frontends.views import get_subreddits
+from base.utils.misc import generate_csrf_token
 @app.context_processor
 def inject():
-    return dict(slugify=slugify,
+    return dict(csrf_token=generate_csrf_token,
+                slugify=slugify,
                 subreddits=get_subreddits(),
                 user=g.get('user'))
 
@@ -104,11 +114,6 @@ from base.manage import (initdb, swot)
 # Template filters
 from base.utils import template_filters
 
-def custom_render(template, *args, **kwargs):
-    """
-    custom template rendering including some base vars
-    """
-    return render_template(template, *args, **kwargs)
 
 app.debug = app.config['DEBUG']
 

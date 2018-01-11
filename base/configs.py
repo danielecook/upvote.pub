@@ -16,6 +16,7 @@ class base_config(object):
     JSON_SORT_KEYS = False
     BRAND = "upvote.pub"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SENDGRID_API_KEY = get_item('credential', 'sendgrid')
 
 
 # Use conditional logic here to prevent app from loading datastore items

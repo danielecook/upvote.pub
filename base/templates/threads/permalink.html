@@ -15,7 +15,9 @@
     {% if user is defined and user != None %}
     <h5>Submit a comment</h5>
     <div class="comment-form-parent">
-        <textarea class="form-control thread-comment-box"></textarea>       
+        <textarea class="form-control thread-comment-box"></textarea>
+        <input name=csrf_token type=hidden value="{{ csrf_token() }}"> 
+        {{ session['csrf_token']}}
         <button class="btn btn-sm btn-primary submit-comment main-submit">
                 Submit</button>
     </div>
@@ -61,6 +63,7 @@
             <div class='comment-meta'><a href="javascript:void(0)">reply</a></div>
 
             <textarea class="nested-comment-text-box form-control"></textarea>
+            <input name=_csrf_token type=hidden value="{{ session['_csrf_token'] }}">
             <button class="btn btn-sm btn-primary submit-comment nested-submit-comment-button">
                 Submit</button>
             {% endif %}
@@ -115,8 +118,11 @@ comment_submit = function() {
             $.post("{{ url_for('apis.submit_comment') }}", { 
                 parent_id: parent_id, // empty if top-level (none)
                 thread_id: thread_id,
-                comment_text: comment_text },
+                comment_text: comment_text,
+                csrf_token: fetch_csrf() },
                 function(response) {
+                    csrf_token = response['csrf_token'];
+
                     var write_string = 
                         '<div class="comments-element" name="'+ response.comment_id + '">' +
                         '<div class="comment-vote">' +
@@ -149,9 +155,11 @@ comment_vote = function(e) {
         {% if user and user != None %}
         comment=$(this);
         $.post("{{ url_for('apis.vote_comment') }}", {
-            comment_id: $(this).parent().parent().attr('name')
+            comment_id: $(this).parent().parent().attr('name'),
+            csrf_token: fetch_csrf()
             },
             function(response) {
+                csrf_token = response['csrf_token'];
                 comment.parent().children(".listing-votes-number").text(response.votes);
                 comment.toggleClass('voted');
             }

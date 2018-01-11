@@ -11,8 +11,10 @@ from base import db
 from base.users.models import User
 from base.threads.models import Thread, Comment
 from base.users.decorators import requires_login
+from base.utils.misc import generate_csrf_token
 
 mod = Blueprint('apis', __name__, url_prefix='/apis')
+
 
 @mod.before_request
 def before_request():
@@ -21,12 +23,22 @@ def before_request():
         g.user = User.query.get(session['user_id'])
 
 
+@mod.before_request
+def csrf_protect():
+    if request.method == "POST":
+        token = session.pop('csrf_token', None)
+        print(token, request.form, session)
+        if not token or token != request.form.get('csrf_token'):
+            abort(403)
+
+
 @mod.route('/comments/submit/', methods=['POST'])
 @requires_login
 def submit_comment():
     """
     Submit comments via ajax
     """
+
     thread_id = int(request.form['thread_id'])
     comment_text = request.form['comment_text']
     comment_parent_id = request.form['parent_id']  # empty means none
@@ -42,7 +54,8 @@ def submit_comment():
     return jsonify(comment_text=comment.text,
                    date=comment.pretty_date(),
                    username=g.user.username,
-                   comment_id=comment.id)
+                   comment_id=comment.id,
+                   csrf_token=generate_csrf_token())
 
 
 @mod.route('/threads/vote/', methods=['POST'])
@@ -59,7 +72,9 @@ def vote_thread():
 
     thread = Thread.query.get_or_404(int(thread_id))
     vote_status = thread.vote(user_id=user_id)
-    return jsonify(new_votes=thread.votes, vote_status=vote_status)
+    return jsonify(new_votes=thread.votes,
+                   vote_status=vote_status,
+                   csrf_token=generate_csrf_token())
 
 
 @mod.route('/comments/vote/', methods=['POST'])
@@ -77,5 +92,6 @@ def vote_comment():
     comment = Comment.query.get_or_404(int(comment_id))
     comment.vote(user_id=user_id)
     logger.info(comment.votes)
-    return jsonify(votes=comment.votes)
+    return jsonify(votes=comment.votes,
+                   csrf_token=generate_csrf_token())
 

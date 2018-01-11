@@ -13,6 +13,7 @@ from base.frontends.views import get_subreddits
 from base import db
 from base.utils.pubs import fetch_pub
 from base.utils.pub_ids import id_type, get_pub_thread
+from base.utils.misc import random_string
 
 
 mod = Blueprint('threads', __name__, url_prefix='/r')
@@ -97,10 +98,15 @@ def edit():
     pass
 
 
+
+
 @mod.route('/<string:subreddit_name>/<int:thread_id>/<path:title>/', methods=['GET', 'POST'])
 def thread_permalink(subreddit_name, thread_id, title):
     """
     """
+    from base.utils.email import send_email
+    send_email("test", "Great " + title, "danielecook@gmail.com")
+
     thread_id = thread_id or -99
     thread = Thread.query.get_or_404(int(thread_id))
     subreddit = Subreddit.query.filter_by(name=subreddit_name).first()
