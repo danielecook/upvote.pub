@@ -17,7 +17,7 @@ huey = RedisHuey('upvote',
                  connection_pool=app.config['REDIS_CONNECTION_POOL'])
 
 
-@huey.task()
+@huey.task(retires = 3)
 def process_pdf_task(pub):
     """
         This task processes a PDF and generates a thumbnail preview of it.
