@@ -109,6 +109,7 @@ def thread_permalink(subreddit_name, thread_id, title):
     thread = Thread.query.get_or_404(int(thread_id))
     subreddit = Subreddit.query.filter_by(name=subreddit_name).first()
     return render_template('threads/permalink.html',
+                           html_title=thread.pub_title,
                            user=g.user,
                            thread=thread,
                            cur_subreddit=subreddit)

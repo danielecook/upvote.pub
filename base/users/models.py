@@ -28,7 +28,7 @@ class User(db.Model):
     status = db.Column(db.SmallInteger, default=USER.ALIVE)
     role = db.Column(db.SmallInteger, default=USER.USER)
 
-    subreddit_subs = db.Column(db.JSON, default={"subs": ['bioinformatics', 'genomics', 'evolution']})
+    subreddit_subs = db.Column(db.JSON, default={"subs": ['bioinformatics', 'genomics', 'evolution', 'machine_learning']})
 
     def __repr__(self):
         return '<User %r>' % (self.username)
