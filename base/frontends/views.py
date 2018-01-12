@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 """
-from flask import (Blueprint, request, render_template, flash,
-    g, session, redirect, url_for)
+import os
+import markdown2
+from flask import (Blueprint,
+                   request,
+                   render_template,
+                   flash, g,
+                   session,
+                   redirect,
+                   url_for,
+                   abort,
+                   Markup)
 from werkzeug import check_password_hash, generate_password_hash
 from logzero import logger
 from base import db
@@ -100,6 +109,27 @@ def home():
                            page_title=page_title,
                            cur_subreddit=home_subreddit(),
                            thread_paginator=thread_paginator)
+
+
+@mod.route('/h/<string:page>')
+def render_markdown(page):
+    page = f"base/markdown/{page}.md"
+    if not os.path.exists(page):
+        abort(404)
+    with open(page, 'r') as f:
+        content = f.read()
+        print(content)
+        page = markdown2.markdown(content,
+                                  extras = ['fenced-code-blocks',
+                                                     'nofollow',
+                                                     'target-blank-links',
+                                                     'toc',
+                                                     'tables',
+                                                     'footnotes',
+                                                     'metadata'])
+    return render_template('markdown.html',
+                           page=page,
+                           **page.metadata)
 
 
 @mod.route('/search/', methods=['GET'])

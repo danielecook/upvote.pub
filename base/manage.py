@@ -48,7 +48,15 @@ base_subreddits = {'biology': ['biochemistry',
 @click.argument('env', type=click.Choice(['local', 'staging', 'production']))
 def initdb(env):
     """Initialize the ID database"""
+    # Mock environment
     app.config.from_object(getattr(configs, env))
+
+    # Remove socket connection
+    if env in ['staging', 'production']:
+        remote_url = get_item('credential', f"sql-{env}").get('remote_url')
+        secho(remote_url, fg='green')
+        app.config['SQLALCHEMY_DATABASE_URI'] = remote_url
+
     secho(f"Init the db -- {env}", fg='green')
     db.drop_all()
     db.create_all()

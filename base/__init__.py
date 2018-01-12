@@ -95,10 +95,6 @@ from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
 
 
-from base.meta.views import mod as meta_module
-app.register_blueprint(meta_module)
-
-
 from base.frontends.views import get_subreddits
 from base.utils.misc import generate_csrf_token
 @app.context_processor

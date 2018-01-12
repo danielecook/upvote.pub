@@ -38,7 +38,7 @@ a {
 }
 
 a.listing-title:visited {
-    color: #551a8b;
+    color: #6666ff;
 }
 
 a.thumbnail:hover {
@@ -55,6 +55,15 @@ a.thumbnail:hover {
 }
 
 /* pub */
+
+.downloaded {
+    color: #551a8b !important;
+}
+
+.downloaded .pub_thumb {
+    border: 1px solid #551a8b;
+}
+
 .pub_authors, .pub_line {
     font-size: small;
     color: #467298;
@@ -470,4 +479,9 @@ label {
 
 .pagination {
     margin-left: 25px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-left: 10px;
 }

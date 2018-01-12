@@ -30,6 +30,7 @@ from logzero import logger
 from sqlalchemy_fulltext import FullText, FullTextSearch
 from sqlalchemy.orm import validates, reconstructor
 from base.utils.text_utils import format_comment
+from base.utils.query import get_or_create
 
 
 thread_upvotes = db.Table('thread_upvotes',
@@ -41,6 +42,22 @@ comment_upvotes = db.Table('comment_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
     db.Column('comment_id', db.Integer, db.ForeignKey('threads_comment.id'))
 )
+
+
+class Publication_Download(db.Model):
+    __tablename__ = 'publication_download'
+    __table_args__ = (
+                        db.UniqueConstraint('user_id',
+                                            'publication_id',
+                                            name='_pub_download_track'),
+                     )
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
+    publication_id = db.Column(db.Integer, db.ForeignKey('publication.id'))
+    datetime_on = db.Column(db.DateTime, default=now)
+
+    publication = db.relationship('Publication', back_populates='downloads')
 
 
 class Publication(FullText, db.Model):
@@ -78,6 +95,27 @@ class Publication(FullText, db.Model):
     pub_thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
 
     threads = db.relationship('Thread', back_populates='publication')
+    downloads = db.relationship('Publication_Download', back_populates='publication')
+
+
+    @property
+    def download_count(self):
+        return db.session.query(Publication_Download) \
+                         .filter(Publication_Download.publication_id == self.id) \
+                         .count()
+
+    @property
+    def pub_id(self):
+        if self.pub_pmid:
+            return self.pub_pmid
+        elif self.pub_pmc:
+            return f"PMC{self.pub_pmc}"
+        elif self.pub_arxiv:
+            return f"arxiv-{self.pub_arxiv}"
+        elif self.pub_biorxiv:
+            return f"biorxiv-{self.pub_biorxiv}"
+        else:
+            return self.pub_doi
 
     @validates('pub_title', 'pub_authors', 'pub_abstract', 'pub_journal')
     def truncate(self, key, value):
@@ -88,8 +126,30 @@ class Publication(FullText, db.Model):
         return value
 
 
+    def mark_downloaded(self, user_id):
+        """
+            Marks a publication as having been downloaded.
+        """
+        td = Publication_Download(user_id=user_id, publication_id=self.id)
+        td, exists = get_or_create(Publication_Download, user_id=user_id, publication_id= self.id)
+
+
+    def has_downloaded(self, user_id):
+        """
+            Has the user downloaded the PDF?
+        """
+        rs = Publication_Download.query.filter(
+                db.and_(
+                    Publication_Download.user_id == user_id,
+                    Publication_Download.publication_id == self.id
+                )
+        )
+        return True if rs.first() else False
+
+
     def __repr__(self):
         return '<Publication %r>' % (self.pub_title)
+
 
 class Thread(db.Model):
     """
@@ -197,6 +257,7 @@ class Thread(db.Model):
         )
         rs = db.engine.execute(select_votes)
         return False if rs.rowcount == 0 else True
+
 
     def vote(self, user_id):
         """

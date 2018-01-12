@@ -8,7 +8,7 @@
     {{ render_field(form.pub_id, class="form-control", placeholder="DOI, PMID, PMCID, arXiv or bioRxiv") }}
     <br />
     <div class='well'>
-    In order to submit to <strong>upvote.pub</strong>, you must submit a publication ID. The examples table details the IDs supported. For more information on where to find these IDs see the <a href=''>FAQ</a>.
+    In order to submit to <strong>upvote.pub</strong>, you must submit a publication ID. The examples table details the IDs supported. For more information on where to find these IDs see the <a href='{{ url_for("frontends.render_markdown", page='faq') }}'>FAQ</a>.
     </div>
     {#{{ render_field(form.text, class="form-control", placeholder="body text", style="height: 150px;") }}#}
     <button type="submit" value="Submit" class="btn btn-primary btn-block">Submit</button>

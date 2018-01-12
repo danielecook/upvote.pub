@@ -6,7 +6,7 @@ from flask import (Blueprint, request, render_template, flash, g, session,
                    redirect, url_for, abort)
 from slugify import slugify
 from base.threads.forms import submit_pub_form
-from base.threads.models import Thread, Publication
+from base.threads.models import Thread, Publication, Publication_Download
 from base.users.models import User
 from base.subreddits.models import Subreddit
 from base.frontends.views import get_subreddits
@@ -99,8 +99,6 @@ def edit():
     pass
 
 
-
-
 @mod.route('/<string:subreddit_name>/<int:thread_id>/<path:title>/', methods=['GET', 'POST'])
 def thread_permalink(subreddit_name, thread_id, title):
     """
@@ -114,6 +112,24 @@ def thread_permalink(subreddit_name, thread_id, title):
                            user=g.user,
                            thread=thread,
                            cur_subreddit=subreddit)
+
+
+@mod.route("/download/<path:pub_id>")
+def download_pdf(pub_id):
+    """
+        Used to track whether a publication has been downloaded - marking a thread as visited.
+    """
+    publication = get_publication(pub_id)
+    if not publication:
+        abort(404)
+    if g.user:
+        publication.mark_downloaded(g.user.id)
+
+    pub_url = publication.pub_pdf_url
+    if pub_url and pub_url != 'searching':
+        return redirect(pub_url, code=302)
+    else:
+        abort(404)
 
 ##################
 # Comments Views #

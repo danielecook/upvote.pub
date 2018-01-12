@@ -9,7 +9,7 @@
 </p>
 <form method="POST" action="." >
 {% for group, group_set in form.subs|groupby('sub_group.data') %}
-<h4>{{ group }}</h4>
+<h2>{{ group }}</h2>
 {{ form.csrf_token }}
 <div class='sub_group'>
     {% for sub in group_set %}
@@ -28,9 +28,8 @@
 
 
 {% for group, group_set in subreddit_list|groupby('group') %}
-<h4>{{ group }}</h4>
+<h2>{{ group }}</h2>
 <div class='sub_group'>
-    <strong>{{ group }}</strong>
     {% for sub in group_set %}
     <a href="{{ url_for('subreddits.permalink', subreddit_name=sub.name) }}">{{ sub.name }}</a><br />
     {% endfor %}

@@ -16,7 +16,11 @@
 
 {% macro render_pub(thread, user, slugify) %}
 {% set pub = thread.publication %}
-
+{% if g.user %}
+    {% set has_downloaded = pub.has_downloaded(g.user.id) %}
+{% else %}
+    {% set has_downloaded = False %}
+{% endif %}
 <div name="{{ thread.id }}" class="row listing-row">
           <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 listing-vote-box">  
 
@@ -32,9 +36,9 @@
               </div>
           </div>
     <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs listing-thumbnail-box">
-        <div class='pub-img'>
+        <div class='pub-img {% if has_downloaded %}downloaded{% endif %}'>
             {% if pub.pub_pdf_url and pub.pub_thumbnail %}
-                <a href="{{ pub.pub_pdf_url }}" class="thumbnail pub_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
+                <a href="{{ url_for('threads.download_pdf', pub_id = pub.pub_id) }}" class="thumbnail pub_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
                     <img src="https://storage.googleapis.com/pdf_thumbnails/{{ pub.pub_thumbnail }}.png"/>
                 </a>
             {% elif pub.pub_pdf_url == 'searching' %}
@@ -44,7 +48,7 @@
                                 </div>
                                 <br />Looking for PDF</div>
             {% elif pub.pub_pdf_url %}
-                <a href="{{ pub.pub_pdf_url }}" class="thumbnail pub_thumb no_pdf_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
+                <a href="{{ url_for('threads.download_pdf', pub_id = pub.pub_id) }}" class="thumbnail pub_thumb no_pdf_thumb" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
                     <div class='no_pdf'>
                     <span class='glyphicon glyphicon-time'></span>
                     </div>
@@ -63,7 +67,7 @@
         </div>
     </div>
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-10 listing-text">
-        <a href="{{ pub.pub_url }}" class="listing-title">{{ pub.pub_title }}</a>
+        <a href="{{ pub.pub_url }}" class="listing-title {% if has_downloaded %}downloaded{% endif %}">{{ pub.pub_title }}</a>
         <div class='pub_authors'>{{ pub.pub_authors|safe }}</div>
         <div class='pub_line'>
             {{ pub.pub_date.strftime("%Y-%m-%d") }} — <em>{{ pub.pub_journal }}</em>
@@ -110,7 +114,12 @@
                 <small><a href="{{ pub.pub_biorxiv_url }}" class='pub_id'>bioRxiv {{ pub.pub_biorxiv }}</a></small>
             {% endif %}
 
+            {% if pub.pub_pdf_url and pub.pub_pdf_url != 'searching' %}
+            <small>{{ pub.download_count }} Downloads</small>
+            {% endif %}
+
             {% if config.DEBUG %}
+            &nbsp;&nbsp;
                 <small>{{ thread.hotness }}</small>
             {% endif %}
 

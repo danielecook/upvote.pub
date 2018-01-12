@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="col-md-12 col-sm-12">
+    {% if page_title %}
+
+              {% if num_searches is defined %}
+                <p class='pull-right'>{{num_searches }} result{{ num_searches|pluralize }}</p>
+              {% endif %}
+
+    <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
+    <hr />
+    {% endif %}
+    {% if page.use_toc %}
+    <h2>Contents</h2>
+        {{ page.toc_html|safe }}
+    {% endif %}
+    {{ page|safe }}
+
+</div>
+
+{% endblock %}
