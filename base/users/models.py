@@ -5,7 +5,7 @@ from base.utils.misc import now
 from base import db
 from base.users import constants as USER
 from base.threads.models import thread_upvotes, comment_upvotes
-
+from base.utils.misc import random_string
 
 class User(db.Model):
     """
@@ -14,6 +14,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(USER.MAX_USERNAME), unique=True)
     email = db.Column(db.String(USER.MAX_EMAIL), unique=True)
+    email_verified = db.Column(db.Boolean())
+    email_token = db.Column(db.String(18), default=random_string)
     password = db.Column(db.String(USER.MAX_PASSW))
     created_on = db.Column(db.DateTime, default=now)
 

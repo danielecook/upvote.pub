@@ -59,7 +59,7 @@ def fetch_pubmed(pub_id, id_type = "pmid"):
            "pub_pmid": result.get('pmid'),
            "pub_pmc": pub_id if id_type == 'pmc' else None,
            "pub_url": result.get('url'),
-           "pub_pdf_url": result.get('pdf_url'),
+           "pub_pdf_url": result.get('pdf_url') or 'searching',
            "pub_journal": result.get('journal'),
            "pub_date": result['history'].get('pubmed')}
     return out
@@ -96,12 +96,23 @@ def fetch_doi(doi):
             abstract = BeautifulSoup(result['abstract'], "lxml")
             result['abstract'] = abstract.get_text(strip=True)
 
+        # In some cases the pdf_url can be found elsewhere
+        pub_pdf_url = result.get('pdf_url') or 'searching'
+        if result.get('link'):
+            link_set = result['link']
+            if type(link_set) == list:
+                for link in link_set:
+                    if link.get("URL").endswith("pdf"):
+                        pub_pdf_url = link['URL']
+        else:
+            pdf_url = None
+
         out = {"pub_title": result.get('title').strip(),
                "pub_authors": authors,
                "pub_abstract": result.get('abstract'),
                "pub_doi": result.get('DOI'),
                "pub_url": result.get('URL'),
-               "pub_pdf_url": result.get('pdf_url'),
+               "pub_pdf_url": pub_pdf_url,
                "pub_journal": result.get('journal_reference') or "arXiv",
                "pub_date": published}
         return out
@@ -120,7 +131,7 @@ def fetch_arxiv(arxiv_id):
            "pub_doi": result.get('doi'),
            "pub_arxiv": arxiv_id,
            "pub_url": result.get('arxiv_url'),
-           "pub_pdf_url": result.get('pdf_url'),
+           "pub_pdf_url": result.get('pdf_url') or "searching",
            "pub_journal": result.get('journal_reference') or "arXiv",
            "pub_date": parse(result.get('published'))}
     return out
@@ -166,8 +177,8 @@ def fetch_pub(pub_id):
     if not pub:
         return None
 
-    if pub.get('pub_pdf_url'):
-        thumbnail = process_pdf_task(pub)
+    # Attempt to track down the PDF
+    thumbnail = process_pdf_task(pub)
 
     # Strip periods
     pub['pub_title'] = pub['pub_title'].strip(".")

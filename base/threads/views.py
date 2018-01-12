@@ -104,8 +104,6 @@ def edit():
 def thread_permalink(subreddit_name, thread_id, title):
     """
     """
-    from base.utils.email import send_email
-    send_email("test", "Great " + title, "danielecook@gmail.com")
 
     thread_id = thread_id or -99
     thread = Thread.query.get_or_404(int(thread_id))

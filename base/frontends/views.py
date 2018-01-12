@@ -31,7 +31,6 @@ def home_subreddit():
         subreddit_subs = g.user.subreddit_subs.get('subs')
         subs = Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness)) \
                            .filter(Subreddit.name.in_(subreddit_subs))
-        #logger.info(subs)
     else:
         subs = Thread.query.order_by(db.desc(Thread.hotness), db.desc(Thread.hotness))
     return subs
@@ -88,7 +87,7 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
 
 
 @mod.route('/')
-@mod.route('/trending')
+#@mod.route('/trending')
 def home():
     """
     If not trending we order by creation date
@@ -186,7 +185,7 @@ def register():
         # Log the user in, as he now has an id
         session['user_id'] = user.id
 
-        flash('thanks for signing up!', 'success')
+        flash('Thanks for signing up! Please confirm your email by following the link sent in the confirmation email.', 'success')
         if 'next' in request.form and request.form['next']:
             return redirect(request.form['next'])
         return redirect(url_for('frontends.home'))

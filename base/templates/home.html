@@ -79,15 +79,19 @@
     {% endblock %}
 
     <h4 class="subreddit-desc">subs <span class='glyphicon glyphicon-question-sign' data-toggle='tooltip' data-placement='bottom' title="You are subscribed to the subs below."></span></h4>
+            {% for group, subreddits in subreddits|groupby('group') %}
+            <strong>{{ group }}</strong>
         <ul id="sublist">
-            {% for subreddit in subreddits %}
-            {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
-                <li><strong><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></strong></li>
-            {% else %}
-                <li><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></li>
-            {% endif %}
-            {% endfor %}
+
+                {% for subreddit in subreddits %}
+                    {% if cur_subreddit and subreddit.name == cur_subreddit.name %}
+                        <li><strong><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></strong></li>
+                    {% else %}
+                        <li><a href="{{ url_for('subreddits.permalink', subreddit_name = subreddit.name) }}">{{ subreddit.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
         </ul>
+            {% endfor %}
   {% endblock %}
 </div>
 

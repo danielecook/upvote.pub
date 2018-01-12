@@ -43,8 +43,12 @@
                     <span class='glyphicon glyphicon-time'></span>
                     </div>
                     <br />
+                    {% if thread.pub_pdf_url == 'searching' %}
+                    Looking for PDF
+                    {% else %}
                     Loading<br />
                     Preview
+                    {% endif %}
                 </a>
             {% else %}
               <div class='thumbnail pub_thumb no_pdf_thumb' data-toggle="tooltip" data-placement="bottom" title="No PDF Found">

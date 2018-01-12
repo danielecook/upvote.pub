@@ -211,7 +211,11 @@ a.thumbnail:hover {
     margin-bottom: 40px;
 }
 
-.thread-submit-box input, .thread-submit-box a {
+.sub_group {
+    padding-left: 20px;
+}
+
+.thread-submit-box input, {
     margin-left: 25px;
 }
 
