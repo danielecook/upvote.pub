@@ -16,11 +16,13 @@
 
 <h4 class="profile-label">Recent comments</h4>
 {% for comment in current_user.comments.all()[-7:]|reverse %}
-    {{ comment.text }}</br> 
-    <span class="profile-listing-inline">
-    <a href="#">{{ comment.pretty_date() }}</a> in <a href='{{ url_for('threads.thread_permalink', subreddit_name=comment.thread.subreddit.name, thread_id=comment.thread.id, title=slugify(comment.thread.pub_title)) }}'>{{ comment.thread.pub_title }}</a>
-    </p>
-    </span>
+            <div class="post-listing-meta">
+                <a href="{{ url_for('users.user_profile', username=current_user.username) }}">
+                    <strong>{{ current_user.username }}</strong>
+                </a> {{ current_user.university }} - {{ comment.pretty_date() }}<br />
+            </div>
+                {{ comment.text }}
+                <a href='{{ url_for('threads.thread_permalink', subreddit_name=comment.thread.subreddit.name, thread_id=comment.thread.id, title=slugify(comment.thread.publication.pub_title)) }}'>{{ comment.thread.publication.pub_title }}</a>
 {% endfor %}
 <br>
 

@@ -14,7 +14,7 @@ logger.info("Loading Config")
 class base_config(object):
     JSON_SORT_KEYS = False
     BRAND = "upvote.pub"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     SENDGRID_API_KEY = get_item('credential', 'sendgrid')
     STATIC_FOLDER = '/static'
 
@@ -46,6 +46,7 @@ class local(base_config):
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     PERMANENT_SESSION_LIFETIME = timedelta(days=1000)
+    SQLALCHEMY_ECHO = False
 
 
 class staging(base_config):
@@ -56,7 +57,7 @@ class staging(base_config):
     SESSION_COOKIE_NAME = 'upvote-staging'
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = True
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
     SECRET_KEY = get_item('credential', 'secret-staging').get('secret')

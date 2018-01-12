@@ -12,6 +12,16 @@
     <hr />
     {% endif %}
 
+  <div id="messages-wrap">
+    <div id="messages">
+      {% for category, msg in get_flashed_messages(with_categories=true) %}
+      <div class="flash-{{ category }} alert alert-dismissable alert-{{ category }} flash-banner">
+          <p>{{ msg }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>{# /messages-wrap #}
+
     {% if not g.user and request.path == '/' %}
                 <div class="jumbotron">
                 <p class="lead"><strong>upvote.pub</strong> allows users to browse, submit, upvote, and discuss noteworthy papers or preprints from <a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a>, <a href='https://arxiv.org/'>arXiv</a>, <a href='https://www.biorxiv.org/'>BioRrxiv</a>, or listed with a <span data-toggle='tooltip' data-placement='bottom' title='Document Object Identifier'><a href='http://www.doi.org'>DOI</a></span>.</p>
@@ -23,15 +33,6 @@
     {% endif %}
 
 
-  <div id="messages-wrap">
-    <div id="messages">
-      {% for category, msg in get_flashed_messages(with_categories=true) %}
-      <div class="flash-{{ category }} alert alert-dismissable alert-{{ category }} flash-banner">
-          <p>{{ msg }}</p>
-      </div>
-      {% endfor %}
-    </div>
-  </div>{# /messages-wrap #}
 
   {% block left %}
         {% from "macros.html" import render_pub %}

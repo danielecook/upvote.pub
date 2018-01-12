@@ -15,3 +15,18 @@ STATUS = {
     ALIVE: 'alive',
 }
 
+
+
+BASE_SUBREDDITS = {'biology': ['biochemistry',
+                               'bioengineering',
+                               'bioinformatics',
+                               'biophysics',
+                               'evolution',
+                               'genetics',
+                               'genomics',
+                               'molecular_biology',
+                               'systems_biology',
+                               'software'],
+                   'statistics': ['statistics',
+                                  'machine_learning']
+                  }

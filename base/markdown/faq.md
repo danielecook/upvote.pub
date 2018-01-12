@@ -67,6 +67,11 @@ Every pub on upvote.pub has a website associated with it. This is often the jour
 * <span style='color: #551a8b; font-weight: 800'>Dark Purple</span> - The pub PDF has been downloaded. This color is applied to both the title and thumbnail outline.
 
 <br />
+# Why did you build this?
+<br />
+I'm hopeful it will make reading and understanding scientific literature more engaging, foster connections among scientists in different fields, and highlight papers that may have been overlooked.
+
+<br />
 # How do I contact you?
 <br />
 Please email <a href='mailto:admin@upvote.pub'>admin@upvote.pub</a>.

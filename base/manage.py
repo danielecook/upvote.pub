@@ -28,20 +28,8 @@ from base.utils.pubs import fetch_pub
 
 from base import app
 from base.utils.gcloud import get_item
+from base.subreddits.constants import BASE_SUBREDDITS
 
-
-base_subreddits = {'biology': ['biochemistry',
-                               'bioengineering',
-                               'bioinformatics',
-                               'biophysics',
-                               'evolution',
-                               'genetics',
-                               'genomics',
-                               'molecular_biology',
-                               'systems_biology'],
-                   'statistics': ['statistics',
-                                  'machine_learning']
-                  }
 
 
 @app.cli.command()
@@ -68,7 +56,7 @@ def initdb(env):
     db.session.commit()
 
     # Install base set of subreddits
-    for group, subreddits in base_subreddits.items():
+    for group, subreddits in BASE_SUBREDDITS.items():
         for subreddit in subreddits: 
             if type(subreddit) is tuple:
                 sub = Subreddit(name=subreddit[0],

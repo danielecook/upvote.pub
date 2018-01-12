@@ -6,6 +6,7 @@ from base import db
 from base.users import constants as USER
 from base.threads.models import thread_upvotes, comment_upvotes
 from base.utils.misc import random_string
+from base.subreddits.constants import BASE_SUBREDDITS
 
 class User(db.Model):
     """
@@ -28,7 +29,7 @@ class User(db.Model):
     status = db.Column(db.SmallInteger, default=USER.ALIVE)
     role = db.Column(db.SmallInteger, default=USER.USER)
 
-    subreddit_subs = db.Column(db.JSON, default={"subs": ['bioinformatics', 'genomics', 'evolution', 'machine_learning']})
+    subreddit_subs = db.Column(db.JSON, default={"subs": sum(BASE_SUBREDDITS.values(), [])})
 
     def __repr__(self):
         return '<User %r>' % (self.username)
