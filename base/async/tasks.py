@@ -7,7 +7,7 @@ from base.utils.file_utils import (download_pdf,
                                    sha1_file)
 from base.utils.bioarxiv import fetch_bioarxiv
 from base.utils.gcloud import google_storage
-from base.utils.pub_ids import id_type, get_pub_thread
+from base.utils.pub_ids import id_type, get_publication
 from base import db, app
 from logzero import logger
 from metapub import FindIt
@@ -17,7 +17,7 @@ huey = RedisHuey('upvote',
                  connection_pool=app.config['REDIS_CONNECTION_POOL'])
 
 
-@huey.task(retries = 3, retry_delay =20)
+@huey.task(retries=3, retry_delay=20)
 def process_pdf_task(pub):
     """
         This task processes a PDF and generates a thumbnail preview of it.
@@ -36,7 +36,7 @@ def process_pdf_task(pub):
     elif pub.get('pub_doi'):
         pub_id = pub.get('pub_doi')
 
-    thread = get_pub_thread(pub_id)
+    pub_item = get_publication(pub_id)
 
     pub_type, pub_id = id_type(pub_id)
 
@@ -50,7 +50,7 @@ def process_pdf_task(pub):
             elif pub_type == 'doi':
                 found_pdf = FindIt(doi=pub['pub_doi'])
             url = found_pdf.url
-            thread.pub_pdf_url = url
+            pub_item.pub_pdf_url = url
             # Update status to indicate PDF found!
             db.session.commit()
         except MetaPubError:
@@ -59,20 +59,21 @@ def process_pdf_task(pub):
     if url:
         fname = download_pdf(url)
         sha1_fname = sha1_file(fname)
-        logger.info(sha1_fname)
         thumbnail_fname = pdf_to_thumb(fname, sha1_fname)
 
         gs_client = google_storage()
         bucket = gs_client.get_bucket('pdf_thumbnails')
-        thumbnail_obj = bucket.blob(thumbnail_fname)
+        thumbnail_url_fname = "{}.png".format(sha1_fname)
+        thumbnail_obj = bucket.blob(thumbnail_url_fname)
         thumbnail_obj.upload_from_filename(thumbnail_fname)
         # Delete after upload
         os.remove(thumbnail_fname)
 
-        # Update database
-        thread.thumbnail = thumbnail_fname
+        # Update database - set thumbnail to sha1_fname
+        logger.info("Stored thumbnail: " + thumbnail_url_fname)
+        pub_item.pub_thumbnail = sha1_fname
     else:
-        thread.pub_pdf_url = None
+        pub_item.pub_pdf_url = None
     db.session.commit()
 
 

@@ -21,21 +21,13 @@ CREATE TABLE `comment_upvotes` (
   CONSTRAINT `comment_upvotes_ibfk_2` FOREIGN KEY (`comment_id`) REFERENCES `threads_comment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
 """
-import datetime
 import arrow
-import re
 from base import db
 from base.threads import constants as THREAD
-from base import utils
-from base import media
-from math import log
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy import text
 from base.utils.misc import now
 from logzero import logger
 from sqlalchemy_fulltext import FullText, FullTextSearch
-from flask import Markup
-import sqlalchemy_fulltext.modes as FullTextMode
 from sqlalchemy.orm import validates, reconstructor
 from base.utils.text_utils import format_comment
 
@@ -51,18 +43,23 @@ comment_upvotes = db.Table('comment_upvotes',
 )
 
 
-class Thread(FullText, db.Model):
-    """
-    We will mimic reddit, with votable threads. Each thread may have either
-    a body text or a link, but not both.
-    """
-    __tablename__ = 'threads_thread'
+class Publication(FullText, db.Model):
+    __tablename__ = 'publication'
     __fulltext_columns__ = ('pub_title',
                             'pub_authors',
                             'pub_abstract',)
-    id = db.Column(db.Integer, primary_key=True)
+
+    __table_args__ = (
+                        db.UniqueConstraint('pub_doi',
+                                            'pub_pmid',
+                                            'pub_pmc',
+                                            'pub_arxiv',
+                                            'pub_biorxiv',
+                                            name='_pub_unique'),
+                     )
 
     # Publication information
+    id = db.Column(db.Integer, primary_key=True)
     pub_title = db.Column(db.String(300))
     pub_authors = db.Column(db.String(1000))
     pub_abstract = db.Column(db.Text())
@@ -76,11 +73,40 @@ class Thread(FullText, db.Model):
     pub_pdf_url = db.Column(db.String(250))
     pub_journal = db.Column(db.String(100))
     pub_date = db.Column(db.DateTime)
+    pub_created_on = db.Column(db.DateTime, default=now)
 
-    text_comment = db.Column(db.String(3000), default=None)
+    pub_thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
 
-    thumbnail = db.Column(db.String(THREAD.MAX_LINK), default=None)
+    threads = db.relationship('Thread', back_populates='publication')
 
+    @validates('pub_title', 'pub_authors', 'pub_abstract', 'pub_journal')
+    def truncate(self, key, value):
+        max_len = getattr(self.__class__, key).prop.columns[0].type.length
+        if value and max_len:
+            if len(value) > max_len:
+                return value[:max_len]
+        return value
+
+
+    def __repr__(self):
+        return '<Publication %r>' % (self.pub_title)
+
+class Thread(db.Model):
+    """
+    We will mimic reddit, with votable threads. Each thread may have either
+    a body text or a link, but not both.
+    """
+    __tablename__ = 'threads_thread'
+    __table_args__ = (
+                        db.UniqueConstraint('subreddit_id',
+                                            'publication_id',
+                                            name='_sub_pub_unique'),
+                     )
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Publication information
+    publication_id = db.Column(db.Integer, db.ForeignKey('publication.id'), nullable=False)
+    publication = db.relationship('Publication', back_populates='threads', uselist=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users_user.id'))
     subreddit_id = db.Column(db.Integer, db.ForeignKey('subreddits_subreddit.id'))
 
@@ -91,21 +117,15 @@ class Thread(FullText, db.Model):
     status = db.Column(db.SmallInteger, default=THREAD.ALIVE)
 
     votes = db.Column(db.Integer, default=1)
+
     # Gives bonus for pubs with pdfs.
-    hotness = db.column_property(db.func.ROUND(db.func.COALESCE(pub_pdf_url, 0)*5 + 100+(db.func.LN(votes+1)*50 - db.func.POW(db.func.LN(1+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2)), 2))
+    # hotness = db.column_property(db.func.ROUND(db.func.COALESCE(publication.pub_pdf_url, 0)*5 + 100+(db.func.LN(votes+1)*50 - db.func.POW(db.func.LN(1+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2)), 2))
+    hotness = db.column_property(  (100+(db.func.LN(votes+3)*50)) - db.func.POW(db.func.LN(3+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2))
 
 
     def __repr__(self):
-        return '<Thread %r>' % (self.pub_title)
+        return '<Thread %r>' % (self.id)
 
-
-    @validates('pub_title', 'pub_authors', 'pub_abstract', 'pub_journal')
-    def truncate(self, key, value):
-        max_len = getattr(self.__class__, key).prop.columns[0].type.length
-        if value and max_len:
-            if len(value) > max_len:
-                return value[:max_len]
-        return value
 
 
     def get_comments(self, order_by='votes'):

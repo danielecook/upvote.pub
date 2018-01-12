@@ -7,27 +7,15 @@ from base.threads.models import Thread
 from flask_wtf import Form
 from wtforms import TextField, TextAreaField, ValidationError
 from wtforms.validators import Required, URL
-from base.utils.pubs import get_pub_thread
 
 
 def is_valid_id(form, field):
     if field.data:
-        if not id_type(field.data.strip()):
+        pub_id_type, pub_id = id_type(field.data.strip())
+        if not pub_id_type:
             raise ValidationError("Invalid publication ID.")
 
 
-def is_unique_submission(form, field):
-    pub_id = field.data.lower().replace("arxiv:","")
-    if field.data:
-        thread = get_pub_thread(pub_id)
-        if thread:
-            thread_url =  url_for('threads.thread_permalink',
-                                  subreddit_name=thread.subreddit.name,
-                                  thread_id=thread.id,
-                                  title=thread.pub_title[:100].replace(" ", "_"))
-            raise ValidationError(f"That <a href='{thread_url}'>pub</a> has already been submitted.")
-
-
 class submit_pub_form(Form):
-    pub_id = TextField('pub ID', [Required(), is_valid_id, is_unique_submission])
+    pub_id = TextField('pub ID', [Required(), is_valid_id])
     text = TextAreaField('Comments') # [Length(min=5, max=THREAD.MAX_BODY)]

@@ -3,7 +3,7 @@
 # Parse Pubs
 import re
 from logzero import logger
-from base.threads.models import Thread
+from base.threads.models import Publication
 
 
 def id_type(pub_id):
@@ -24,16 +24,20 @@ def id_type(pub_id):
     elif re.match("bio[a]?rxiv[: ]?([0-9\.]{6,9})", pub_id, re.IGNORECASE):
         m = re.match("bio[a]?rxiv[: ]?([0-9\.]{6,9})", pub_id, re.IGNORECASE)
         return 'biorxiv', m.group(1)
+    else:
+        return None, None
 
 
-def get_pub_thread(pub_id):
-    """
-    Get pub thread from the database
+def get_publication(pub_id):
+    """Fetch publication from the database
+
+    Args:
+        pub_id - Any publication ID
+
     """
     logger.debug('Fetching ' + pub_id)
     pub_id = pub_id.strip().upper()
     pub_type, pub_id = id_type(pub_id)
-    thread = Thread.query.filter(getattr(Thread, 'pub_' + pub_type) == pub_id).first()
-    return thread
+    return Publication.query.filter(getattr(Publication, 'pub_' + pub_type) == pub_id).first()
 
 

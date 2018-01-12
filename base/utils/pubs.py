@@ -4,19 +4,24 @@
 import re
 import requests
 import arxiv
-from bs4 import BeautifulSoup
+
 from base import app
+from base.async.tasks import process_pdf_task
+from base.utils.pub_ids import id_type
+from base.utils.query import get_or_create
+from base.threads.models import Publication
+
 from logzero import logger
 from base.threads.models import Thread
 from bs4 import BeautifulSoup
+
 from metapub import PubMedFetcher
 from metapub.base import MetaPubError
-from dateutil.parser import parse
-from base.async.tasks import process_pdf_task
-from base.utils.pub_ids import id_type, get_pub_thread
-from sqlalchemy import or_
 from metapub.exceptions import InvalidPMID
 
+from dateutil.parser import parse
+from sqlalchemy import or_
+from eutils.exceptions import EutilsNCBIError
 
 def fetch_pubmed(pub_id, id_type = "pmid"):
     """
@@ -27,17 +32,17 @@ def fetch_pubmed(pub_id, id_type = "pmid"):
     if id_type == 'doi':
         try:
             result = pm.article_by_doi(pub_id)
-        except (AttributeError, MetaPubError):
+        except (AttributeError, MetaPubError, EutilsNCBIError):
             return None
     elif id_type == "pmid":
         try:
             result = pm.article_by_pmid(pub_id)
-        except (AttributeError, InvalidPMID):
+        except (AttributeError, InvalidPMID, EutilsNCBIError):
             return None
     elif id_type == "pmc":
         try:
             result = pm.article_by_pmcid('PMC' + str(pub_id))
-        except (AttributeError, MetaPubError):
+        except (AttributeError, MetaPubError, EutilsNCBIError):
             return None
     result = result.to_dict()
 
@@ -177,21 +182,24 @@ def fetch_pub(pub_id):
     if not pub:
         return None
 
-    # Attempt to track down the PDF
-    thumbnail = process_pdf_task(pub)
-
     # Strip periods
     pub['pub_title'] = pub['pub_title'].strip(".")
 
     # Format authors
-    logger.info(pub['pub_authors'])
-    logger.info(len(pub['pub_authors']))
     if len(pub['pub_authors']) > 10:
         pub['pub_authors'] = pub['pub_authors'][0] + " <em>et al.</em>"
     else:
         pub['pub_authors'] = ', '.join(pub['pub_authors'])
 
-    return pub
+    # Fetch or create pub
+    pub_item, created = get_or_create(Publication, **pub)
+
+    # Attempt to track down the PDF
+    if created:
+        logger.info("Adding process_pdf_task {}".format(pub['pub_title']))
+        thumbnail = process_pdf_task(pub)
+
+    return pub_item
 
 
 """
