@@ -30,6 +30,7 @@ class User(db.Model):
     role = db.Column(db.SmallInteger, default=USER.USER)
 
     subreddit_subs = db.Column(db.JSON, default={"subs": sum(BASE_SUBREDDITS.values(), [])})
+    
 
     def __repr__(self):
         return '<User %r>' % (self.username)

@@ -201,26 +201,3 @@ def fetch_pub(pub_id):
 
     return pub_item
 
-
-"""
-id_type("28892780") # pubmed
-id_type("PMC5012401") # pmc
-id_type('10.1093/nar/gkw893') # doi
-id_type("10.1016.12.31/nature.S0735-1097(98)2000/12/31/34:7-7") # complex doi
-
-# Andersen
-fetch_doi('10.1093/nar/gkw893')
-fetch_doi('10.1101/125567')
-
-# Bio arxiv
-fetch_doi('10.1101/233270')
-
-fetch_arxiv("1510.08002")
-"""
-
-def parse_pub(pub_id):
-    pass
-
-
-
-

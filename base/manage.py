@@ -3,8 +3,10 @@
 All code for scraping images and videos from posted
 links go in this file.
 """
+import random
 import requests
 import click
+import time
 from click import secho
 import os
 import sys
@@ -25,7 +27,9 @@ from base.users.models import *
 from base.threads.models import *
 from base.subreddits.models import *
 from base.utils.pubs import fetch_pub
+from base.utils.misc import random_string
 
+from base.utils.query import get_or_create
 from base import app
 from base.utils.gcloud import get_item
 from base.subreddits.constants import BASE_SUBREDDITS
@@ -49,8 +53,9 @@ def initdb(env):
     secho(app.config['SQLALCHEMY_DATABASE_URI'])
     db.drop_all()
     db.create_all()
-    first_user = User(username='dec', email='dec@u.northwestern.edu', \
-                      password=generate_password_hash('d'),
+    first_user = User(username='dec',
+                      email='dec@u.northwestern.edu',
+                      password=generate_password_hash('london!88'),
                       university='Northwestern University')
 
     db.session.add(first_user)
@@ -137,14 +142,40 @@ def swot():
 
 
 @app.cli.command()
-def create_pub():
+@click.argument('env', type=click.Choice(['local', 'staging', 'production']))
+@click.argument('username')
+@click.argument('sub')
+@click.argument('pub_id')
+def create_pub(env, username, sub, pub_id):
     """
         For debugging purposes really
     """
-    for i in range(1000,3000):
-        pub_data = fetch_pub(str(i))
-        if pub_data:
-            thread = Thread(user_id=1, subreddit_id=1, **pub_data)
+    app.config.from_object(getattr(configs, env))
 
-            db.session.add(thread)
-            db.session.commit()
+    # Remove socket connection
+    if env in ['staging', 'production']:
+        remote_url = get_item('credential', f"sql-{env}").get('remote_url')
+        secho(remote_url, fg='green')
+        app.config['SQLALCHEMY_DATABASE_URI'] = remote_url
+
+    pub_data = fetch_pub(str(pub_id))
+    logger.info(f"Adding {pub_data.pub_title}")
+    if pub_data:
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            VARS = {'username': username,
+                    'email': "FAKE__{}@FAKE.edu".format(random_string()),
+                    'password': generate_password_hash('WZRfEsxjLYieTHbonP7JWig3FEBRAFCYthnJdph7fd9frs2BejHsbXWZGYnFmazT'),
+                    'university': ""}
+            user, created = get_or_create(User, **VARS)
+        sub_id = Subreddit.query.filter_by(name=sub).first().id
+        created_on = arrow.utcnow().shift(seconds=-random.randint(1,350000)).datetime
+        thread = Thread(user_id=user.id,
+                        subreddit_id=sub_id,
+                        publication_id=pub_data.id,
+                        created_on=created_on,
+                        updated_on=created_on)
+
+        db.session.add(thread)
+        db.session.commit()
+

@@ -81,7 +81,8 @@
     <div class="row" class="" id="footer-row">
       <div class="col-lg-12">
         <hr />
-        <a href='{{ url_for("frontends.render_markdown", page='faq') }}'>FAQ</a> — <a href='{{ url_for("frontends.render_markdown", page='terms-of-service') }}'>Terms of Service</a> — <a href='{{ url_for("frontends.render_markdown", page='privacy-policy') }}'>Privacy Policy</a>
+        <a href='{{ url_for("frontends.render_markdown", page='faq') }}'>FAQ</a> — <a href='{{ url_for("frontends.render_markdown", page='terms-of-service') }}'>Terms of Service</a> — <a href='{{ url_for("frontends.render_markdown", page='privacy-policy') }}'>Privacy Policy</a><br />
+        <small><a href='{{ url_for('frontends.render_markdown', page='change-log') }}'>v0.1.0</a></small>
       </div>
     </div>
     </div>
