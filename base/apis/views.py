@@ -3,6 +3,7 @@
 All view code for async get/post calls towards the server
 must be contained in this file.
 """
+import arrow
 from flask import (Blueprint, request, render_template, flash, g,
         session, redirect, url_for, jsonify, abort)
 from werkzeug import check_password_hash, generate_password_hash
@@ -28,7 +29,6 @@ def before_request():
 def csrf_protect():
     if request.method == "POST":
         token = session.pop('csrf_token', None)
-        print(token, request.form, session)
         if not token or token != request.form.get('csrf_token'):
             abort(403)
 
@@ -39,6 +39,16 @@ def submit_comment():
     """
     Submit comments via ajax
     """
+    # Check that user has not submitted more than 20 comments
+    # in the last hour.
+
+    user_id = g.user.id
+    if not user_id:
+        abort(404)
+    since = arrow.utcnow() - arrow.utcnow().shift(hours=-1).datetime
+    submission_count = Comment.query.filter(Comment.user_id == user_id, Comment.created_on > since).count()
+    if submission_count >= 20:
+        return jsonify(error='Too many comments')
 
     thread_id = int(request.form['thread_id'])
     comment_text = request.form['comment_text']
@@ -48,6 +58,8 @@ def submit_comment():
         abort(404)
 
     thread = Thread.query.get_or_404(int(thread_id))
+    thread.n_comments += 1
+    db.session.commit()
     comment = thread.add_comment(comment_text,
                                  comment_parent_id,
                                  g.user.id)
@@ -76,6 +88,25 @@ def vote_thread():
     vote_status = thread.vote(user_id=user_id)
     return jsonify(new_votes=thread.votes,
                    vote_status=vote_status,
+                   csrf_token=generate_csrf_token())
+
+
+@mod.route('/threads/save/', methods=['POST'])
+@requires_login
+def save_thread():
+    """
+    Submit votes via ajax
+    """
+    thread_id = int(request.form['thread_id'])
+    user_id = g.user.id
+
+    if not thread_id:
+        abort(404)
+
+    thread = Thread.query.get_or_404(int(thread_id))
+    save_status = thread.save(user_id=user_id)
+    return jsonify(new_saves=thread.saves,
+                   save_status=save_status,
                    csrf_token=generate_csrf_token())
 
 

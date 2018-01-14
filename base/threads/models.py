@@ -33,9 +33,16 @@ from base.utils.text_utils import format_comment
 from base.utils.query import get_or_create
 
 
+thread_saves = db.Table('thread_saves',
+    db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
+    db.Column('thread_id', db.Integer, db.ForeignKey('threads_thread.id')),
+    db.UniqueConstraint('user_id', 'thread_id', name='_user_thread_unique')
+)
+
 thread_upvotes = db.Table('thread_upvotes',
     db.Column('user_id', db.Integer, db.ForeignKey('users_user.id')),
-    db.Column('thread_id', db.Integer, db.ForeignKey('threads_thread.id'))
+    db.Column('thread_id', db.Integer, db.ForeignKey('threads_thread.id')),
+    db.UniqueConstraint('user_id', 'thread_id', name='_user_thread_unique')
 )
 
 comment_upvotes = db.Table('comment_upvotes',
@@ -176,16 +183,17 @@ class Thread(db.Model):
 
     status = db.Column(db.SmallInteger, default=THREAD.ALIVE)
 
-    votes = db.Column(db.Integer, default=1)
+    votes = db.Column(db.Integer, default=0)
+    saves = db.Column(db.Integer, default=0)
+    n_comments = db.Column(db.Integer, default=0)
 
     # Gives bonus for pubs with pdfs.
     # hotness = db.column_property(db.func.ROUND(db.func.COALESCE(publication.pub_pdf_url, 0)*5 + 100+(db.func.LN(votes+1)*50 - db.func.POW(db.func.LN(1+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2)), 2))
-    hotness = db.column_property(  (100+(db.func.LN(votes+3)*50)) - db.func.POW(db.func.LN(3+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2))
+    hotness = db.column_property(  (100+(db.func.LN(votes+(saves/2)+(n_comments)+2)*50)) + n_comments - db.func.POW(db.func.LN(2+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2))
 
 
     def __repr__(self):
         return '<Thread %r>' % (self.id)
-
 
 
     def get_comments(self, order_by='votes'):
@@ -245,6 +253,54 @@ class Thread(db.Model):
         ids = rs.fetchall() # list of tuples
         return ids
 
+
+    def has_saved(self, user_id):
+        """
+        did the user save already
+        """
+        select_stars = thread_saves.select(
+                db.and_(
+                    thread_saves.c.user_id == user_id,
+                    thread_saves.c.thread_id == self.id
+                )
+        )
+        rs = db.engine.execute(select_stars)
+        return False if rs.rowcount == 0 else True        
+
+
+    def save(self, user_id):
+        """
+        allow a user to save a thread. if we have savered already
+        (and they are clicking again), this means that they are trying
+        to unsave the thread, return status of the star for that user
+        """
+        already_saved = self.has_saved(user_id)
+        save_status = None
+        if not already_saved:
+            # star up the thread
+            db.engine.execute(
+                thread_saves.insert(),
+                user_id = user_id,
+                thread_id = self.id
+            )
+            self.saves = self.saves + 1
+            save_status = True
+        else:
+            # unstar the thread
+            db.engine.execute(
+                thread_saves.delete(
+                    db.and_(
+                        thread_saves.c.user_id == user_id,
+                        thread_saves.c.thread_id == self.id
+                    )
+                )
+            )
+            self.saves = self.saves - 1
+            vote_status = False
+        db.session.commit() # for the vote count
+        return save_status
+
+
     def has_voted(self, user_id):
         """
         did the user vote already
@@ -291,6 +347,15 @@ class Thread(db.Model):
         db.session.commit() # for the vote count
         return vote_status
 
+    @classmethod
+    def similar_threads(cls, query):
+        """
+            Return threads with the same publication ID.
+        """
+        return cls.query.filter(cls.publication_id == query).all()
+
+
+
 
 class Comment(FullText, db.Model):
     """
@@ -316,7 +381,7 @@ class Comment(FullText, db.Model):
     children = db.relationship('Comment',
                                backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
-    depth = db.Column(db.Integer, default=1)  # start at depth 1
+    depth = db.Column(db.Integer, default=1)  # savet at depth 1
 
     created_on = db.Column(db.DateTime, default=now)
     updated_on = db.Column(db.DateTime, default=now)

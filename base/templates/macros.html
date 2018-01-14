@@ -25,10 +25,10 @@
           <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 listing-vote-box">  
 
                   {% if user and thread.has_voted(user.id) %}
-                      <a data-voted="true" style="color:#0080ff;" href="javascript:void(0)" 
+                      <a data-voted="true" data-id='{{ thread.id }}' style="color:#0080ff;" href="javascript:void(0)" 
                           class="listing-vote-button">▲</a>
                   {% else %}
-                      <a data-voted="false" style="color:#888;" href="javascript:void(0)" 
+                      <a data-voted="false" data-id='{{ thread.id }}' style="color:#888;" href="javascript:void(0)" 
                           class="listing-vote-button">▲</a>
                   {% endif %}
               <div class="listing-votes-number">
@@ -91,8 +91,14 @@
                           subreddit_name = thread.subreddit.name,
                           title=slugify(pub.pub_title),
                           thread_id = thread.id) 
-             }}">
-                    {{ thread.comments.all()|length() }} Comments</a>
+             }}">{{ thread.comments.all()|length() }} Comments</a>
+
+
+            {% if thread.has_saved(user.id) %}
+                <a href="javascript:void(0)"  data-id='{{ thread.id }}' class='listing-save-button' data-saved=true style='color: #1484e4'>saved</a>
+            {% else %}
+                <a href="javascript:void(0)"  data-id='{{ thread.id }}' class='listing-save-button' data-saved=false style='color: #888'>save</a>
+            {% endif %}
 
             {% if pub.pub_doi %}
                 <small><a href='https://dx.doi.org/{{ pub.pub_doi }}' class='pub_id'>{{ pub.pub_doi }}</a></small>

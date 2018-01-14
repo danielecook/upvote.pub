@@ -11,6 +11,20 @@
     </div>
 {% endif %}
 
+{% set thread_set = thread.similar_threads(thread.publication_id) %}
+{% if thread_set|length > 1 %}
+    <h5>Related Threads <span class='glyphicon glyphicon-question-sign' data-toggle='tooltip' data-placement='bottom' title="This publication was also submitted to the subs listed below"></span></h5>
+    {% for current_thread in thread.similar_threads(thread.publication_id) %}
+        {% if current_thread.id != thread.id %}
+            <a href="{{ url_for('threads.thread_permalink',
+                          subreddit_name = current_thread.subreddit.name,
+                          title=slugify(current_thread.publication.pub_title),
+                          thread_id = current_thread.id) 
+             }}">{{ current_thread.subreddit.name }}</a>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 <div class="thread-comment-section">
     {% if user is defined and user != None %}
     <h5>Submit a comment</h5>

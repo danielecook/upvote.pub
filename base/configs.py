@@ -9,13 +9,17 @@ from base.utils.gcloud import get_item
 from logzero import logger
 
 logger.info("Loading Config")
+STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
 
 
 class base_config(object):
     JSON_SORT_KEYS = False
     BRAND = "upvote.pub"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SENDGRID_API_KEY = get_item('credential', 'sendgrid')
+    try:
+        SENDGRID_API_KEY = get_item('credential', 'sendgrid')
+    except:
+        SENDGRID_API_KEY = None
     STATIC_FOLDER = '/static'
 
 
@@ -59,24 +63,30 @@ class staging(base_config):
     SESSION_COOKIE_SECURE = True
     SQLALCHEMY_ECHO = False
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
-    SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
-    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
-    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
-    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+
+    def __init__():
+        logger.info('Staging config loaded')
+        CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+        SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
+        SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
+        REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
+        REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 
 
 class production(base_config):
-    DEBUG = False
-    SQLALCHEMY_ECHO = False
-    TESTING = False
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    SESSION_COOKIE_NAME = 'upvote'
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
-    SECRET_KEY = get_item('credential', 'secret-production').get('secret')
-    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
-    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
-    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+    if STAGE == 'production':
+        DEBUG = False
+        SQLALCHEMY_ECHO = False
+        TESTING = False
+        MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+        SESSION_COOKIE_NAME = 'upvote'
+        SESSION_COOKIE_HTTPONLY = True
+        SESSION_COOKIE_SECURE = True
+        def __init__():
+            logger.info('Production config loaded')
+            CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+            SECRET_KEY = get_item('credential', 'secret-production').get('secret')
+            SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
+            REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
+            REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 

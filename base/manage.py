@@ -46,6 +46,7 @@ def initdb(env):
         app.config['SQLALCHEMY_DATABASE_URI'] = remote_url
 
     secho(f"Init the db -- {env}", fg='green')
+    secho(app.config['SQLALCHEMY_DATABASE_URI'])
     db.drop_all()
     db.create_all()
     first_user = User(username='dec', email='dec@u.northwestern.edu', \

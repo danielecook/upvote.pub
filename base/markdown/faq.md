@@ -38,7 +38,7 @@ Below are examples of pub ids and where to locate them on PubMed, arXiv, bioRxiv
     <div class='col-md-6'>
         <div class='thumbnail'>
             <a href='https://www.biorxiv.org/collection/biochemistry' target='_blank'><img src='/static/img/guide/find-biorxiv.jpg' class='img-responsive'></a>
-        <small><code>bioRxiv&nbsp;246124</code> - <strong>You must prefix the bioRxiv ID with "bioRxiv" as shown.</strong>. The DOI is also listed but it is preferable to use the bioRxiv ID.</small>
+        <small><code>bioRxiv&nbsp;246124</code> - <strong>You must prefix the bioRxiv ID with "bioRxiv" as shown.</strong> The DOI is also listed but it is preferable to use the bioRxiv ID.</small>
         </div>
     </div>
 </div>
@@ -60,11 +60,17 @@ Below are examples of pub ids and where to locate them on PubMed, arXiv, bioRxiv
 
 # What do the colors of links mean?
 <br />
-Every pub on upvote.pub has a website associated with it. This is often the journal html-based website. Additionally, many pubs have a PDF associated with them. To make the site easier to browse, upvote.pub tracks which pubs you download. Additionally, your browser keeps track of websites you visit. These information are both considered when pubs are displayed.
+Every pub on upvote.pub has a website associated with it. This is often the journal html-based website. Additionally, many pubs have a PDF associated w
+ith them. To make the site easier to browse, upvote.pub tracks which pubs you download. Additionally, your browser keeps track of websites you visit. These information are both considered when pubs are displayed.
 
 * <span style='color: #1484e4; font-weight: 800'>Blue</span> - You have not visited the website associated with a pub nor have you downloaded it's PDF.
 * <span style='color: #5249fe; font-weight: 800'>Light purple</span> - you have visited the website associated with that publication, but you have not downloaded the PDF.
 * <span style='color: #551a8b; font-weight: 800'>Dark Purple</span> - The pub PDF has been downloaded. This color is applied to both the title and thumbnail outline.
+
+<br />
+# What Markdown is allowed?
+<br />
+
 
 <br />
 # Why did you build this?

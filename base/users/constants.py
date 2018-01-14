@@ -25,5 +25,5 @@ USER = 0
 ROLE = {
     ADMIN: 'admin',
     STAFF: 'staff',
-    USER: 'user',
+    USER: 'user'
 }

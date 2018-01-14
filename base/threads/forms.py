@@ -1,19 +1,27 @@
 # -*- coding: utf-8 -*-
 """
 """
-from flask import url_for
+import arrow
+from flask import url_for, g
 from base.utils.pubs import id_type
 from base.threads.models import Thread
 from flask_wtf import Form
 from wtforms import TextField, TextAreaField, ValidationError
-from wtforms.validators import Required, URL
-
+from wtforms.validators import Required
+from base.users.models import User
+from logzero import logger
 
 def is_valid_id(form, field):
     if field.data:
         pub_id_type, pub_id = id_type(field.data.strip())
         if not pub_id_type:
             raise ValidationError("Invalid publication ID.")
+    # Throttle user if they have submitted too frequently.
+    user_id = g.user.id
+    since = arrow.utcnow() - arrow.utcnow().shift(hours=-2).datetime
+    submission_count = Thread.query.filter(Thread.user_id == user_id, Thread.created_on > since).count()
+    if submission_count > 5:
+        raise ValidationError("You've been submitting too much.")
 
 
 class submit_pub_form(Form):

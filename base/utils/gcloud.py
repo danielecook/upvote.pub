@@ -1,5 +1,4 @@
 from gcloud import datastore, storage, logging
-#from logzero import logger
 
 
 def google_datastore():

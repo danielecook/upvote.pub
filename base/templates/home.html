@@ -114,7 +114,7 @@ fetch_csrf = function() {
 $(document).ready(function() {
     $(document).on('click', 'a.listing-vote-button', function() {
         var $vote_button = $(this); // cache this! can't access in callback!
-        var thread_id = $vote_button.parent().parent().attr('name');
+        var thread_id = $(this).data('id');
         var post_to = '/apis/threads/vote/'; 
         if ($vote_button.attr("data-voted") === "true") {
             $vote_button.css("color", "#888");
@@ -141,6 +141,39 @@ $(document).ready(function() {
             alert("You must be logged in to do that!");
         {% endif %}
     });
+
+
+    $(document).on('click', 'a.listing-save-button', function() {
+        var $save_button = $(this); // cache this! can't access in callback!
+        var thread_id = $(this).data('id');
+        var post_to = '/apis/threads/save/'; 
+        if ($save_button.data("saved")) {
+            $save_button.text('save')
+            $save_button.css("color", "#888");
+            $save_button.data("saved", false);
+        } else {
+            $save_button.text('saved')
+            $save_button.css("color", "#1484e4");
+            $save_button.data("saved", true);
+        }
+        {% if user is defined and user != None %}
+            $.post(post_to, 
+                { 
+                    thread_id: thread_id,
+                    csrf_token: fetch_csrf()
+                },
+                function(response) {
+                    csrf_token = response['csrf_token'];
+                    var new_save_count = response.new_saves.toString();
+                    var save_status = response.vote_status;
+                    console.log(response);
+                }, 'json'
+            );
+        {% else %}
+            alert("You must be logged in to do that!");
+        {% endif %}
+    });
+
     //
     //
 });
