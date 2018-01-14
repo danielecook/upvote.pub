@@ -490,3 +490,7 @@ h2 {
     font-size: 18px;
     margin-left: 10px;
 }
+
+blockquote {
+    font-size: 14px;
+}

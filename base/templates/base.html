@@ -61,7 +61,7 @@
               <li><a href="{{ url_for('frontends.login', next=request.path) }}">Login</a></li>
           {% else %}
               <li><a href="{{ url_for('users.user_profile', username=user.username) }}">
-                      {{ user.username }}&nbsp;{{ user.get_thread_karma() }} <span class="karma-star">★</span> 
+                      {{ user.username }}&nbsp;{{ user.get_thread_karma() }} 
               </a>
               </li>
               <li class="logout-button"><a href="{{ url_for('frontends.logout') }}">logout</a></li>

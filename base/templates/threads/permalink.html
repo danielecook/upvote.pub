@@ -20,7 +20,7 @@
                           subreddit_name = current_thread.subreddit.name,
                           title=slugify(current_thread.publication.pub_title),
                           thread_id = current_thread.id) 
-             }}">{{ current_thread.subreddit.name }}</a>
+             }}">{{ current_thread.subreddit.name }}</a>&nbsp;&nbsp;
         {% endif %}
     {% endfor %}
 {% endif %}
@@ -31,7 +31,7 @@
     <div class="comment-form-parent">
         <textarea class="form-control thread-comment-box"></textarea>
         <input name=csrf_token type=hidden value="{{ csrf_token() }}"> 
-        <small class='pull-right'>Markdown allowed</small>
+        <small class='pull-right'><a href='https://daringfireball.net/projects/markdown/basics'>Markdown allowed</a></small>
         <button class="btn btn-sm btn-primary submit-comment main-submit">
                 Submit</button>
     </div>

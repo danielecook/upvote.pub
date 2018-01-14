@@ -91,7 +91,7 @@
                           subreddit_name = thread.subreddit.name,
                           title=slugify(pub.pub_title),
                           thread_id = thread.id) 
-             }}">{{ thread.comments.all()|length() }} Comments</a>
+             }}">{{ thread.n_comments }} Comments</a>
 
 
             {% if thread.has_saved(user.id) %}

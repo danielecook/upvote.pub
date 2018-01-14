@@ -189,7 +189,7 @@ class Thread(db.Model):
 
     # Gives bonus for pubs with pdfs.
     # hotness = db.column_property(db.func.ROUND(db.func.COALESCE(publication.pub_pdf_url, 0)*5 + 100+(db.func.LN(votes+1)*50 - db.func.POW(db.func.LN(1+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2)), 2))
-    hotness = db.column_property(  (100+(db.func.LN(votes+(saves/2)+(n_comments)+2)*50)) + n_comments - db.func.POW(db.func.LN(2+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2))
+    hotness = db.column_property(  (100+(db.func.LN(votes+(saves/2)+(n_comments)+2)*50)) - db.func.POW(db.func.LN(2+db.func.TIMESTAMPDIFF(text('SECOND'), created_on, db.func.UTC_TIMESTAMP())), 2))
 
 
     def __repr__(self):

@@ -68,11 +68,6 @@ ith them. To make the site easier to browse, upvote.pub tracks which pubs you do
 * <span style='color: #551a8b; font-weight: 800'>Dark Purple</span> - The pub PDF has been downloaded. This color is applied to both the title and thumbnail outline.
 
 <br />
-# What Markdown is allowed?
-<br />
-
-
-<br />
 # Why did you build this?
 <br />
 I'm hopeful it will make reading and understanding scientific literature more engaging, foster connections among scientists in different fields, and highlight papers that may have been overlooked.

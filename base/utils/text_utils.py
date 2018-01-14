@@ -21,7 +21,6 @@ def format_comment(text):
                                        extras = ['fenced-code-blocks',
                                                  'nofollow',
                                                  'target-blank-links',
-                                                 'toc',
                                                  'tables',
                                                  'footnotes',
                                                  'link-patterns'],

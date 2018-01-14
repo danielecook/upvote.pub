@@ -126,7 +126,8 @@ def render_markdown(page):
                                                      'toc',
                                                      'tables',
                                                      'footnotes',
-                                                     'metadata'])
+                                                     'metadata',
+                                                     'markdown-in-html'])
     return render_template('markdown.html',
                            page=page,
                            **page.metadata)

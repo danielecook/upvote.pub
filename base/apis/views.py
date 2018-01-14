@@ -48,7 +48,7 @@ def submit_comment():
     since = arrow.utcnow() - arrow.utcnow().shift(hours=-1).datetime
     submission_count = Comment.query.filter(Comment.user_id == user_id, Comment.created_on > since).count()
     if submission_count >= 20:
-        return jsonify(error='Too many comments')
+        return jsonify(error='You have been submitting too many comments')
 
     thread_id = int(request.form['thread_id'])
     comment_text = request.form['comment_text']
