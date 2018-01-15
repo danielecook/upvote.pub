@@ -27,7 +27,7 @@ Below are examples of pub ids and where to locate them on PubMed, arXiv, bioRxiv
             <a href='http://www.genetics.org/content/208/1/283' target='_blank'>
                 <img src='/static/img/guide/find-arxiv.jpg' class='img-responsive' />
             </a>
-            <small><code>arXiv:1801.03681</code> - <strong>The arXiv ID must be prefixed with arXiv!</strong></small>
+            <small><code>arXiv:1801.03681</code> - <strong>The arXiv ID must be prefixed with "arXiv"!</strong></small>
         </div>
     </div>
 </div>

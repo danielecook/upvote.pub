@@ -9,6 +9,7 @@ from base.subreddits.models import Subreddit
 from base.threads.models import Thread
 from base.users.models import User
 from base import db
+from base.utils.misc import validate_sort_type
 
 mod = Blueprint('subreddits', __name__, url_prefix='/r')
 
@@ -24,20 +25,25 @@ def before_request():
 
 
 @mod.route('/<subreddit_name>/', methods=['GET'])
-def permalink(subreddit_name=""):
+@mod.route('/<subreddit_name>/<string:sort_type>')
+def permalink(subreddit_name="", sort_type="hot"):
     """
     """
+    sort_type = validate_sort_type(sort_type)
     subreddit = Subreddit.query.filter_by(name=subreddit_name).first()
     if not subreddit:
         abort(404)
 
     trending = True if request.args.get('trending') else False
-    thread_paginator = process_thread_paginator(trending=trending, subreddit=subreddit)
+    thread_paginator = process_thread_paginator(trending=trending,
+                                                subreddit=subreddit,
+                                                sort_type=sort_type)
     subreddits = get_subreddits()
 
     return render_template('home.html',
                            thread_paginator=thread_paginator,
                            subreddits=subreddits,
                            cur_subreddit=subreddit,
-                           page_title=subreddit.name)
+                           page_title=subreddit.name,
+                           sort_type=sort_type)
 

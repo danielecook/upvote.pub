@@ -1,8 +1,6 @@
 # using SendGrid's Python Library
 # https://github.com/sendgrid/sendgrid-python
-import platform
 import sendgrid
-import os
 from base import app
 from sendgrid.helpers.mail import *
 

@@ -2,14 +2,13 @@
 """
 """
 import arrow
-from flask import url_for, g
+from flask import g
 from base.utils.pubs import id_type
 from base.threads.models import Thread
 from flask_wtf import Form
 from wtforms import TextField, TextAreaField, ValidationError
 from wtforms.validators import Required
 from base.users.models import User
-from logzero import logger
 
 def is_valid_id(form, field):
     if field.data:

@@ -16,3 +16,9 @@ def generate_csrf_token():
     if 'csrf_token' not in session:
         session['csrf_token'] = random_string()
     return session['csrf_token']
+
+
+def validate_sort_type(sort_type):
+    if sort_type not in ['hot', 'top', 'new', 'comments', 'publication_date']:
+        return 'hot'
+    return sort_type

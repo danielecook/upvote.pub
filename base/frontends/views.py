@@ -14,15 +14,17 @@ from flask import (Blueprint,
                    Markup)
 from werkzeug import check_password_hash, generate_password_hash
 from logzero import logger
-from base import db
+from base import db, app
 from base import search as search_module  # don't override function name
 from base.users.forms import RegisterForm, LoginForm
 from base.users.models import User
-from base.threads.models import Thread
+from base.threads.models import Thread, Publication
 from base.subreddits.models import Subreddit
 from base.users.decorators import requires_login
 from base.utils.user_utils import get_school
 from base.subreddits.forms import subreddit_subs, sub_form
+from base.utils.email import send_email
+from base.utils.misc import random_string, validate_sort_type
 
 mod = Blueprint('frontends', __name__, url_prefix='')
 
@@ -30,7 +32,7 @@ mod = Blueprint('frontends', __name__, url_prefix='')
 @mod.before_request
 def before_request():
     g.user = None
-    if 'user_id' in session:
+    if session.get('user_id'):
         g.user = User.query.get(session['user_id'])
 
 
@@ -58,7 +60,7 @@ def get_subreddits():
     return subreddits
 
 
-def process_thread_paginator(trending=False, rs=None, subreddit=None):
+def process_thread_paginator(trending=False, rs=None, subreddit=None, sort_type='hot'):
     """
     abstracted because many sources pull from a thread listing
     source (subreddit permalink, homepage, etc)
@@ -85,19 +87,25 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None):
         subreddit_subs = g.user.subreddit_subs.get('subs')
         base_query = base_query.join(Subreddit).filter(Subreddit.name.in_(subreddit_subs))
 
-    if trending:
-        thread_paginator = base_query.order_by(db.desc(Thread.votes)). \
-        paginate(cur_page, per_page=threads_per_page, error_out=True)
-    else:
-        thread_paginator = base_query.order_by(db.desc(Thread.hotness)).\
-                paginate(cur_page, per_page=threads_per_page, error_out=True)
+    # Sorting
+    if sort_type == 'hot':
+        base_query = base_query.order_by(db.desc(Thread.hotness))
+    elif sort_type == 'top':
+        base_query = base_query.order_by(db.desc(Thread.votes))
+    elif sort_type == 'comments':
+        base_query = base_query.order_by(db.desc(Thread.n_comments))
+    elif sort_type == 'new':
+        base_query = base_query.order_by(db.desc(Thread.created_on))
+    elif sort_type == 'publication_date':
+        base_query = base_query.join(Publication).order_by(db.desc(Publication.pub_date))
+
+    thread_paginator = base_query.paginate(cur_page, per_page=threads_per_page, error_out=True)
 
     return thread_paginator
 
 
 @mod.route('/')
-#@mod.route('/trending')
-def home():
+def home(sort_type = 'hot'):
     """
     If not trending we order by creation date
     """
@@ -195,6 +203,19 @@ def logout():
     return redirect(url_for('frontends.home'))
 
 
+@mod.route('/confirm-email/<string:token>')
+def confirm_email(token):
+    """
+        Confirm user email
+    """
+    user = User.query.filter_by(email_token=token).first()
+    if user.email_token == token:
+        user.email_verified = True
+    db.session.commit()
+    flash("Thank you for confirming your email! You can now submit and comment.", 'success')
+    return redirect(url_for('frontends.home'))
+
+
 @mod.route('/register/', methods=['GET', 'POST'])
 def register():
     """
@@ -207,15 +228,20 @@ def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
         # create an user instance not yet stored in the database
-        user = User(username=form.username.data, email=form.email.data, \
+        user = User(username=form.username.data,
+                    email=form.email.data, \
                     password=generate_password_hash(form.password.data),
-                    university=get_school(form.email.data))
+                    university=get_school(form.email.data),
+                    email_token=random_string())
         # Insert the record in our database and commit it
         db.session.add(user)
-        db.session.commit()
+        email_confirm_link = url_for('frontends.confirm_email', token = user.email_token)
+        email_response = send_email("Confirm upvote.pub email",
+                                    """Please visit the link below to confirm your email:\n\n{}{}""".format(request.url_root.strip("/"), email_confirm_link),
+                                    user.email)
         # Log the user in, as he now has an id
+        db.session.commit()
         session['user_id'] = user.id
-
         flash('Thanks for signing up! Please confirm your email by following the link sent in the confirmation email.', 'success')
         if 'next' in request.form and request.form['next']:
             return redirect(request.form['next'])

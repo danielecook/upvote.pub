@@ -2,15 +2,31 @@
 
 {% block content %}
 <div class="col-md-9 col-sm-9">
+
+      <p class='pull-right'>
+            {% if num_searches is defined %}
+                {{num_searches }} result{{ num_searches|pluralize }}
+            {% endif %}
+      </p>
+
     {% if page_title %}
-
-              {% if num_searches is defined %}
-                <p class='pull-right'>{{num_searches }} result{{ num_searches|pluralize }}</p>
-              {% endif %}
-
-    <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
-    <hr />
+        <h1>{{ page_title }}{% if page_subtitle %} <small>{{ page_subtitle }}</small>{% endif %}</h1>
+        <hr class='title-hr' />
     {% endif %}
+
+    {% if sort_type %}
+        <small class='sort-list'>
+            <strong>Sort&nbsp;&nbsp;</strong>
+                {% for st in ['hot', 'top', 'new', 'comments', 'publication_date'] %}
+                    {% if sort_type == st %}
+                        <strong>{{ st.replace("_", " ") }}</strong>
+                    {% else %}
+                        <a href="{{ url_for('subreddits.permalink', subreddit_name = cur_subreddit.name, sort_type=st) }}">{{ st.replace("_", " ") }}</a>
+                    {% endif %}&nbsp;&nbsp;
+                {% endfor %}
+        </small>
+    {% endif %}
+
 
   <div id="messages-wrap">
     <div id="messages">
@@ -177,5 +193,6 @@ $(document).ready(function() {
     //
     //
 });
+
 </script>
 {% endblock %}

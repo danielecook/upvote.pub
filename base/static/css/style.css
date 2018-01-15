@@ -56,7 +56,7 @@ a.thumbnail:hover {
 
 /* pub */
 
-.downloaded {
+.downloaded, a:active {
     color: #551a8b !important;
 }
 
@@ -493,4 +493,14 @@ h2 {
 
 blockquote {
     font-size: 14px;
+}
+
+.title-hr {
+    margin-bottom: 5px;
+}
+
+.sort-list {
+    margin-bottom: 20px;
+    margin-left: 10px;
+    display: block;
 }

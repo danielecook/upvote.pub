@@ -60,7 +60,7 @@
             {% else %}
               <div class='thumbnail pub_thumb no_pdf_thumb' data-toggle="tooltip" data-placement="bottom" title="No PDF Found">
                 <div class='no_pdf'>
-                    ?
+                    <span class='glyphicon glyphicon-remove'></span>
                 </div>
                 <br />No PDF</div>
             {% endif %}
@@ -94,10 +94,12 @@
              }}">{{ thread.n_comments }} Comments</a>
 
 
-            {% if thread.has_saved(user.id) %}
-                <a href="javascript:void(0)"  data-id='{{ thread.id }}' class='listing-save-button' data-saved=true style='color: #1484e4'>saved</a>
-            {% else %}
-                <a href="javascript:void(0)"  data-id='{{ thread.id }}' class='listing-save-button' data-saved=false style='color: #888'>save</a>
+            {% if g.user %}
+                {% if thread.has_saved(user.id) %}
+                    <a href="javascript:void(0)"  data-id='{{ thread.id }}' class='listing-save-button' data-saved=true style='color: #1484e4'>saved</a>
+                {% else %}
+                    <a href="javascript:void(0)"  data-id='{{ thread.id }}' class='listing-save-button' data-saved=false style='color: #888'>save</a>
+                {% endif %}
             {% endif %}
 
             {% if pub.pub_doi %}
