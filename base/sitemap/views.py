@@ -3,6 +3,7 @@
 """
 import glob
 import os
+import arrow
 from flask import (Blueprint,
                    render_template,
                    url_for)
@@ -11,8 +12,7 @@ from base.threads.models import Thread
 from base.subreddits.models import Subreddit
 from base.users.models import User
 from base import app
-import arrow
-from flask import make_response
+from flask import make_response, request
 
 mod = Blueprint('sitemap', __name__)
 
@@ -29,14 +29,17 @@ IGNORE_RULES = ['/_ah/health',
 # a route for generating sitemap.xml
 @mod.route('/sitemap.xml', methods=['GET'])
 def sitemap():
-    """Generate sitemap.xml. Makes a list of urls and date modified."""
+    """
+        Generate sitemap.xml. Makes a list of urls and date modified.
+    """
+    url_base = request.url_root.strip("/")
     pages = []
     ten_days_ago = arrow.utcnow().shift(days=-10).datetime.isoformat()
     # static pages
     for rule in app.url_map.iter_rules():
         if rule.rule not in IGNORE_RULES:
             if "GET" in rule.methods and len(rule.arguments)==0:
-                pages.append({"loc": rule.rule,
+                pages.append({"loc":  url_base + rule.rule,
                               "changefreq": 'daily',
                               "priority": 0.5})
     
@@ -48,7 +51,7 @@ def sitemap():
         modified_time = arrow.get(os.stat(f"base/markdown/{md}.md").st_mtime).datetime.isoformat()
         change_freq = 'weekly'
         priority = 0.5
-        pages.append({"loc": url,
+        pages.append({"loc":  url_base + url,
                       "lastmod": modified_time,
                       "changefreq": change_freq,
                       "priority": priority})
@@ -60,7 +63,7 @@ def sitemap():
                     subreddit_name=sub.name)
         change_freq = 'hourly'
         priority = 0.9
-        pages.append({"loc": url,
+        pages.append({"loc":  url_base + url,
                       "changefreq": change_freq,
                       "priority": priority})
     # threads
@@ -72,7 +75,7 @@ def sitemap():
                     title=slugify(thread.publication.pub_title))
         change_freq = 'daily'
         priority = 0.8
-        pages.append({"loc": url,
+        pages.append({"loc":  url_base + url,
                       "changefreq": change_freq,
                       "priority": priority})
 
@@ -83,7 +86,7 @@ def sitemap():
         modified_time = user.created_on.date().isoformat()
         change_freq = 'monthly'
         priority = 0.5
-        pages.append({"loc": url,
+        pages.append({"loc":  url_base + url,
                       "lastmod": modified_time,
                       "changefreq": change_freq,
                       "priority": priority})
