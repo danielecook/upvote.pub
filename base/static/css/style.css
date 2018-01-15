@@ -289,19 +289,7 @@ a.thumbnail:hover {
     font-size: 12px;
 }
 
-.brand-nav-color {
-    color: #1484e4;
-}
 
-
-a.brand-nav {
-    font-weight: 800;
-}
-
-
-a.brand-nav:hover, a.brand-nav:focus {
-    background-color: #eeeeee !important;
-}
 
 img.permalink-listing-image {
     width: 70px;
@@ -503,4 +491,31 @@ blockquote {
     margin-bottom: 20px;
     margin-left: 10px;
     display: block;
+}
+
+/*
+    Logo
+*/
+
+.navbar-collapse {
+    padding-left: 0px;
+}
+
+
+.brand-nav-color {
+    color: #1484e4;
+}
+
+
+a.brand-nav {
+    font-weight: 800;
+}
+
+
+a.brand-nav:hover, a.brand-nav:hover {
+    background-color: #eeeeee !important;
+}
+
+.brand-nav:hover .brand-nav-color {
+    color: #888;
 }

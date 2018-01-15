@@ -10,6 +10,7 @@ from wtforms import TextField, TextAreaField, ValidationError
 from wtforms.validators import Required
 from base.users.models import User
 
+
 def is_valid_id(form, field):
     if field.data:
         pub_id_type, pub_id = id_type(field.data.strip())
@@ -21,6 +22,8 @@ def is_valid_id(form, field):
     submission_count = Thread.query.filter(Thread.user_id == user_id, Thread.created_on > since).count()
     if submission_count > 5:
         raise ValidationError("You've been submitting too much.")
+    if g.user.email_verified is not True:
+        raise ValidationError("You must verify your email to submit")
 
 
 class submit_pub_form(Form):
