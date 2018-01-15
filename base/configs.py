@@ -27,6 +27,7 @@ class base_config(object):
 # when not using that config.
 
 class local(base_config):
+    ONLINE = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     DEBUG = True
     TESTING = True
@@ -63,30 +64,25 @@ class staging(base_config):
     SESSION_COOKIE_SECURE = True
     SQLALCHEMY_ECHO = False
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-
-    def __init__():
-        logger.info('Staging config loaded')
-        CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
-        SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
-        SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
-        REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
-        REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+    SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
+    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
+    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
+    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 
 
 class production(base_config):
-    if STAGE == 'production':
-        DEBUG = False
-        SQLALCHEMY_ECHO = False
-        TESTING = False
-        MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-        SESSION_COOKIE_NAME = 'upvote'
-        SESSION_COOKIE_HTTPONLY = True
-        SESSION_COOKIE_SECURE = True
-        def __init__():
-            logger.info('Production config loaded')
-            CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
-            SECRET_KEY = get_item('credential', 'secret-production').get('secret')
-            SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
-            REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
-            REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+    DEBUG = False
+    SQLALCHEMY_ECHO = False
+    TESTING = False
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    SESSION_COOKIE_NAME = 'upvote'
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+    SECRET_KEY = get_item('credential', 'secret-production').get('secret')
+    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
+    logger.info(SQLALCHEMY_DATABASE_URI)
+    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
+    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 

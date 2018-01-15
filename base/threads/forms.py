@@ -20,7 +20,8 @@ def is_valid_id(form, field):
     user_id = g.user.id
     since = arrow.utcnow() - arrow.utcnow().shift(hours=-2).datetime
     submission_count = Thread.query.filter(Thread.user_id == user_id, Thread.created_on > since).count()
-    if submission_count > 5:
+    # Limit submissions for general users only
+    if submission_count > 5 and g.user.role == 0:
         raise ValidationError("You've been submitting too much.")
     if g.user.email_verified is not True:
         raise ValidationError("You must verify your email to submit")
