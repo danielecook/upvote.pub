@@ -63,8 +63,8 @@ Below are examples of pub ids and where to locate them on PubMed, arXiv, bioRxiv
 Every pub on upvote.pub has a website associated with it. This is often the journal html-based website. Additionally, many pubs have a PDF associated w
 ith them. To make the site easier to browse, upvote.pub tracks which pubs you download. Additionally, your browser keeps track of websites you visit. These information are both considered when pubs are displayed.
 
-* <span style='color: #1484e4; font-weight: 800'>Blue</span> - You have not visited the website associated with a pub nor have you downloaded it's PDF.
-* <span style='color: #5249fe; font-weight: 800'>Light purple</span> - you have visited the website associated with that publication, but you have not downloaded the PDF.
+* <span style='color: #1484e4; font-weight: 800'>Blue</span> - You have not visited the comments page or downloaded its PDF.
+* <span style='color: #5249fe; font-weight: 800'>Light purple</span> - You have visited the comments page associated with that publication, but you have not downloaded the PDF.
 * <span style='color: #551a8b; font-weight: 800'>Dark Purple</span> - The pub PDF has been downloaded. This color is applied to both the title and thumbnail outline.
 
 <br />

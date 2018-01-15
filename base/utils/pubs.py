@@ -154,6 +154,12 @@ def fetch_biorxiv(biorxiv_id):
     if len(doi_span) > 0:
         doi = doi_span[0].text.replace('doi: https://doi.org/', '')
     pub = fetch_doi(doi)
+
+    # Fetch the abstract
+    abstract_p = b.findAll('p', {'id': 'p-2'})
+    if abstract_p:
+        pub['pub_abstract'] = abstract_p[0].text
+
     if not pub:
         return None
     pub['pub_journal'] = 'bioRxiv'

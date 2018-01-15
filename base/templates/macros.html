@@ -67,7 +67,11 @@
         </div>
     </div>
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-10 listing-text">
-        <a href="{{ pub.pub_url }}" class="listing-title {% if has_downloaded %}downloaded{% endif %}">{{ pub.pub_title }}</a>
+        <a href="{{ url_for('threads.thread_permalink',
+                          subreddit_name = thread.subreddit.name,
+                          title=slugify(pub.pub_title),
+                          thread_id = thread.id) 
+             }}" class="listing-title {% if has_downloaded %}downloaded{% endif %}">{{ pub.pub_title }}</a>
         <div class='pub_authors'>{{ pub.pub_authors|safe }}</div>
         <div class='pub_line'>
             {{ pub.pub_date.strftime("%Y-%m-%d") }} — <em>{{ pub.pub_journal }}</em>

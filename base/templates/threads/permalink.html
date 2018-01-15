@@ -4,13 +4,6 @@
 {% from "macros.html" import render_pub %}
     {{ render_pub(thread, user, slugify) }}
 
-{% if thread.pub_abstract %}
-    <h5>Abstract</h5>
-    <div class='well jax'>
-        {{ thread.pub_abstract }}
-    </div>
-{% endif %}
-
 {% set thread_set = thread.similar_threads(thread.publication_id) %}
 {% if thread_set|length > 1 %}
     <h5>Related Threads <span class='glyphicon glyphicon-question-sign' data-toggle='tooltip' data-placement='bottom' title="This publication was also submitted to the subs listed below"></span></h5>
@@ -23,6 +16,13 @@
              }}">{{ current_thread.subreddit.name }}</a>&nbsp;&nbsp;
         {% endif %}
     {% endfor %}
+{% endif %}
+
+{% if thread.publication.pub_abstract %}
+    <h5>Abstract</h5>
+    <div class='well jax'>
+        {{ thread.publication.pub_abstract }}
+    </div>
 {% endif %}
 
 <div class="thread-comment-section">
