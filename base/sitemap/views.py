@@ -32,7 +32,7 @@ def sitemap():
     """
         Generate sitemap.xml. Makes a list of urls and date modified.
     """
-    url_base = request.url_root.strip("/")
+    url_base = request.url_root.strip("/").replace("http", "https")
     pages = []
     ten_days_ago = arrow.utcnow().shift(days=-10).datetime.isoformat()
     # static pages
@@ -41,7 +41,7 @@ def sitemap():
             if "GET" in rule.methods and len(rule.arguments)==0:
                 pages.append({"loc":  url_base + rule.rule,
                               "changefreq": 'daily',
-                              "priority": 0.5})
+                              "priority": 1.0})
     
     # Markdown
     markdown_pages = [os.path.basename(x).replace(".md", "")  for x in glob.glob("base/markdown/*")]

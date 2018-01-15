@@ -105,7 +105,8 @@ from base.frontends.views import get_subreddits
 from base.utils.misc import generate_csrf_token
 @app.context_processor
 def inject():
-    return dict(version="v{}".format(VERSION_NUM.replace('-', '.')),
+    version='.'.join(VERSION_NUM.split("-")[0:3])
+    return dict(version=version,
                 csrf_token=generate_csrf_token,
                 slugify=slugify,
                 subreddits=get_subreddits(),

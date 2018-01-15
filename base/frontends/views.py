@@ -121,24 +121,23 @@ def home(sort_type = 'hot'):
 
 @mod.route('/h/<string:page>')
 def render_markdown(page):
-    page = f"base/markdown/{page}.md"
-    if not os.path.exists(page):
+    page_md = f"base/markdown/{page}.md"
+    if not os.path.exists(page_md):
         abort(404)
-    with open(page, 'r') as f:
+    with open(page_md, 'r') as f:
         content = f.read()
-        print(content)
-        page = markdown2.markdown(content,
-                                  extras = ['fenced-code-blocks',
-                                                     'nofollow',
-                                                     'target-blank-links',
-                                                     'toc',
-                                                     'tables',
-                                                     'footnotes',
-                                                     'metadata',
-                                                     'markdown-in-html'])
+        md = markdown2.markdown(content,
+                                extras = ['fenced-code-blocks',
+                                          'nofollow',
+                                          'target-blank-links',
+                                          'toc',
+                                          'tables',
+                                          'footnotes',
+                                          'metadata',
+                                          'markdown-in-html'])
     return render_template('markdown.html',
-                           page=page,
-                           **page.metadata)
+                           page=md,
+                           **md.metadata)
 
 
 @mod.route('/search/', methods=['GET'])
