@@ -88,20 +88,6 @@ def submit(subreddit_name=None):
                            subreddits=get_subreddits())
 
 
-@mod.route('/delete/', methods=['GET', 'POST'])
-def delete():
-    """
-    """
-    pass
-
-
-@mod.route('/edit/', methods=['GET', 'POST'])
-def edit():
-    """
-    """
-    pass
-
-
 @mod.route('/<string:subreddit_name>/<int:thread_id>/<path:title>/', methods=['GET', 'POST'])
 def thread_permalink(subreddit_name, thread_id, title):
     """
@@ -133,26 +119,3 @@ def download_pdf(pub_id):
         return redirect(pub_url, code=302)
     else:
         abort(404)
-
-##################
-# Comments Views #
-##################
-
-@mod.route('/comments/submit/', methods=['GET', 'POST'])
-def submit_comment():
-    """
-    """
-    pass
-
-@mod.route('/comments/delete/', methods=['GET', 'POST'])
-def delete_comment():
-    """
-    """
-    pass
-
-@mod.route('/comments/<comment_id>/', methods=['GET', 'POST'])
-def comment_permalink():
-    """
-    """
-    pass
-

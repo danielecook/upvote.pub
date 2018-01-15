@@ -22,6 +22,7 @@ app.url_map.strict_slashes = False
 
 STAGE, VERSION_NUM = os.environ.get('GAE_VERSION').split("-", 1)
 
+
 # Setup logging
 # import logging
 # from google.cloud import logging as gcloud_logging
@@ -95,11 +96,17 @@ from base.subreddits.views import mod as subreddits_module
 app.register_blueprint(subreddits_module)
 
 
+from base.sitemap.views import mod as sitemap_module
+app.register_blueprint(sitemap_module)
+
+
+
 from base.frontends.views import get_subreddits
 from base.utils.misc import generate_csrf_token
 @app.context_processor
 def inject():
-    return dict(csrf_token=generate_csrf_token,
+    return dict(version="v{}".format(VERSION_NUM.replace('-', '.')),
+                csrf_token=generate_csrf_token,
                 slugify=slugify,
                 subreddits=get_subreddits(),
                 user=g.get('user'))
