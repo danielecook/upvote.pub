@@ -36,7 +36,7 @@ def sitemap():
     for rule in app.url_map.iter_rules():
         if rule.rule not in IGNORE_RULES:
             if "GET" in rule.methods and len(rule.arguments)==0:
-                pages.append({"url": rule.rule,
+                pages.append({"loc": rule.rule,
                               "changefreq": 'daily',
                               "priority": 0.5})
     
@@ -48,7 +48,7 @@ def sitemap():
         modified_time = arrow.get(os.stat(f"base/markdown/{md}.md").st_mtime).datetime.isoformat()
         change_freq = 'weekly'
         priority = 0.5
-        pages.append({"url": url,
+        pages.append({"loc": url,
                       "lastmod": modified_time,
                       "changefreq": change_freq,
                       "priority": priority})
@@ -60,7 +60,7 @@ def sitemap():
                     subreddit_name=sub.name)
         change_freq = 'hourly'
         priority = 0.9
-        pages.append({"url": url,
+        pages.append({"loc": url,
                       "changefreq": change_freq,
                       "priority": priority})
     # threads
@@ -72,7 +72,7 @@ def sitemap():
                     title=slugify(thread.publication.pub_title))
         change_freq = 'daily'
         priority = 0.8
-        pages.append({"url": url,
+        pages.append({"loc": url,
                       "changefreq": change_freq,
                       "priority": priority})
 
@@ -83,7 +83,7 @@ def sitemap():
         modified_time = user.created_on.date().isoformat()
         change_freq = 'monthly'
         priority = 0.5
-        pages.append({"url": url,
+        pages.append({"loc": url,
                       "lastmod": modified_time,
                       "changefreq": change_freq,
                       "priority": priority})
