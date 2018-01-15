@@ -20,7 +20,7 @@ app = Flask(__name__, static_url_path='/static')
 # Disable strict slashes
 app.url_map.strict_slashes = False
 
-STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
+STAGE, VERSION_NUM = os.environ.get('GAE_VERSION').split("-", 1)
 
 # Setup logging
 # import logging

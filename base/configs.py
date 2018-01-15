@@ -9,7 +9,7 @@ from base.utils.gcloud import get_item
 from logzero import logger
 
 logger.info("Loading Config")
-STAGE, VERSION_NUM = os.environ.get('VERSION').split("-", 1)
+STAGE, VERSION_NUM = os.environ.get('GAE_VERSION').split("-", 1)
 
 
 class base_config(object):
@@ -82,7 +82,6 @@ class production(base_config):
     CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
     SECRET_KEY = get_item('credential', 'secret-production').get('secret')
     SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
-    logger.info(SQLALCHEMY_DATABASE_URI)
     REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
     REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 

@@ -66,7 +66,10 @@ def submit(subreddit_name=None):
 
         if not pub_item:
             flash("Could not find a pub with the ID: '{}'".format(form.pub_id.data), 'danger')
-            return render_template('threads/submit_post.html', form=form, cur_subreddit=subreddit.name)
+            return render_template('threads/submit_post.html',
+                                   page_title=page_title,
+                                   form=form,
+                                   cur_subreddit=subreddit.name)
 
 
         thread = Thread(user_id=user_id, subreddit_id=subreddit.id, publication_id=pub_item.id)
