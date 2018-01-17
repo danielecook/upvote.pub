@@ -65,13 +65,16 @@ def process_pdf_task(pub):
         bucket = gs_client.get_bucket('pdf_thumbnails')
         thumbnail_url_fname = "{}.png".format(sha1_fname)
         thumbnail_obj = bucket.blob(thumbnail_url_fname)
-        thumbnail_obj.upload_from_filename(thumbnail_fname)
-        # Delete after upload
-        os.remove(thumbnail_fname)
+        try:
+            thumbnail_obj.upload_from_filename(thumbnail_fname)
+            # Delete after upload
+            os.remove(thumbnail_fname)
 
-        # Update database - set thumbnail to sha1_fname
-        logger.info("Stored thumbnail: " + thumbnail_url_fname)
-        pub_item.pub_thumbnail = sha1_fname
+            # Update database - set thumbnail to sha1_fname
+            logger.info("Stored thumbnail: " + thumbnail_url_fname)
+            pub_item.pub_thumbnail = sha1_fname
+        except FileNotFoundError:
+            pub_item.pub_pdf_url = None
     else:
         pub_item.pub_pdf_url = None
     db.session.commit()

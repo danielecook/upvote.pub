@@ -55,6 +55,7 @@ def initdb(env):
     db.create_all()
     first_user = User(username='dec',
                       email='dec@u.northwestern.edu',
+                      email_verified=True,
                       password=generate_password_hash('london!88'),
                       university='Northwestern University')
 

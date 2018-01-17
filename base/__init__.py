@@ -5,6 +5,7 @@ Written by:
 Lucas Ou -- http://lucasou.com
 """
 import os
+from urllib.parse import quote
 from logzero import logger
 from flask import Flask, render_template, url_for, g, Response
 from flask_sqlalchemy import SQLAlchemy
@@ -106,7 +107,8 @@ from base.utils.misc import generate_csrf_token
 @app.context_processor
 def inject():
     version='.'.join(VERSION_NUM.split("-")[0:3])
-    return dict(version=version,
+    return dict(quote=quote,
+                version=version,
                 csrf_token=generate_csrf_token,
                 slugify=slugify,
                 subreddits=get_subreddits(),

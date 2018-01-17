@@ -2,6 +2,10 @@
 page_title: Change Log
 ---
 
+## version 0.1.2
+
+* Fixed issue with certain publications stalling on thumbnail generation.
+
 ## version 0.1.1
 
 * Change title links to direct to comment pages.

@@ -218,7 +218,12 @@ def confirm_email(token):
 @mod.route('/register/', methods=['GET', 'POST'])
 def register():
     """
+        Registration page
     """
+    if g.user:
+        # If the user is logged in send them home
+        return redirect(url_for('frontends.home'))
+
     next = ''
     if request.method == 'GET':
         if 'next' in request.args:
