@@ -519,3 +519,9 @@ a.brand-nav:hover, a.brand-nav:hover {
 .brand-nav:hover .brand-nav-color {
     color: #888;
 }
+
+@media only screen and (max-device-width: 480px) {
+    .navbar-nav {
+        margin-left: 20px;
+    }
+}
