@@ -3,6 +3,13 @@
  *  fairly organized!
  */
 
+.repo-btn {
+    font-size: 16px;
+}
+.repo-btn:hover {
+    text-decoration: none;
+}
+
 p {
     margin-left: 10px;
 }

@@ -18,12 +18,20 @@
     {% endfor %}
 {% endif %}
 
-{% if thread.publication.pub_abstract %}
+{% set pub_abstract = thread.publication.fetch_abstract() %}
+{% if pub_abstract %}
     <h5>Abstract</h5>
     <div class='well jax'>
-        {{ thread.publication.pub_abstract }}
+        {{ pub_abstract|safe }}
     </div>
 {% endif %}
+
+{% set github_links = thread.publication.fetch_github_links() %}
+{% for username, repo in github_links %}
+<a href='https://www.github.com/{{ username }}/{{ repo }}' class='btn btn-link btn-md repo-btn'>
+    <i class="fa fa-github"></i> {{ username }} / {{ repo }}
+</a>
+{% endfor %}
 
 <div class="thread-comment-section">
     {% if user is defined and user != None %}

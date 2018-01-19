@@ -29,7 +29,7 @@ from base.utils.misc import now
 from logzero import logger
 from sqlalchemy_fulltext import FullText, FullTextSearch
 from sqlalchemy.orm import validates, reconstructor
-from base.utils.text_utils import format_comment
+from base.utils.text_utils import format_comment, linkify, find_github_links
 from base.utils.query import get_or_create
 
 
@@ -131,6 +131,19 @@ class Publication(FullText, db.Model):
             if len(value) > max_len:
                 return value[:max_len]
         return value
+
+
+    def fetch_abstract(self):
+        """
+            Used to process text within an abstract
+        """
+        if self.pub_abstract:
+            return linkify(self.pub_abstract)
+
+
+    def fetch_github_links(self):
+        if self.pub_abstract:
+            return find_github_links(self.pub_abstract)
 
 
     def mark_downloaded(self, user_id):
