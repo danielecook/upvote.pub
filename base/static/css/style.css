@@ -503,25 +503,32 @@ blockquote {
 
 
 .brand-nav-color {
-    color: #1484e4;
+    color: #777;
 }
-
 
 a.brand-nav {
     font-weight: 800;
+    display: inline-block;
+    text-decoration: none;
 }
 
 
 a.brand-nav:hover, a.brand-nav:hover {
-    background-color: #eeeeee !important;
+    color: #5348fe !important;
+    background-color: white;
 }
 
 .brand-nav:hover .brand-nav-color {
-    color: #888;
+    color: #1484e4;
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-width: 767px) {
     .navbar-nav {
         margin-left: 20px;
+    }
+    a.brand-nav {
+        font-size: 20px;
+        padding: 10px !important;
+        display: block;
     }
 }
