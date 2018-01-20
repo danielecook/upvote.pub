@@ -5,10 +5,10 @@
   {% from "macros.html" import render_field %}
   <form method="POST" action="." class="form bs-example form-horizontal">
     {{ form.csrf_token }}
-    {{ render_field(form.pub_id, class="form-control", placeholder="DOI, PMID, PMCID, arXiv or bioRxiv") }}
+    {{ render_field(form.pub_id, class="form-control", placeholder="URL, DOI, PMID, PMCID, arXiv or bioRxiv") }}
     <br />
     <div class='well'>
-    In order to submit to <strong>upvote.pub</strong>, you must submit a publication ID. The examples table details the IDs supported. For more information on where to find these IDs see the <a href='{{ url_for("frontends.render_markdown", page='faq') }}#where-do-i-find-pub-ids'>FAQ</a>.
+    In order to submit to <strong>upvote.pub</strong>, you msust submit the URL for a publication or a publication ID. URLs can only be used with PubMed, PubMed Central, arXiv, and bioRxiv. The examples table details the IDs supported. For more information on where to find these IDs see the <a href='{{ url_for("frontends.render_markdown", page='faq') }}#where-do-i-find-pub-ids'>FAQ</a>.
     </div>
     {% if user.email_verified %}
         <button type="submit" value="Submit" class="btn btn-primary btn-block">Submit</button>
@@ -35,12 +35,12 @@
         </tr>
         <tr>
             <td><a href='https://www.ncbi.nlm.nih.gov/pubmed/' target="_blank">PMID</a></td>
-            <td>Pubmed identifier</td>
+            <td>PubMed identifier</td>
             <td>28524281</td>
         </tr>
         <tr>
             <td><a href='https://www.ncbi.nlm.nih.gov/pubmed/' target="_blank">PMCID</a></td>
-            <td>Pubmed Central identifier</td>
+            <td>PubMed Central identifier</td>
             <td>PMC2760059</td>
         </tr>
         <tr>

@@ -63,11 +63,12 @@ def submit(subreddit_name=None):
         # Fetch data from publication
         pub_id = form.pub_id.data
         pub_item = fetch_pub(pub_id)
+        logger.info(pub_item)
 
         if not pub_item:
             flash("Could not find a pub with the ID: '{}'".format(form.pub_id.data), 'danger')
             return render_template('threads/submit_post.html',
-                                   page_title=page_title,
+                                   page_title='Submit to ' + subreddit_name,
                                    form=form,
                                    cur_subreddit=subreddit.name)
 

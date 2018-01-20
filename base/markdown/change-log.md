@@ -2,6 +2,10 @@
 page_title: Change Log
 ---
 
+## version 0.1.4
+
+* Allow submission using URLs for PubMed, PMC, arXiv, and bioRxiv.
+
 ## version 0.1.3
 
 * Make site responsive on mobile devices.
