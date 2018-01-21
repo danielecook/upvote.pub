@@ -26,7 +26,7 @@
     </div>
 {% endif %}
 
-{% set github_links = thread.publication.fetch_github_links() %}
+{% set github_links = thread.publication.fetch_github_links() or [] %}
 {% for username, repo in github_links %}
 <a href='https://www.github.com/{{ username }}/{{ repo }}' class='btn btn-link btn-md repo-btn'>
     <i class="fa fa-github"></i> {{ username }} / {{ repo }}

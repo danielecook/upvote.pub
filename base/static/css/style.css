@@ -529,6 +529,14 @@ a.brand-nav:hover, a.brand-nav:hover {
     color: #1484e4;
 }
 
+.bookmarklet {
+    padding: 5px 10px;
+    margin-top: 10px;
+    display: inline-block;
+    border: 1px dotted #1484e4;
+    border-radius: 5px;
+}
+
 @media only screen and (max-width: 767px) {
     .navbar-nav {
         margin-left: 20px;

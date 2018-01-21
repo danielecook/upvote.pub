@@ -2,7 +2,7 @@
 page_title: Change Log
 ---
 
-## version 0.1.4
+## version 0.1.4 - 2018-01-20
 
 * Allow submission using URLs for PubMed, PMC, arXiv, and bioRxiv.
 

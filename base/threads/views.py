@@ -5,7 +5,7 @@ from logzero import logger
 from flask import (Blueprint, request, render_template, flash, g, session,
                    redirect, url_for, abort)
 from slugify import slugify
-from base.threads.forms import submit_pub_form
+from base.threads.forms import submit_pub_form, submit_pub_bookmarklet_form
 from base.threads.models import Thread, Publication, Publication_Download
 from base.users.models import User
 from base.subreddits.models import Subreddit
@@ -30,7 +30,7 @@ def before_request():
         g.user = User.query.get(session['user_id'])
 
 
-
+@mod.route('/new', methods=['GET', 'POST'])
 @mod.route('/<subreddit_name>/submit/', methods=['GET', 'POST'])
 def submit(subreddit_name=None):
     """
@@ -41,14 +41,32 @@ def submit(subreddit_name=None):
 
     user_id = g.user.id
 
-    subreddit = Subreddit.query.filter_by(name=subreddit_name).first()
-    if not subreddit:
-        abort(404)
+    if subreddit_name:
+        is_bookmarklet=False
+        subreddit = Subreddit.query.filter_by(name=subreddit_name).first()
+        form = submit_pub_form(request.form)
+        submit_title = subreddit_name
+        if not subreddit:
+            abort(404)
+    else:
+        # Bookmarklet
+        is_bookmarklet=True
+        url = request.args.get('url') or ""
+        form = submit_pub_bookmarklet_form(request.form, pub_id=url)
+        form.set_choices()
 
-    form = submit_pub_form(request.form)
+        if form.subreddit.data:
+            subreddit = Subreddit.query.filter_by(id=form.subreddit.data).first()
+            if subreddit:
+                subreddit_name = subreddit.name
+                submit_title = subreddit_name
+        else:
+            subreddit = None
+            submit_title = "upvote.pub!"
+
 
     # Check if pub has already been submitted
-    if form.pub_id.data:
+    if form.pub_id.data and subreddit_name:
         publication = get_publication(form.pub_id.data)
         if publication:
             for thread in publication.threads:
@@ -63,12 +81,11 @@ def submit(subreddit_name=None):
         # Fetch data from publication
         pub_id = form.pub_id.data
         pub_item = fetch_pub(pub_id)
-        logger.info(pub_item)
 
         if not pub_item:
             flash("Could not find a pub with the ID: '{}'".format(form.pub_id.data), 'danger')
             return render_template('threads/submit_post.html',
-                                   page_title='Submit to ' + subreddit_name,
+                                   page_title=f"Submit to {submit_title}",
                                    form=form,
                                    cur_subreddit=subreddit.name)
 
@@ -81,12 +98,12 @@ def submit(subreddit_name=None):
         return redirect(url_for('threads.thread_permalink',
                                 thread_id=thread.id,
                                 subreddit_name=thread.subreddit.name,
-                                title = slugify(pub_item.pub_title)))
+                                title=slugify(pub_item.pub_title)))
     return render_template('threads/submit_post.html',
                            form=form,
-                           page_title='Submit to ' + subreddit_name,
-                           cur_subreddit=subreddit,
-                           subreddits=get_subreddits())
+                           page_title=f"Submit to {submit_title}",
+                           subreddits=get_subreddits(),
+                           is_bookmarklet=is_bookmarklet)
 
 
 @mod.route('/<string:subreddit_name>/<int:thread_id>/<path:title>/', methods=['GET', 'POST'])

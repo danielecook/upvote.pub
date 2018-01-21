@@ -72,6 +72,7 @@
   {% endblock %}
 </div>{# col-md-9 #}
 
+{% if not is_bookmarklet %}
 <div class="col-md-3 col-sm-3">
   {% block right %}
     {% block create_buttons %}
@@ -113,6 +114,7 @@
 
 
 </div>
+{% endif %}
 
 {% endblock %}
 
