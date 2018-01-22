@@ -13,7 +13,7 @@
     <br />
     {% if not is_bookmarklet %}
     <div class='well'>
-    In order to submit to <strong>upvote.pub</strong>, you msust submit the URL for a publication or a publication ID. URLs can only be used with PubMed, PubMed Central, arXiv, and bioRxiv. The examples table details the IDs supported. For more information on where to find these IDs see the <a href='{{ url_for("frontends.render_markdown", page='faq') }}#where-do-i-find-pub-ids'>FAQ</a>.
+    In order to submit to <strong>upvote.pub</strong>, you must submit the URL for a publication or a publication ID. URLs can only be used with PubMed, PubMed Central, arXiv, and bioRxiv. The examples table details the IDs supported. For more information on where to find these IDs see the <a href='{{ url_for("frontends.render_markdown", page='faq') }}#where-do-i-find-pub-ids'>FAQ</a>.
     </div>
     {% endif %}
     {% if user.email_verified %}
