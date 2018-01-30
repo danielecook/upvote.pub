@@ -152,8 +152,19 @@ def fetch_biorxiv(biorxiv_id):
     b = BeautifulSoup(biorxiv_resp.content, 'lxml')
     doi_span = b.findAll('span', {'class': 'highwire-cite-metadata-doi'})
     if len(doi_span) > 0:
-        doi = doi_span[0].text.replace('doi: https://doi.org/', '')
+        doi = doi_span[0].text.replace('doi: https://doi.org/', '').strip()
     pub = fetch_doi(doi)
+    
+    # If DOI resolution fails
+    if pub is None:
+        try:
+            pub = {}
+            # DOI not resolved - use fetched page
+            pub['pub_title'] = b.find('h1', {'id': 'page-title'}).text
+            pub['pub_authors'] = [x.text for x in b.findAll('span', {'class': 'highwire-citation-author'})]
+            pub['pub_date'] = parse(b.find('li', {'class': 'published'}).text.replace("Posted ", ""))
+        except (AttributeError, ValueError):
+            return None
 
     # Fetch the abstract
     abstract_p = b.findAll('p', {'id': 'p-2'})

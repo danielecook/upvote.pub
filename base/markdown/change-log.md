@@ -2,6 +2,10 @@
 page_title: Change Log
 ---
 
+## version 0.1.6 - 2018-01-30
+
+* Fix issue with bioarxiv submissions.
+
 ## version 0.1.5 - 2018-01-21
 
 * Add bookmarklet submissions
