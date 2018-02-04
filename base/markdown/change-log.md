@@ -2,6 +2,18 @@
 page_title: Change Log
 ---
 
+## version 0.1.9 - 2017-02-04
+
+* Update school list
+
+## version 0.1.8 - 2017-02-01
+
+* Improve scaling
+
+## version 0.1.7 - 2017-02-01
+
+* Improve scaling
+
 ## version 0.1.6 - 2018-01-30
 
 * Fix issue with bioarxiv submissions.
