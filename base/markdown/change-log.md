@@ -2,9 +2,13 @@
 page_title: Change Log
 ---
 
+## version 0.2.0 - 2017-02-05
+
+* Added Chinese University of Hong Kong (cuhk.edu.hk)
+
 ## version 0.1.9 - 2017-02-04
 
-* Update school list
+* Added Jefferson University (jefferson.edu)
 
 ## version 0.1.8 - 2017-02-01
 

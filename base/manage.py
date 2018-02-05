@@ -18,6 +18,7 @@ import IPython
 from base import configs
 from collections import defaultdict
 from subprocess import Popen, PIPE
+import pathlib
 
 from flask import *
 from werkzeug import generate_password_hash
@@ -126,7 +127,8 @@ def swot():
     """
 
     ADDED = {'jefferson.edu': 'Jeffersen University',
-             'cuhk.edu.hk': 'Chinese University of Hong Kong'}
+             'cuhk.edu.hk': 'Chinese University of Hong Kong',
+             'link.cuhk.edu.hk': 'Chinese University of Hong Kong'}
 
     secho('Generating school/university affiliations', fg='green')
     out, err = Popen(['git', 'clone', 'https://github.com/leereilly/swot'],
@@ -136,6 +138,7 @@ def swot():
     for k, v in ADDED.items():
         path = 'swot/lib/domains/' + '/'.join(k.split(".")[1:][::-1]) + "/" +  k.split(".")[0] + ".txt"
         print(path)
+        pathlib.Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
         with open(path, 'w+') as f:
             f.write(v)
 
