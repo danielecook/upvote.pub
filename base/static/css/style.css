@@ -23,7 +23,7 @@ p {
 }
 
 .listing-row {
-    margin-bottom: 33px;
+    margin-bottom: 0px;
 }
 
 div.spacer {
@@ -50,6 +50,10 @@ a.listing-title:visited {
 
 a.thumbnail:hover {
     border-color: #1484e4;
+}
+
+.thumbnail {
+    margin-bottom: 10px;
 }
 
 .listing-text {
