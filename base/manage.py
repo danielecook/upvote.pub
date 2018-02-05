@@ -20,7 +20,7 @@ from collections import defaultdict
 from subprocess import Popen, PIPE
 
 from flask import *
-from werkzeug import check_password_hash, generate_password_hash
+from werkzeug import generate_password_hash
 
 from base import db
 from base.users.models import *
@@ -87,6 +87,12 @@ def create_subreddit(env, name, group):
         Add a new subreddit
     """
     app.config.from_object(getattr(configs, env))
+
+    if env in ['staging', 'production']:
+        remote_url = get_item('credential', f"sql-{env}").get('remote_url')
+        secho(remote_url, fg='green')
+        app.config['SQLALCHEMY_DATABASE_URI'] = remote_url
+
     secho(f"Adding subreddit -- {env}", fg='green')
     add_sub = Subreddit(name=name, group=group, admin_id=1)
 
@@ -99,7 +105,7 @@ def worker():
     """
         Run the huey worker
     """
-    comm=['huey_consumer.py','-w','4','--logfile', 'tasks.log', 'base.async.tasks.huey']
+    comm=['huey_consumer.py', '-w', '4', '--logfile', 'tasks.log', 'base.async.tasks.huey']
     Popen(comm).communicate()
 
 
@@ -118,10 +124,22 @@ def swot():
     """
         Generate school affiliation database
     """
+
+    ADDED = {'jefferson.edu': 'Jeffersen University',
+             'cuhk.edu.hk': 'Chinese University of Hong Kong'}
+
     secho('Generating school/university affiliations', fg='green')
-    out, err = Popen(['git','clone','https://github.com/leereilly/swot'],
+    out, err = Popen(['git', 'clone', 'https://github.com/leereilly/swot'],
                       stdout=PIPE,
                       stderr=PIPE).communicate()
+
+    for k, v in ADDED.items():
+        path = 'swot/lib/domains/' + '/'.join(k.split(".")[1:][::-1]) + "/" +  k.split(".")[0] + ".txt"
+        print(path)
+        with open(path, 'w+') as f:
+            f.write(v)
+
+
     school_directory = defaultdict()
     for root, dirs, files in os.walk("swot/lib/domains"):
         domain_root = root.split("/")[3:]
