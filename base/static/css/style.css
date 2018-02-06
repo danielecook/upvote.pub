@@ -551,3 +551,12 @@ a.brand-nav:hover, a.brand-nav:hover {
         display: block;
     }
 }
+
+.atom_link {
+    color: #e49e14;
+}
+
+.atom_link:hover {
+    color: #ffa900;
+    text-decoration: none;
+}

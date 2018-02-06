@@ -105,18 +105,27 @@ def process_thread_paginator(trending=False, rs=None, subreddit=None, sort_type=
 
 
 @mod.route('/')
-def home(sort_type = 'hot'):
+def home(sort_type='hot'):
     """
     If not trending we order by creation date
     """
+    atom_url = url_for('subreddits.atom_feed', subreddit_name='frontpage', _external=True)
     trending = True if request.path.endswith('trending') else False
     page_title = "Trending" if trending else "Frontpage"
     thread_paginator = process_thread_paginator(trending=trending)
 
     return render_template('home.html',
+                           atom_url=atom_url,
                            page_title=page_title,
                            cur_subreddit=home_subreddit(),
                            thread_paginator=thread_paginator)
+
+
+@mod.route('/.atom')
+@mod.route('/.xml')
+@mod.route('/.rss')
+def atom_redirect():
+    return redirect(url_for("subreddits.atom_feed", subreddit_name="frontpage"))
 
 
 @mod.route('/h/<string:page>')

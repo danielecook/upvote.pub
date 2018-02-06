@@ -110,6 +110,11 @@
                 {% endfor %}
         </ul>
             {% endfor %}
+
+    {% if atom_url %}
+        <a href='{{ atom_url }}' class='atom_link'><i class="fa fa-rss-square"></i> RSS</div></a>
+    {% endif %}
+
   {% endblock %}
 
 

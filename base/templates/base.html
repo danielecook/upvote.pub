@@ -9,6 +9,10 @@
     <meta name="keywords" content="science,publications,doi,pubmed,reddit,daniel e. cook">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    {% if atom_url %}
+    <link rel="alternate" type="application/atom+xml" title="RSS upvote.pub{% if subreddit_name %} > subreddit_name {% endif %}" href="{{ atom_url }}" />
+    {% endif %}
+
     <!-- Bootstrap core CSS -->
     <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
     <link rel="icon" href="{{ url_for('static', filename='img/upvote.ico') }}" type="image/x-icon">
