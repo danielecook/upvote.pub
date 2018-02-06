@@ -2,6 +2,10 @@
 page_title: Change Log
 ---
 
+## version 0.2.1 - 2017-02-06
+
+* Add RSS Feeds
+
 ## version 0.2.0 - 2017-02-05
 
 * Added Chinese University of Hong Kong (cuhk.edu.hk)
