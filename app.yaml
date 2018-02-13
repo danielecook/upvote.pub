@@ -12,6 +12,11 @@ automatic_scaling:
   cpu_utilization:
     target_utilization: 0.6
 
+resources:
+  cpu: .5
+  memory_gb: 0.18
+  disk_size_gb: 10
+
 readiness_check:
   path: "/ready"
   check_interval_sec: 5
