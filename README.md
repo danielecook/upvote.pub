@@ -1,11 +1,11 @@
 Upvote.pub
 ---
 
-This site was forked and modified heavily from [codelucas/flask_reddit](https://github.com/codelucas/flask_reddit). The site was originally build for Google App Engine, however, there are likely much cheaper ways to host a site like this.
+Upvote.pub (https://www.upvote.pub) was a shortlived experiment to create a reddit-style clone specifically for scientific publications. Users could submit scientific publications from arXiv, bioRxiv, PubMed, or using a DOI. These submissions could then be upvoted or discussed using a commenting function (which also featured upvotes). I created the site because I like HackerNews and reddit, and I believe more dialogue regarding scientific publications would be a great thing.
 
-The site was featured on [Hacker News](https://news.ycombinator.com/item?id=16273171), drawing mixed criticism, but many positive emails and people interested in the code. After failing to gain much steam I shut it down.
+The site was [featured on HackerNews](https://news.ycombinator.com/item?id=16273171) and drew mixed criticims. There are some subreddits which provide similar functionality. I have open-sourced this project.
 
-If you are interested in using this code, the first thing I would do is remove Google from the equation so you can host anywhere. Feel free to create a pull request if you are successful in doing so!
+If you are interested in restarting the project or forking / modifying please let me know!
 
 # Screenshots
 
@@ -14,6 +14,10 @@ If you are interested in using this code, the first thing I would do is remove G
 
 ![screenshot 1](/images/screen2.png)
 <small>Publication Screen</small>
+
+![screenshot 1](/images/screen3.png)
+<small>Subs selection screen</small>
+
 
 # `configs.py`
 
@@ -50,7 +54,3 @@ export run_docker
 
 * username - test@upvote.pub
 * password - Chicago
-
-# Additions
-
-I added threaded comments and upvoting to comments
