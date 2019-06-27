@@ -5,7 +5,7 @@ Upvote.pub (https://www.upvote.pub) was a shortlived experiment to create a redd
 
 The site was [featured on HackerNews](https://news.ycombinator.com/item?id=16273171) and drew mixed criticims. There are some subreddits which provide similar functionality. I have open-sourced this project.
 
-If you are interested in restarting the project or forking / modifying please let me know!
+If you are interested in restarting this project or forking / modifying please let me know!
 
 # Screenshots
 
