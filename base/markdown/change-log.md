@@ -2,7 +2,15 @@
 page_title: Change Log
 ---
 
-## version 0.2.2 - 2017-02-06
+## version 0.2.4 - 2017-03-05
+
+* Added additional allowed domains
+
+## version 0.2.3 - 2017-02-13
+
+* Change configuration
+
+## version 0.2.2 - 2017-02-13
 
 * Change configuration
 

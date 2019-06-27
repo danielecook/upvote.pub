@@ -9,17 +9,20 @@ from base.utils.gcloud import get_item
 from logzero import logger
 
 logger.info("Loading Config")
-STAGE, VERSION_NUM = os.environ.get('GAE_VERSION').split("-", 1)
+STAGE, VERSION_NUM = os.environ.get('GAE_VERSION', "local-0").split("-", 1)
 
 
 class base_config(object):
+    SQLALCHEMY_DATABASE_URI = f"mysql://root@localhost/docker_db"
     JSON_SORT_KEYS = False
     BRAND = "upvote.pub"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    try:
-        SENDGRID_API_KEY = get_item('credential', 'sendgrid')
-    except:
-        SENDGRID_API_KEY = None
+    #try:
+    #    SENDGRID_API_KEY = get_item('credential', 'sendgrid')
+    #except:
+    #    SENDGRID_API_KEY = None
+    SENDGRID_API_KEY = None
+    SECRET_KEY = "CTACTGGAACTTTTGTAAGC"
     STATIC_FOLDER = '/static'
 
 
@@ -64,11 +67,12 @@ class staging(base_config):
     SESSION_COOKIE_SECURE = True
     SQLALCHEMY_ECHO = False
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
-    SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
-    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
-    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
-    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+    #CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
+    # SECRET_KEY = get_item('credential', 'secret-staging').get('secret')
+    # No longer used
+    # SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-staging').get('url')
+    #REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-staging'))
+    #REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 
 
 class production(base_config):
@@ -79,9 +83,10 @@ class production(base_config):
     SESSION_COOKIE_NAME = 'upvote'
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = True
-    CSRF_SESSION_KEY = get_item('credential', 'csrf').get('key')
-    SECRET_KEY = get_item('credential', 'secret-production').get('secret')
-    SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
-    REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
-    REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
+    #CSRF_SESSION_KEY = "CACCGCACATGTGAGCTTTC"
+    # SECRET_KEY = get_item('credential', 'secret-production').get('secret')
+    # No longer used
+    # SQLALCHEMY_DATABASE_URI = get_item('credential', 'sql-production').get('url')
+    #REDIS_CONNECTION_POOL = ConnectionPool(**get_item('credential', 'redis-production'))
+    #REDIS_DB = Redis(connection_pool=REDIS_CONNECTION_POOL)
 

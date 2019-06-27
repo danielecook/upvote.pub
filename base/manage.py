@@ -4,14 +4,10 @@ All code for scraping images and videos from posted
 links go in this file.
 """
 import random
-import requests
 import click
-import time
 from click import secho
 import os
-import sys
 import shutil
-import readline
 import pickle
 import redis
 import IPython
@@ -54,10 +50,10 @@ def initdb(env):
     secho(app.config['SQLALCHEMY_DATABASE_URI'])
     db.drop_all()
     db.create_all()
-    first_user = User(username='dec',
-                      email='dec@u.northwestern.edu',
+    first_user = User(username='you',
+                      email='test@upvote.pub',
                       email_verified=True,
-                      password=generate_password_hash('london!88'),
+                      password=generate_password_hash('Chicago'),
                       university='Northwestern University')
 
     db.session.add(first_user)
@@ -128,7 +124,8 @@ def swot():
 
     ADDED = {'jefferson.edu': 'Jeffersen University',
              'cuhk.edu.hk': 'Chinese University of Hong Kong',
-             'link.cuhk.edu.hk': 'Chinese University of Hong Kong'}
+             'link.cuhk.edu.hk': 'Chinese University of Hong Kong',
+             'springernature.com': 'Springer Nature'}
 
     secho('Generating school/university affiliations', fg='green')
     out, err = Popen(['git', 'clone', 'https://github.com/leereilly/swot'],

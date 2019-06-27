@@ -6,7 +6,9 @@ from sendgrid.helpers.mail import *
 
 
 def send_email(subject, content, recipient):
-    api_key = app.config.get('SENDGRID_API_KEY')['api-key']
+    api_key = app.config.get('SENDGRID_API_KEY').get('api-key')
+    if api_key is None:
+        return True
     sg = sendgrid.SendGridAPIClient(apikey=api_key)
     from_email = Email("no-reply@upvote.pub")
     to_email = Email(recipient)

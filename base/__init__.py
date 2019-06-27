@@ -6,8 +6,7 @@ Lucas Ou -- http://lucasou.com
 """
 import os
 from urllib.parse import quote
-from logzero import logger
-from flask import Flask, render_template, url_for, g, Response
+from flask import Flask, render_template, g, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.routing import BaseConverter
@@ -21,7 +20,7 @@ app = Flask(__name__, static_url_path='/static')
 # Disable strict slashes
 app.url_map.strict_slashes = False
 
-STAGE, VERSION_NUM = os.environ.get('GAE_VERSION').split("-", 1)
+STAGE, VERSION_NUM = os.environ.get('GAE_VERSION', "local-0").split("-", 1)
 
 
 # Setup logging

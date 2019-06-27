@@ -25,7 +25,6 @@ feedparser==5.2.1
 flake8==3.5.0
 Flask==0.12.2
 Flask-DebugToolbar==0.10.1
-flask-shell-ipython==0.3.0
 Flask-SQLAlchemy==2.3.2
 Flask-SSLify==0.1.5
 Flask-WTF==0.9.4
