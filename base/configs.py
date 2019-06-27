@@ -36,8 +36,7 @@ class local(base_config):
     TESTING = True
     CSRF_ENABLED = True
     CSRF_SESSION_KEY = "eNr24cD79[KpDe;vbZ9t"
-    HOST = "docker.for.mac.localhost" if os.environ.get('IS_DOCKER') else "127.0.0.1"
-    SQLALCHEMY_DATABASE_URI = f"mysql://root@{HOST}/upvote"
+    HOST = "127.0.0.1"
     REDIS_HOST = HOST
     REDIS_PORT = 6379
     REDIS_DB_NAME = 0
